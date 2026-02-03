@@ -33,6 +33,18 @@ func (s *BaseFaRlListener) EnterAddSub(ctx *AddSubContext) {}
 // ExitAddSub is called when production AddSub is exited.
 func (s *BaseFaRlListener) ExitAddSub(ctx *AddSubContext) {}
 
+// EnterCalc is called when production Calc is entered.
+func (s *BaseFaRlListener) EnterCalc(ctx *CalcContext) {}
+
+// ExitCalc is called when production Calc is exited.
+func (s *BaseFaRlListener) ExitCalc(ctx *CalcContext) {}
+
+// EnterFail is called when production Fail is entered.
+func (s *BaseFaRlListener) EnterFail(ctx *FailContext) {}
+
+// ExitFail is called when production Fail is exited.
+func (s *BaseFaRlListener) ExitFail(ctx *FailContext) {}
+
 // EnterScript is called when production script is entered.
 func (s *BaseFaRlListener) EnterScript(ctx *ScriptContext) {}
 
