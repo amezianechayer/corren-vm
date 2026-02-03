@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aurex-vm/script/compiler"
-	"aurex-vm/vm"
+	"github.com/amezianechayer/aurex-vm/script/compiler"
+	"github.com/amezianechayer/aurex-vm/vm"
 )
 
 func main() {

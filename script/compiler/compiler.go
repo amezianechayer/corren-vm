@@ -3,8 +3,8 @@ package compiler
 import (
 	"strconv"
 
-	"aurex-vm/script/parser"
-	"aurex-vm/vm/program"
+	"github.com/amezianechayer/aurex-vm/script/parser"
+	"github.com/amezianechayer/aurex-vm/vm/program"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )

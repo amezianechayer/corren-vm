@@ -1,4 +1,4 @@
-module aurex-vm
+module github.com/amezianechayer/aurex-vm
 
 go 1.16
 

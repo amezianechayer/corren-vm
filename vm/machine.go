@@ -3,7 +3,7 @@ package vm
 import (
 	"fmt"
 
-	"aurex-vm/vm/program"
+	"github.com/amezianechayer/aurex-vm/vm/program"
 )
 
 func StdOutPrinter(c chan byte) {

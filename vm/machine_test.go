@@ -3,7 +3,7 @@ package vm
 import (
 	"testing"
 
-	"aurex-vm/script/compiler"
+	"github.com/amezianechayer/aurex-vm/script/compiler"
 )
 
 func TestMachine(t *testing.T) {
