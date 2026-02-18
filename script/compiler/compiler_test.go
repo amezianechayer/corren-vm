@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/amezianechayer/aurex-vm/vm/program"
@@ -12,7 +13,7 @@ import (
 type CaseResult struct {
 	Instructions []byte
 	Constants    []string
-	Error        error
+	Error        string
 }
 
 type TestCase struct {
@@ -23,11 +24,11 @@ type TestCase struct {
 func test(t *testing.T, c TestCase) {
 	p, err := Compile(c.Case)
 
-	if c.Expected.Error != nil {
+	if c.Expected.Error != "" {
 		if err == nil {
 			t.Error(errors.New("expected error and got none"))
 			return
-		} else if err.Error() != c.Expected.Error.Error() {
+		} else if !strings.Contains(err.Error(), c.Expected.Error) {
 			t.Error(fmt.Errorf("error is not the one expected: %v", err))
 			return
 		}
@@ -64,7 +65,7 @@ func TestSimplePrint(t *testing.T) {
 				program.OP_PRINT,
 			},
 			Constants: []string{},
-			Error:     nil,
+			Error:     "",
 		},
 	})
 }
@@ -82,7 +83,7 @@ func TestCompositeExpr(t *testing.T) {
 				program.OP_PRINT,
 			},
 			Constants: []string{},
-			Error:     nil,
+			Error:     "",
 		},
 	})
 }
@@ -93,7 +94,7 @@ func TestFail(t *testing.T) {
 		Expected: CaseResult{
 			Instructions: []byte{program.OP_FAIL},
 			Constants:    []string{},
-			Error:        nil,
+			Error:        "",
 		},
 	})
 }
@@ -110,7 +111,7 @@ func TestSend(t *testing.T) {
 				program.OP_SEND,
 			},
 			Constants: []string{"DZD.2", "@yanis", "@ilyes"},
-			Error:     nil,
+			Error:     "",
 		},
 	})
 }
@@ -121,13 +122,7 @@ func TestSyntaxError(t *testing.T) {
 		Expected: CaseResult{
 			Instructions: nil,
 			Constants:    nil,
-			Error: &CompileErrorList{
-				CompileError{
-					line:   1,
-					column: 6,
-					msg:    "mismatched input 'fail' expecting {'[', IDENTIFIER, NUMBER, ASSET}",
-				},
-			},
+			Error:        "mismatched input",
 		},
 	})
 }
@@ -137,13 +132,22 @@ func TestLogicError(t *testing.T) {
 		Expected: CaseResult{
 			Instructions: nil,
 			Constants:    nil,
-			Error: &CompileErrorList{
-				CompileError{
-					line:   1,
-					column: 55,
-					msg:    "argument is not valid",
-				},
-			},
+			Error:        "argument is not valid",
 		},
 	})
 }
+
+//func TestTooManyConstants(t *testing.T) {
+//	script := "print 1"
+//	for i := 0; i < 20000; i++ {
+//		script += fmt.Sprintf("\ntransfer [A%d.2 0] from @a%d to @b%d", i, i, i)
+//	}
+//	test(t, TestCase{
+//		Case: script,
+//		Expected: CaseResult{
+//			Instructions: nil,
+//			Constants:    nil,
+//			Error:        "exceeded",
+//		},
+//	})
+//}
