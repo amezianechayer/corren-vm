@@ -15,20 +15,20 @@ import (
 type parseVisitor struct {
 	elistener    *ErrorListener
 	instructions []byte
-	data         []string /* must not exceed 32768 elements */
+	constants    []string /* must not exceed 32768 elements */
 }
 
 func (p *parseVisitor) AllocateString(str string) (uint16, error) {
-	for i := 0; i < len(p.data); i++ {
-		if p.data[i] == str {
+	for i := 0; i < len(p.constants); i++ {
+		if p.constants[i] == str {
 			return uint16(i), nil
 		}
 	}
-	if len(p.data) >= 32768 {
+	if len(p.constants) >= 32768 {
 		return 0, errors.New("number of unique resource literals exceeded 32768")
 	}
-	p.data = append(p.data, str)
-	return uint16(len(p.data) - 1), nil
+	p.constants = append(p.constants, str)
+	return uint16(len(p.constants) - 1), nil
 }
 
 func (p *parseVisitor) PushValue(val core.Value) error {
@@ -229,14 +229,14 @@ func (p *parseVisitor) VisitArgs(cs []parser.IArgumentContext, args map[string]c
 	return res, nil
 }
 
-type SyntaxError struct {
+type CompileError struct {
 	line, column int
 	msg          string
 }
 
-type CompileError []SyntaxError
+type CompileErrorList []CompileError
 
-func (c *CompileError) Error() string {
+func (c *CompileErrorList) Error() string {
 	s := ""
 	for _, e := range *c {
 		s = fmt.Sprintf("%v\nerror:%v:%v   %v", s, e.line, e.column, e.msg)
@@ -246,11 +246,11 @@ func (c *CompileError) Error() string {
 
 type ErrorListener struct {
 	*antlr.DefaultErrorListener
-	Errors []SyntaxError
+	Errors CompileErrorList
 }
 
 func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
-	l.Errors = append(l.Errors, SyntaxError{
+	l.Errors = append(l.Errors, CompileError{
 		line:   line,
 		column: column,
 		msg:    msg,
@@ -283,24 +283,24 @@ func Compile(input string) (*program.Program, error) {
 	tree := p.Script()
 
 	if len(elistener.Errors) != 0 {
-		return nil, (*CompileError)(&elistener.Errors)
+		return nil, (*CompileErrorList)(&elistener.Errors)
 	}
 
 	visitor := parseVisitor{
 		elistener:    elistener,
 		instructions: make([]byte, 0),
-		data:         make([]string, 0),
+		constants:    make([]string, 0),
 	}
 
 	_ = visitor.VisitScript(tree)
 
 	if len(elistener.Errors) != 0 {
-		return nil, (*CompileError)(&elistener.Errors)
+		return nil, (*CompileErrorList)(&elistener.Errors)
 	}
 
 	return &program.Program{
 		Instructions: visitor.instructions,
-		Data:         visitor.data,
-		Vars:         make([]string, 0),
+		Constants:    visitor.constants,
+		Variables:    make([]string, 0),
 	}, nil
 }
