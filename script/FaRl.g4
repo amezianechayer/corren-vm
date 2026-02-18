@@ -1,30 +1,50 @@
 grammar FaRl;
 
-NEWLINE: [\r\n]+;
+NEWLINE    : [\r\n]+ ;
+WHITESPACE : [ \t]+ -> skip ;
 
-CALC: 'calc';
-FAIL: 'fail';
-IDENTIFIER: [a-z]+;
-ASSET: [A-Z]+;
-NUMBER: [0-9]+;
-OP_ADD: '+';
-OP_SUB: '-';
+TRANSFER   : 'transfer' ;
+PRINT      : 'print' ;
+FAIL       : 'fail' ;
+FROM       : 'from' ;
+TO         : 'to' ;
 
-SEP: ';';
-WHITESPACE: [ \n\t]+ -> skip;
+OP_ADD : '+' ;
+OP_SUB : '-' ;
+
+LBRACK : '[' ;
+RBRACK : ']' ;
+DOT    : '.' ;
+
+IDENTIFIER : '@' [a-z_] [a-z0-9_:]* ;
+ASSET      : [A-Z] [A-Z0-9]* ;
+PRECISION  : [0-9] ;
+NUMBER     : [0-9]+ ;
+
+monetary
+    : LBRACK asset=ASSET DOT precision=PRECISION amount=NUMBER RBRACK
+    ;
+
+literal
+    : IDENTIFIER # LitAddress
+    | ASSET      # LitAsset
+    | NUMBER     # LitNumber
+    | monetary   # LitMonetary
+    ;
 
 expression
-  : expression op=(OP_ADD|OP_SUB) expression # AddSub
-  | NUMBER # Number
-  ;
+    : lhs=expression op=(OP_ADD | OP_SUB) rhs=expression # ExprAddSub
+    | lit=literal                                         # ExprLiteral
+    ;
 
 statement
-  : CALC expr=expression # Calc
-  | FAIL # Fail
-  ;
+    : PRINT expr=expression                                            # Print
+    | FAIL                                                             # Fail
+    | TRANSFER amount=monetary FROM source=literal TO dest=literal     # Transfer
+    ;
 
-script:
-  (statement NEWLINE)*
-  statement?
-  EOF
-  ;
+script
+    : stmts+=statement
+      (NEWLINE stmts+=statement)*
+      EOF
+    ;

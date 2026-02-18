@@ -21,29 +21,65 @@ func (s *BaseFaRlListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
 // ExitEveryRule is called when any rule is exited.
 func (s *BaseFaRlListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}
 
-// EnterNumber is called when production Number is entered.
-func (s *BaseFaRlListener) EnterNumber(ctx *NumberContext) {}
+// EnterMonetary is called when production monetary is entered.
+func (s *BaseFaRlListener) EnterMonetary(ctx *MonetaryContext) {}
 
-// ExitNumber is called when production Number is exited.
-func (s *BaseFaRlListener) ExitNumber(ctx *NumberContext) {}
+// ExitMonetary is called when production monetary is exited.
+func (s *BaseFaRlListener) ExitMonetary(ctx *MonetaryContext) {}
 
-// EnterAddSub is called when production AddSub is entered.
-func (s *BaseFaRlListener) EnterAddSub(ctx *AddSubContext) {}
+// EnterLitAddress is called when production LitAddress is entered.
+func (s *BaseFaRlListener) EnterLitAddress(ctx *LitAddressContext) {}
 
-// ExitAddSub is called when production AddSub is exited.
-func (s *BaseFaRlListener) ExitAddSub(ctx *AddSubContext) {}
+// ExitLitAddress is called when production LitAddress is exited.
+func (s *BaseFaRlListener) ExitLitAddress(ctx *LitAddressContext) {}
 
-// EnterCalc is called when production Calc is entered.
-func (s *BaseFaRlListener) EnterCalc(ctx *CalcContext) {}
+// EnterLitAsset is called when production LitAsset is entered.
+func (s *BaseFaRlListener) EnterLitAsset(ctx *LitAssetContext) {}
 
-// ExitCalc is called when production Calc is exited.
-func (s *BaseFaRlListener) ExitCalc(ctx *CalcContext) {}
+// ExitLitAsset is called when production LitAsset is exited.
+func (s *BaseFaRlListener) ExitLitAsset(ctx *LitAssetContext) {}
+
+// EnterLitNumber is called when production LitNumber is entered.
+func (s *BaseFaRlListener) EnterLitNumber(ctx *LitNumberContext) {}
+
+// ExitLitNumber is called when production LitNumber is exited.
+func (s *BaseFaRlListener) ExitLitNumber(ctx *LitNumberContext) {}
+
+// EnterLitMonetary is called when production LitMonetary is entered.
+func (s *BaseFaRlListener) EnterLitMonetary(ctx *LitMonetaryContext) {}
+
+// ExitLitMonetary is called when production LitMonetary is exited.
+func (s *BaseFaRlListener) ExitLitMonetary(ctx *LitMonetaryContext) {}
+
+// EnterExprAddSub is called when production ExprAddSub is entered.
+func (s *BaseFaRlListener) EnterExprAddSub(ctx *ExprAddSubContext) {}
+
+// ExitExprAddSub is called when production ExprAddSub is exited.
+func (s *BaseFaRlListener) ExitExprAddSub(ctx *ExprAddSubContext) {}
+
+// EnterExprLiteral is called when production ExprLiteral is entered.
+func (s *BaseFaRlListener) EnterExprLiteral(ctx *ExprLiteralContext) {}
+
+// ExitExprLiteral is called when production ExprLiteral is exited.
+func (s *BaseFaRlListener) ExitExprLiteral(ctx *ExprLiteralContext) {}
+
+// EnterPrint is called when production Print is entered.
+func (s *BaseFaRlListener) EnterPrint(ctx *PrintContext) {}
+
+// ExitPrint is called when production Print is exited.
+func (s *BaseFaRlListener) ExitPrint(ctx *PrintContext) {}
 
 // EnterFail is called when production Fail is entered.
 func (s *BaseFaRlListener) EnterFail(ctx *FailContext) {}
 
 // ExitFail is called when production Fail is exited.
 func (s *BaseFaRlListener) ExitFail(ctx *FailContext) {}
+
+// EnterTransfer is called when production Transfer is entered.
+func (s *BaseFaRlListener) EnterTransfer(ctx *TransferContext) {}
+
+// ExitTransfer is called when production Transfer is exited.
+func (s *BaseFaRlListener) ExitTransfer(ctx *TransferContext) {}
 
 // EnterScript is called when production script is entered.
 func (s *BaseFaRlListener) EnterScript(ctx *ScriptContext) {}
