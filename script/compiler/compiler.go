@@ -191,12 +191,16 @@ func (p *parseVisitor) VisitFail(ctx *parser.FailContext) {
 	p.instructions = append(p.instructions, program.OP_FAIL)
 }
 
-// changé : utilise GetAmount, GetSource, GetDest directement
-// supprimé : VisitArgs et IArgumentContext
 func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
-	mon, err := p.VisitLit(ctx.GetAmount())
+	monetary_ctx := ctx.GetAmount()
+	asset := monetary_ctx.GetAsset().GetText()
+	amount, err := strconv.ParseUint(monetary_ctx.GetAmount().GetText(), 10, 64)
 	if err != nil {
 		return err
+	}
+	mon := &core.Monetary{
+		Asset:  asset,
+		Amount: amount,
 	}
 	src, err := p.VisitLit(ctx.GetSource())
 	if err != nil {
@@ -250,7 +254,6 @@ func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 	})
 }
 
-// changé : SyntaxError → CompileError
 func (l *ErrorListener) LogicError(token antlr.Token, err error) {
 	l.Errors = append(l.Errors, CompileError{
 		line:   token.GetLine(),
