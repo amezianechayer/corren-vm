@@ -191,18 +191,21 @@ func (p *parseVisitor) VisitFail(ctx *parser.FailContext) {
 	p.instructions = append(p.instructions, program.OP_FAIL)
 }
 
+// changé : utilise GetAmount, GetSource, GetDest directement
+// supprimé : VisitArgs et IArgumentContext
 func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
-	args, err := p.VisitArgs(ctx.GetArgs(), map[string]core.ValueType{
-		"source":      core.TYPE_ADDRESS,
-		"destination": core.TYPE_ADDRESS,
-		"monetary":    core.TYPE_MONETARY,
-	})
+	mon, err := p.VisitLit(ctx.GetAmount())
 	if err != nil {
 		return err
 	}
-	mon := args["monetary"]
-	src := args["source"]
-	dst := args["destination"]
+	src, err := p.VisitLit(ctx.GetSource())
+	if err != nil {
+		return err
+	}
+	dst, err := p.VisitLit(ctx.GetDest())
+	if err != nil {
+		return err
+	}
 	err = p.PushValue(mon)
 	if err != nil {
 		return err
@@ -217,31 +220,6 @@ func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
 	}
 	p.instructions = append(p.instructions, program.OP_SEND)
 	return nil
-}
-
-func (p *parseVisitor) VisitArgs(cs []parser.IArgumentContext, args map[string]core.ValueType) (map[string]core.Value, error) {
-	res := make(map[string]core.Value)
-	for _, c := range cs {
-		name := c.GetName().GetText()
-		val, err := p.VisitLit(c.GetLit())
-		if err != nil {
-			return nil, err
-		}
-		val_ty := val.GetType()
-		if _, ok := res[name]; ok {
-			return nil, fmt.Errorf("duplicate argument: %s", name)
-		}
-		if ty, ok := args[name]; ok && ty == val_ty {
-			delete(args, name)
-		} else {
-			return nil, fmt.Errorf("argument is not valid")
-		}
-		res[name] = val
-	}
-	for name := range args {
-		return nil, fmt.Errorf("missing argument: %s", name)
-	}
-	return res, nil
 }
 
 type CompileError struct {
@@ -272,8 +250,9 @@ func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 	})
 }
 
+// changé : SyntaxError → CompileError
 func (l *ErrorListener) LogicError(token antlr.Token, err error) {
-	l.Errors = append(l.Errors, SyntaxError{
+	l.Errors = append(l.Errors, CompileError{
 		line:   token.GetLine(),
 		column: token.GetColumn(),
 		msg:    err.Error(),
