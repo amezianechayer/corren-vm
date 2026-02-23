@@ -27,11 +27,11 @@ func (s *BaseFaRlListener) EnterMonetary(ctx *MonetaryContext) {}
 // ExitMonetary is called when production monetary is exited.
 func (s *BaseFaRlListener) ExitMonetary(ctx *MonetaryContext) {}
 
-// EnterLitAddress is called when production LitAddress is entered.
-func (s *BaseFaRlListener) EnterLitAddress(ctx *LitAddressContext) {}
+// EnterLitAccount is called when production LitAccount is entered.
+func (s *BaseFaRlListener) EnterLitAccount(ctx *LitAccountContext) {}
 
-// ExitLitAddress is called when production LitAddress is exited.
-func (s *BaseFaRlListener) ExitLitAddress(ctx *LitAddressContext) {}
+// ExitLitAccount is called when production LitAccount is exited.
+func (s *BaseFaRlListener) ExitLitAccount(ctx *LitAccountContext) {}
 
 // EnterLitAsset is called when production LitAsset is entered.
 func (s *BaseFaRlListener) EnterLitAsset(ctx *LitAssetContext) {}
@@ -62,6 +62,30 @@ func (s *BaseFaRlListener) EnterExprLiteral(ctx *ExprLiteralContext) {}
 
 // ExitExprLiteral is called when production ExprLiteral is exited.
 func (s *BaseFaRlListener) ExitExprLiteral(ctx *ExprLiteralContext) {}
+
+// EnterExprVariable is called when production ExprVariable is entered.
+func (s *BaseFaRlListener) EnterExprVariable(ctx *ExprVariableContext) {}
+
+// ExitExprVariable is called when production ExprVariable is exited.
+func (s *BaseFaRlListener) ExitExprVariable(ctx *ExprVariableContext) {}
+
+// EnterType_ is called when production type_ is entered.
+func (s *BaseFaRlListener) EnterType_(ctx *Type_Context) {}
+
+// ExitType_ is called when production type_ is exited.
+func (s *BaseFaRlListener) ExitType_(ctx *Type_Context) {}
+
+// EnterVarDecl is called when production varDecl is entered.
+func (s *BaseFaRlListener) EnterVarDecl(ctx *VarDeclContext) {}
+
+// ExitVarDecl is called when production varDecl is exited.
+func (s *BaseFaRlListener) ExitVarDecl(ctx *VarDeclContext) {}
+
+// EnterVarListDecl is called when production varListDecl is entered.
+func (s *BaseFaRlListener) EnterVarListDecl(ctx *VarListDeclContext) {}
+
+// ExitVarListDecl is called when production varListDecl is exited.
+func (s *BaseFaRlListener) ExitVarListDecl(ctx *VarListDeclContext) {}
 
 // EnterPrint is called when production Print is entered.
 func (s *BaseFaRlListener) EnterPrint(ctx *PrintContext) {}
