@@ -22,6 +22,10 @@ func (a Address) ToBytes() []byte {
 	return bytes
 }
 
+func (a Address) ToIdx() int {
+	return int(a) & 0x7FFF
+}
+
 const (
 	OP_APUSH = byte(iota + 1)
 	OP_IPUSH
