@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	p, err := compiler.Compile(`vars {
-		account $rider
-		account $driver
-		monetary $value
-	}
-	transfer $value from $rider to $driver`) // changé : [DZD.2 999] → $value
+	p, err := compiler.Compile(`{
+	var $rider: account
+	var $driver: account
+	var $value: monetary
+}
+transfer $value from $rider to $driver`) // changé : [DZD.2 999] → $value
 	if err != nil {
 		panic(err)
 	}
@@ -33,6 +33,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(exit_code)
+	fmt.Println("EXIT_CODE:", exit_code)
 	fmt.Println(machine.Postings)
 }

@@ -141,9 +141,9 @@ func TestTransfer(t *testing.T) {
 
 func TestVariables(t *testing.T) {
 	test(t,
-		`vars {
-			account $rider
-			account $driver
+		`{
+			var $rider: account
+			var $driver: account
 		}
 		transfer [DZD.2 999] from $rider to $driver`,
 		map[string]core.Value{
@@ -167,9 +167,9 @@ func TestVariables(t *testing.T) {
 
 func TestVariablesJSON(t *testing.T) {
 	testJSON(t,
-		`vars {
-			account $rider
-			account $driver
+		`{
+			var $rider: account
+			var $driver: account
 		}
 		transfer [DZD.2 999] from $rider to $driver`,
 		`{

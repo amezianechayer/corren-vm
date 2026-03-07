@@ -1,9 +1,7 @@
 grammar FaRl;
 
 // ─── LEXER ───────────────────────────────────────────────────────────────────
-
-NEWLINE    : [\r\n]+ ;
-WHITESPACE : [ \t]+ -> skip ;
+WHITESPACE : [ \t\r\n]+ -> skip ;  // changé : ajout \r\n
 
 // Keywords
 PRINT    : 'print' ;
@@ -11,7 +9,7 @@ FAIL     : 'fail' ;
 TRANSFER : 'transfer' ;
 FROM     : 'from' ;
 TO       : 'to' ;
-VARS     : 'vars' ;
+VAR      : 'var' ;  // changé : VARS → VAR
 
 // Types
 TY_ACCOUNT  : 'account' ;
@@ -29,7 +27,7 @@ RBRACK : ']' ;
 LBRACE : '{' ;
 RBRACE : '}' ;
 DOT    : '.' ;
-COMMA  : ',' ;
+COLON  : ':' ;  // ajouté
 
 // Tokens
 VARIABLE_NAME : '$' [a-z_] [a-z0-9_]* ;
@@ -40,7 +38,6 @@ NUMBER        : [0-9]+ ;
 IDENTIFIER    : [a-z_] [a-z0-9_:]* ;
 
 // ─── PARSER ──────────────────────────────────────────────────────────────────
-
 monetary
     : LBRACK asset=ASSET DOT precision=PRECISION amount=NUMBER RBRACK
     ;
@@ -66,11 +63,11 @@ type_
     ;
 
 varDecl
-    : ty=type_ name=VARIABLE_NAME
+    : VAR name=VARIABLE_NAME COLON ty=type_  // changé : var $name: type
     ;
 
 varListDecl
-    : VARS LBRACE NEWLINE (v+=varDecl NEWLINE)* RBRACE NEWLINE
+    : LBRACE v+=varDecl+ RBRACE  // changé : plus de VARS, plus de NEWLINE
     ;
 
 statement
@@ -81,6 +78,6 @@ statement
 
 script
     : vars=varListDecl?
-      stmts+=statement (NEWLINE stmts+=statement)*
-      NEWLINE? EOF
+      stmts+=statement+
+      EOF
     ;

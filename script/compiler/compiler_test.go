@@ -122,18 +122,15 @@ func TestTransfer(t *testing.T) {
 
 func TestTransferWithVariables(t *testing.T) {
 	test(t, TestCase{
-		Case: `vars {
-	account $rider
-	account $driver
+		Case: `{
+	var $rider: account
+	var $driver: account
 }
 transfer [DZD.2 999] from $rider to $driver`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				// $rider — variable addr 0 → 1<<15 + 0 = 0x8000
 				program.OP_APUSH, 0x00, 0x80,
-				// $driver — variable addr 1 → 1<<15 + 1 = 0x8001
 				program.OP_APUSH, 0x01, 0x80,
-				// monetary [DZD.2 999] — constante 0
 				program.OP_APUSH, 0x00, 0x00,
 				program.OP_SEND,
 			},
@@ -170,9 +167,9 @@ func TestLogicError(t *testing.T) {
 
 func TestDuplicateVariable(t *testing.T) {
 	test(t, TestCase{
-		Case: `vars {
-	account $rider
-	account $rider
+		Case: `{
+	var $rider: account
+	var $rider: account
 }
 fail`,
 		Expected: CaseResult{
