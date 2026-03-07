@@ -14,11 +14,13 @@ func main() {
 	var $driver: account
 	var $value: monetary
 }
-transfer $value from $rider to $driver`) // changé : [DZD.2 999] → $value
+transfer $value
+	from $rider
+	to $driver`)
 	if err != nil {
 		panic(err)
 	}
-	p.Print() // changé : machine.Program.Print() → p.Print()
+	p.Print()
 	machine := vm.NewMachine(p)
 	var vars map[string]json.RawMessage
 	json.Unmarshal([]byte(`{

@@ -1,7 +1,8 @@
 grammar FaRl;
 
 // ─── LEXER ───────────────────────────────────────────────────────────────────
-WHITESPACE : [ \t\r\n]+ -> skip ;  // changé : ajout \r\n
+NEWLINE    : [\r\n]+ ;          // changé : NEWLINE redevient token
+WHITESPACE : [ \t]+ -> skip ;   // changé : on skippe plus \r\n
 
 // Keywords
 PRINT    : 'print' ;
@@ -9,7 +10,7 @@ FAIL     : 'fail' ;
 TRANSFER : 'transfer' ;
 FROM     : 'from' ;
 TO       : 'to' ;
-VAR      : 'var' ;  // changé : VARS → VAR
+VAR      : 'var' ;
 
 // Types
 TY_ACCOUNT  : 'account' ;
@@ -27,7 +28,7 @@ RBRACK : ']' ;
 LBRACE : '{' ;
 RBRACE : '}' ;
 DOT    : '.' ;
-COLON  : ':' ;  // ajouté
+COLON  : ':' ;
 
 // Tokens
 VARIABLE_NAME : '$' [a-z_] [a-z0-9_]* ;
@@ -35,7 +36,6 @@ ACCOUNT       : '@' [a-z_] [a-z0-9_:]* ;
 ASSET         : [A-Z] [A-Z0-9]* ;
 PRECISION     : [0-9] ;
 NUMBER        : [0-9]+ ;
-IDENTIFIER    : [a-z_] [a-z0-9_:]* ;
 
 // ─── PARSER ──────────────────────────────────────────────────────────────────
 monetary
@@ -63,21 +63,25 @@ type_
     ;
 
 varDecl
-    : VAR name=VARIABLE_NAME COLON ty=type_  // changé : var $name: type
+    : VAR name=VARIABLE_NAME COLON ty=type_
     ;
 
 varListDecl
-    : LBRACE v+=varDecl+ RBRACE  // changé : plus de VARS, plus de NEWLINE
+    : LBRACE NEWLINE+ (v+=varDecl NEWLINE+)+ RBRACE NEWLINE+
     ;
 
 statement
-    : PRINT expr=expression                                                # Print
-    | FAIL                                                                 # Fail
-    | TRANSFER amount=expression FROM source=expression TO dest=expression  # Transfer
+    : PRINT expr=expression                                                     # Print
+    | FAIL                                                                      # Fail
+    | TRANSFER NEWLINE* amount=expression NEWLINE*
+      FROM NEWLINE* source=expression NEWLINE*
+      TO NEWLINE* dest=expression                                               # Transfer
     ;
 
 script
     : vars=varListDecl?
-      stmts+=statement+
+      stmts+=statement
+      (NEWLINE+ stmts+=statement)*
+      NEWLINE*
       EOF
     ;

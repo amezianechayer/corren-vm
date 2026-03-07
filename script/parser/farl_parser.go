@@ -16,50 +16,77 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 27, 82, 4,
-	2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7, 4,
-	8, 9, 8, 4, 9, 9, 9, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 3, 3,
-	3, 3, 3, 3, 3, 5, 3, 30, 10, 3, 3, 4, 3, 4, 3, 4, 5, 4, 35, 10, 4, 3, 4,
-	3, 4, 3, 4, 7, 4, 40, 10, 4, 12, 4, 14, 4, 43, 11, 4, 3, 5, 3, 5, 3, 6,
-	3, 6, 3, 6, 3, 6, 3, 6, 3, 7, 3, 7, 6, 7, 54, 10, 7, 13, 7, 14, 7, 55,
-	3, 7, 3, 7, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8,
-	5, 8, 70, 10, 8, 3, 9, 5, 9, 73, 10, 9, 3, 9, 6, 9, 76, 10, 9, 13, 9, 14,
-	9, 77, 3, 9, 3, 9, 3, 9, 2, 3, 6, 10, 2, 4, 6, 8, 10, 12, 14, 16, 2, 4,
-	3, 2, 14, 15, 3, 2, 10, 13, 2, 83, 2, 18, 3, 2, 2, 2, 4, 29, 3, 2, 2, 2,
-	6, 34, 3, 2, 2, 2, 8, 44, 3, 2, 2, 2, 10, 46, 3, 2, 2, 2, 12, 51, 3, 2,
-	2, 2, 14, 69, 3, 2, 2, 2, 16, 72, 3, 2, 2, 2, 18, 19, 7, 16, 2, 2, 19,
-	20, 7, 24, 2, 2, 20, 21, 7, 20, 2, 2, 21, 22, 7, 25, 2, 2, 22, 23, 7, 26,
-	2, 2, 23, 24, 7, 17, 2, 2, 24, 3, 3, 2, 2, 2, 25, 30, 7, 23, 2, 2, 26,
-	30, 7, 24, 2, 2, 27, 30, 7, 26, 2, 2, 28, 30, 5, 2, 2, 2, 29, 25, 3, 2,
-	2, 2, 29, 26, 3, 2, 2, 2, 29, 27, 3, 2, 2, 2, 29, 28, 3, 2, 2, 2, 30, 5,
-	3, 2, 2, 2, 31, 32, 8, 4, 1, 2, 32, 35, 5, 4, 3, 2, 33, 35, 7, 22, 2, 2,
-	34, 31, 3, 2, 2, 2, 34, 33, 3, 2, 2, 2, 35, 41, 3, 2, 2, 2, 36, 37, 12,
-	5, 2, 2, 37, 38, 9, 2, 2, 2, 38, 40, 5, 6, 4, 6, 39, 36, 3, 2, 2, 2, 40,
-	43, 3, 2, 2, 2, 41, 39, 3, 2, 2, 2, 41, 42, 3, 2, 2, 2, 42, 7, 3, 2, 2,
-	2, 43, 41, 3, 2, 2, 2, 44, 45, 9, 3, 2, 2, 45, 9, 3, 2, 2, 2, 46, 47, 7,
-	9, 2, 2, 47, 48, 7, 22, 2, 2, 48, 49, 7, 21, 2, 2, 49, 50, 5, 8, 5, 2,
-	50, 11, 3, 2, 2, 2, 51, 53, 7, 18, 2, 2, 52, 54, 5, 10, 6, 2, 53, 52, 3,
-	2, 2, 2, 54, 55, 3, 2, 2, 2, 55, 53, 3, 2, 2, 2, 55, 56, 3, 2, 2, 2, 56,
-	57, 3, 2, 2, 2, 57, 58, 7, 19, 2, 2, 58, 13, 3, 2, 2, 2, 59, 60, 7, 4,
-	2, 2, 60, 70, 5, 6, 4, 2, 61, 70, 7, 5, 2, 2, 62, 63, 7, 6, 2, 2, 63, 64,
-	5, 6, 4, 2, 64, 65, 7, 7, 2, 2, 65, 66, 5, 6, 4, 2, 66, 67, 7, 8, 2, 2,
-	67, 68, 5, 6, 4, 2, 68, 70, 3, 2, 2, 2, 69, 59, 3, 2, 2, 2, 69, 61, 3,
-	2, 2, 2, 69, 62, 3, 2, 2, 2, 70, 15, 3, 2, 2, 2, 71, 73, 5, 12, 7, 2, 72,
-	71, 3, 2, 2, 2, 72, 73, 3, 2, 2, 2, 73, 75, 3, 2, 2, 2, 74, 76, 5, 14,
-	8, 2, 75, 74, 3, 2, 2, 2, 76, 77, 3, 2, 2, 2, 77, 75, 3, 2, 2, 2, 77, 78,
-	3, 2, 2, 2, 78, 79, 3, 2, 2, 2, 79, 80, 7, 2, 2, 3, 80, 17, 3, 2, 2, 2,
-	9, 29, 34, 41, 55, 69, 72, 77,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 27, 139,
+	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
+	4, 8, 9, 8, 4, 9, 9, 9, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 3,
+	3, 3, 3, 3, 3, 3, 5, 3, 30, 10, 3, 3, 4, 3, 4, 3, 4, 5, 4, 35, 10, 4, 3,
+	4, 3, 4, 3, 4, 7, 4, 40, 10, 4, 12, 4, 14, 4, 43, 11, 4, 3, 5, 3, 5, 3,
+	6, 3, 6, 3, 6, 3, 6, 3, 6, 3, 7, 3, 7, 6, 7, 54, 10, 7, 13, 7, 14, 7, 55,
+	3, 7, 3, 7, 6, 7, 60, 10, 7, 13, 7, 14, 7, 61, 6, 7, 64, 10, 7, 13, 7,
+	14, 7, 65, 3, 7, 3, 7, 6, 7, 70, 10, 7, 13, 7, 14, 7, 71, 3, 8, 3, 8, 3,
+	8, 3, 8, 3, 8, 7, 8, 79, 10, 8, 12, 8, 14, 8, 82, 11, 8, 3, 8, 3, 8, 7,
+	8, 86, 10, 8, 12, 8, 14, 8, 89, 11, 8, 3, 8, 3, 8, 7, 8, 93, 10, 8, 12,
+	8, 14, 8, 96, 11, 8, 3, 8, 3, 8, 7, 8, 100, 10, 8, 12, 8, 14, 8, 103, 11,
+	8, 3, 8, 3, 8, 7, 8, 107, 10, 8, 12, 8, 14, 8, 110, 11, 8, 3, 8, 3, 8,
+	5, 8, 114, 10, 8, 3, 9, 5, 9, 117, 10, 9, 3, 9, 3, 9, 6, 9, 121, 10, 9,
+	13, 9, 14, 9, 122, 3, 9, 7, 9, 126, 10, 9, 12, 9, 14, 9, 129, 11, 9, 3,
+	9, 7, 9, 132, 10, 9, 12, 9, 14, 9, 135, 11, 9, 3, 9, 3, 9, 3, 9, 2, 3,
+	6, 10, 2, 4, 6, 8, 10, 12, 14, 16, 2, 4, 3, 2, 15, 16, 3, 2, 11, 14, 2,
+	150, 2, 18, 3, 2, 2, 2, 4, 29, 3, 2, 2, 2, 6, 34, 3, 2, 2, 2, 8, 44, 3,
+	2, 2, 2, 10, 46, 3, 2, 2, 2, 12, 51, 3, 2, 2, 2, 14, 113, 3, 2, 2, 2, 16,
+	116, 3, 2, 2, 2, 18, 19, 7, 17, 2, 2, 19, 20, 7, 25, 2, 2, 20, 21, 7, 21,
+	2, 2, 21, 22, 7, 26, 2, 2, 22, 23, 7, 27, 2, 2, 23, 24, 7, 18, 2, 2, 24,
+	3, 3, 2, 2, 2, 25, 30, 7, 24, 2, 2, 26, 30, 7, 25, 2, 2, 27, 30, 7, 27,
+	2, 2, 28, 30, 5, 2, 2, 2, 29, 25, 3, 2, 2, 2, 29, 26, 3, 2, 2, 2, 29, 27,
+	3, 2, 2, 2, 29, 28, 3, 2, 2, 2, 30, 5, 3, 2, 2, 2, 31, 32, 8, 4, 1, 2,
+	32, 35, 5, 4, 3, 2, 33, 35, 7, 23, 2, 2, 34, 31, 3, 2, 2, 2, 34, 33, 3,
+	2, 2, 2, 35, 41, 3, 2, 2, 2, 36, 37, 12, 5, 2, 2, 37, 38, 9, 2, 2, 2, 38,
+	40, 5, 6, 4, 6, 39, 36, 3, 2, 2, 2, 40, 43, 3, 2, 2, 2, 41, 39, 3, 2, 2,
+	2, 41, 42, 3, 2, 2, 2, 42, 7, 3, 2, 2, 2, 43, 41, 3, 2, 2, 2, 44, 45, 9,
+	3, 2, 2, 45, 9, 3, 2, 2, 2, 46, 47, 7, 10, 2, 2, 47, 48, 7, 23, 2, 2, 48,
+	49, 7, 22, 2, 2, 49, 50, 5, 8, 5, 2, 50, 11, 3, 2, 2, 2, 51, 53, 7, 19,
+	2, 2, 52, 54, 7, 3, 2, 2, 53, 52, 3, 2, 2, 2, 54, 55, 3, 2, 2, 2, 55, 53,
+	3, 2, 2, 2, 55, 56, 3, 2, 2, 2, 56, 63, 3, 2, 2, 2, 57, 59, 5, 10, 6, 2,
+	58, 60, 7, 3, 2, 2, 59, 58, 3, 2, 2, 2, 60, 61, 3, 2, 2, 2, 61, 59, 3,
+	2, 2, 2, 61, 62, 3, 2, 2, 2, 62, 64, 3, 2, 2, 2, 63, 57, 3, 2, 2, 2, 64,
+	65, 3, 2, 2, 2, 65, 63, 3, 2, 2, 2, 65, 66, 3, 2, 2, 2, 66, 67, 3, 2, 2,
+	2, 67, 69, 7, 20, 2, 2, 68, 70, 7, 3, 2, 2, 69, 68, 3, 2, 2, 2, 70, 71,
+	3, 2, 2, 2, 71, 69, 3, 2, 2, 2, 71, 72, 3, 2, 2, 2, 72, 13, 3, 2, 2, 2,
+	73, 74, 7, 5, 2, 2, 74, 114, 5, 6, 4, 2, 75, 114, 7, 6, 2, 2, 76, 80, 7,
+	7, 2, 2, 77, 79, 7, 3, 2, 2, 78, 77, 3, 2, 2, 2, 79, 82, 3, 2, 2, 2, 80,
+	78, 3, 2, 2, 2, 80, 81, 3, 2, 2, 2, 81, 83, 3, 2, 2, 2, 82, 80, 3, 2, 2,
+	2, 83, 87, 5, 6, 4, 2, 84, 86, 7, 3, 2, 2, 85, 84, 3, 2, 2, 2, 86, 89,
+	3, 2, 2, 2, 87, 85, 3, 2, 2, 2, 87, 88, 3, 2, 2, 2, 88, 90, 3, 2, 2, 2,
+	89, 87, 3, 2, 2, 2, 90, 94, 7, 8, 2, 2, 91, 93, 7, 3, 2, 2, 92, 91, 3,
+	2, 2, 2, 93, 96, 3, 2, 2, 2, 94, 92, 3, 2, 2, 2, 94, 95, 3, 2, 2, 2, 95,
+	97, 3, 2, 2, 2, 96, 94, 3, 2, 2, 2, 97, 101, 5, 6, 4, 2, 98, 100, 7, 3,
+	2, 2, 99, 98, 3, 2, 2, 2, 100, 103, 3, 2, 2, 2, 101, 99, 3, 2, 2, 2, 101,
+	102, 3, 2, 2, 2, 102, 104, 3, 2, 2, 2, 103, 101, 3, 2, 2, 2, 104, 108,
+	7, 9, 2, 2, 105, 107, 7, 3, 2, 2, 106, 105, 3, 2, 2, 2, 107, 110, 3, 2,
+	2, 2, 108, 106, 3, 2, 2, 2, 108, 109, 3, 2, 2, 2, 109, 111, 3, 2, 2, 2,
+	110, 108, 3, 2, 2, 2, 111, 112, 5, 6, 4, 2, 112, 114, 3, 2, 2, 2, 113,
+	73, 3, 2, 2, 2, 113, 75, 3, 2, 2, 2, 113, 76, 3, 2, 2, 2, 114, 15, 3, 2,
+	2, 2, 115, 117, 5, 12, 7, 2, 116, 115, 3, 2, 2, 2, 116, 117, 3, 2, 2, 2,
+	117, 118, 3, 2, 2, 2, 118, 127, 5, 14, 8, 2, 119, 121, 7, 3, 2, 2, 120,
+	119, 3, 2, 2, 2, 121, 122, 3, 2, 2, 2, 122, 120, 3, 2, 2, 2, 122, 123,
+	3, 2, 2, 2, 123, 124, 3, 2, 2, 2, 124, 126, 5, 14, 8, 2, 125, 120, 3, 2,
+	2, 2, 126, 129, 3, 2, 2, 2, 127, 125, 3, 2, 2, 2, 127, 128, 3, 2, 2, 2,
+	128, 133, 3, 2, 2, 2, 129, 127, 3, 2, 2, 2, 130, 132, 7, 3, 2, 2, 131,
+	130, 3, 2, 2, 2, 132, 135, 3, 2, 2, 2, 133, 131, 3, 2, 2, 2, 133, 134,
+	3, 2, 2, 2, 134, 136, 3, 2, 2, 2, 135, 133, 3, 2, 2, 2, 136, 137, 7, 2,
+	2, 3, 137, 17, 3, 2, 2, 2, 19, 29, 34, 41, 55, 61, 65, 71, 80, 87, 94,
+	101, 108, 113, 116, 122, 127, 133,
 }
 var literalNames = []string{
-	"", "", "'print'", "'fail'", "'transfer'", "'from'", "'to'", "'var'", "'account'",
-	"'asset'", "'number'", "'monetary'", "'+'", "'-'", "'['", "']'", "'{'",
-	"'}'", "'.'", "':'",
+	"", "", "", "'print'", "'fail'", "'transfer'", "'from'", "'to'", "'var'",
+	"'account'", "'asset'", "'number'", "'monetary'", "'+'", "'-'", "'['",
+	"']'", "'{'", "'}'", "'.'", "':'",
 }
 var symbolicNames = []string{
-	"", "WHITESPACE", "PRINT", "FAIL", "TRANSFER", "FROM", "TO", "VAR", "TY_ACCOUNT",
-	"TY_ASSET", "TY_NUMBER", "TY_MONETARY", "OP_ADD", "OP_SUB", "LBRACK", "RBRACK",
-	"LBRACE", "RBRACE", "DOT", "COLON", "VARIABLE_NAME", "ACCOUNT", "ASSET",
-	"PRECISION", "NUMBER", "IDENTIFIER",
+	"", "NEWLINE", "WHITESPACE", "PRINT", "FAIL", "TRANSFER", "FROM", "TO",
+	"VAR", "TY_ACCOUNT", "TY_ASSET", "TY_NUMBER", "TY_MONETARY", "OP_ADD",
+	"OP_SUB", "LBRACK", "RBRACK", "LBRACE", "RBRACE", "DOT", "COLON", "VARIABLE_NAME",
+	"ACCOUNT", "ASSET", "PRECISION", "NUMBER",
 }
 
 var ruleNames = []string{
@@ -99,31 +126,31 @@ func NewFaRlParser(input antlr.TokenStream) *FaRlParser {
 // FaRlParser tokens.
 const (
 	FaRlParserEOF           = antlr.TokenEOF
-	FaRlParserWHITESPACE    = 1
-	FaRlParserPRINT         = 2
-	FaRlParserFAIL          = 3
-	FaRlParserTRANSFER      = 4
-	FaRlParserFROM          = 5
-	FaRlParserTO            = 6
-	FaRlParserVAR           = 7
-	FaRlParserTY_ACCOUNT    = 8
-	FaRlParserTY_ASSET      = 9
-	FaRlParserTY_NUMBER     = 10
-	FaRlParserTY_MONETARY   = 11
-	FaRlParserOP_ADD        = 12
-	FaRlParserOP_SUB        = 13
-	FaRlParserLBRACK        = 14
-	FaRlParserRBRACK        = 15
-	FaRlParserLBRACE        = 16
-	FaRlParserRBRACE        = 17
-	FaRlParserDOT           = 18
-	FaRlParserCOLON         = 19
-	FaRlParserVARIABLE_NAME = 20
-	FaRlParserACCOUNT       = 21
-	FaRlParserASSET         = 22
-	FaRlParserPRECISION     = 23
-	FaRlParserNUMBER        = 24
-	FaRlParserIDENTIFIER    = 25
+	FaRlParserNEWLINE       = 1
+	FaRlParserWHITESPACE    = 2
+	FaRlParserPRINT         = 3
+	FaRlParserFAIL          = 4
+	FaRlParserTRANSFER      = 5
+	FaRlParserFROM          = 6
+	FaRlParserTO            = 7
+	FaRlParserVAR           = 8
+	FaRlParserTY_ACCOUNT    = 9
+	FaRlParserTY_ASSET      = 10
+	FaRlParserTY_NUMBER     = 11
+	FaRlParserTY_MONETARY   = 12
+	FaRlParserOP_ADD        = 13
+	FaRlParserOP_SUB        = 14
+	FaRlParserLBRACK        = 15
+	FaRlParserRBRACK        = 16
+	FaRlParserLBRACE        = 17
+	FaRlParserRBRACE        = 18
+	FaRlParserDOT           = 19
+	FaRlParserCOLON         = 20
+	FaRlParserVARIABLE_NAME = 21
+	FaRlParserACCOUNT       = 22
+	FaRlParserASSET         = 23
+	FaRlParserPRECISION     = 24
+	FaRlParserNUMBER        = 25
 )
 
 // FaRlParser rules.
@@ -1224,6 +1251,14 @@ func (s *VarListDeclContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(FaRlParserRBRACE, 0)
 }
 
+func (s *VarListDeclContext) AllNEWLINE() []antlr.TerminalNode {
+	return s.GetTokens(FaRlParserNEWLINE)
+}
+
+func (s *VarListDeclContext) NEWLINE(i int) antlr.TerminalNode {
+	return s.GetToken(FaRlParserNEWLINE, i)
+}
+
 func (s *VarListDeclContext) AllVarDecl() []IVarDeclContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IVarDeclContext)(nil)).Elem())
 	var tst = make([]IVarDeclContext, len(ts))
@@ -1297,23 +1332,65 @@ func (p *FaRlParser) VarListDecl() (localctx IVarListDeclContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ok := true; ok; ok = _la == FaRlParserVAR {
+	for ok := true; ok; ok = _la == FaRlParserNEWLINE {
 		{
 			p.SetState(50)
+			p.Match(FaRlParserNEWLINE)
+		}
+
+		p.SetState(53)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+	}
+	p.SetState(61)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	for ok := true; ok; ok = _la == FaRlParserVAR {
+		{
+			p.SetState(55)
 
 			var _x = p.VarDecl()
 
 			localctx.(*VarListDeclContext)._varDecl = _x
 		}
 		localctx.(*VarListDeclContext).v = append(localctx.(*VarListDeclContext).v, localctx.(*VarListDeclContext)._varDecl)
+		p.SetState(57)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
 
-		p.SetState(53)
+		for ok := true; ok; ok = _la == FaRlParserNEWLINE {
+			{
+				p.SetState(56)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(59)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
+		}
+
+		p.SetState(63)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(55)
+		p.SetState(65)
 		p.Match(FaRlParserRBRACE)
+	}
+	p.SetState(67)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	for ok := true; ok; ok = _la == FaRlParserNEWLINE {
+		{
+			p.SetState(66)
+			p.Match(FaRlParserNEWLINE)
+		}
+
+		p.SetState(69)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
 	}
 
 	return localctx
@@ -1486,6 +1563,14 @@ func (s *TransferContext) Expression(i int) IExpressionContext {
 	return t.(IExpressionContext)
 }
 
+func (s *TransferContext) AllNEWLINE() []antlr.TerminalNode {
+	return s.GetTokens(FaRlParserNEWLINE)
+}
+
+func (s *TransferContext) NEWLINE(i int) antlr.TerminalNode {
+	return s.GetToken(FaRlParserNEWLINE, i)
+}
+
 func (s *TransferContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(FaRlListener); ok {
 		listenerT.EnterTransfer(s)
@@ -1535,6 +1620,7 @@ func (s *FailContext) ExitRule(listener antlr.ParseTreeListener) {
 func (p *FaRlParser) Statement() (localctx IStatementContext) {
 	localctx = NewStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 12, FaRlParserRULE_statement)
+	var _la int
 
 	defer func() {
 		p.ExitRule()
@@ -1552,7 +1638,7 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		}
 	}()
 
-	p.SetState(67)
+	p.SetState(111)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -1560,11 +1646,11 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewPrintContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(57)
+			p.SetState(71)
 			p.Match(FaRlParserPRINT)
 		}
 		{
-			p.SetState(58)
+			p.SetState(72)
 
 			var _x = p.expression(0)
 
@@ -1575,7 +1661,7 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewFailContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(59)
+			p.SetState(73)
 			p.Match(FaRlParserFAIL)
 		}
 
@@ -1583,33 +1669,103 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewTransferContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(60)
+			p.SetState(74)
 			p.Match(FaRlParserTRANSFER)
 		}
+		p.SetState(78)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		for _la == FaRlParserNEWLINE {
+			{
+				p.SetState(75)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(80)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
+		}
 		{
-			p.SetState(61)
+			p.SetState(81)
 
 			var _x = p.expression(0)
 
 			localctx.(*TransferContext).amount = _x
 		}
-		{
-			p.SetState(62)
-			p.Match(FaRlParserFROM)
+		p.SetState(85)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		for _la == FaRlParserNEWLINE {
+			{
+				p.SetState(82)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(87)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
 		}
 		{
-			p.SetState(63)
+			p.SetState(88)
+			p.Match(FaRlParserFROM)
+		}
+		p.SetState(92)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		for _la == FaRlParserNEWLINE {
+			{
+				p.SetState(89)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(94)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
+		}
+		{
+			p.SetState(95)
 
 			var _x = p.expression(0)
 
 			localctx.(*TransferContext).source = _x
 		}
-		{
-			p.SetState(64)
-			p.Match(FaRlParserTO)
+		p.SetState(99)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		for _la == FaRlParserNEWLINE {
+			{
+				p.SetState(96)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(101)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
 		}
 		{
-			p.SetState(65)
+			p.SetState(102)
+			p.Match(FaRlParserTO)
+		}
+		p.SetState(106)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+
+		for _la == FaRlParserNEWLINE {
+			{
+				p.SetState(103)
+				p.Match(FaRlParserNEWLINE)
+			}
+
+			p.SetState(108)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
+		}
+		{
+			p.SetState(109)
 
 			var _x = p.expression(0)
 
@@ -1698,16 +1854,6 @@ func (s *ScriptContext) EOF() antlr.TerminalNode {
 	return s.GetToken(FaRlParserEOF, 0)
 }
 
-func (s *ScriptContext) VarListDecl() IVarListDeclContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarListDeclContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IVarListDeclContext)
-}
-
 func (s *ScriptContext) AllStatement() []IStatementContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IStatementContext)(nil)).Elem())
 	var tst = make([]IStatementContext, len(ts))
@@ -1729,6 +1875,24 @@ func (s *ScriptContext) Statement(i int) IStatementContext {
 	}
 
 	return t.(IStatementContext)
+}
+
+func (s *ScriptContext) AllNEWLINE() []antlr.TerminalNode {
+	return s.GetTokens(FaRlParserNEWLINE)
+}
+
+func (s *ScriptContext) NEWLINE(i int) antlr.TerminalNode {
+	return s.GetToken(FaRlParserNEWLINE, i)
+}
+
+func (s *ScriptContext) VarListDecl() IVarListDeclContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IVarListDeclContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IVarListDeclContext)
 }
 
 func (s *ScriptContext) GetRuleContext() antlr.RuleContext {
@@ -1772,14 +1936,16 @@ func (p *FaRlParser) Script() (localctx IScriptContext) {
 		}
 	}()
 
+	var _alt int
+
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(70)
+	p.SetState(114)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == FaRlParserLBRACE {
 		{
-			p.SetState(69)
+			p.SetState(113)
 
 			var _x = p.VarListDecl()
 
@@ -1787,26 +1953,64 @@ func (p *FaRlParser) Script() (localctx IScriptContext) {
 		}
 
 	}
-	p.SetState(73)
+	{
+		p.SetState(116)
+
+		var _x = p.Statement()
+
+		localctx.(*ScriptContext)._statement = _x
+	}
+	localctx.(*ScriptContext).stmts = append(localctx.(*ScriptContext).stmts, localctx.(*ScriptContext)._statement)
+	p.SetState(125)
+	p.GetErrorHandler().Sync(p)
+	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 15, p.GetParserRuleContext())
+
+	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
+		if _alt == 1 {
+			p.SetState(118)
+			p.GetErrorHandler().Sync(p)
+			_la = p.GetTokenStream().LA(1)
+
+			for ok := true; ok; ok = _la == FaRlParserNEWLINE {
+				{
+					p.SetState(117)
+					p.Match(FaRlParserNEWLINE)
+				}
+
+				p.SetState(120)
+				p.GetErrorHandler().Sync(p)
+				_la = p.GetTokenStream().LA(1)
+			}
+			{
+				p.SetState(122)
+
+				var _x = p.Statement()
+
+				localctx.(*ScriptContext)._statement = _x
+			}
+			localctx.(*ScriptContext).stmts = append(localctx.(*ScriptContext).stmts, localctx.(*ScriptContext)._statement)
+
+		}
+		p.SetState(127)
+		p.GetErrorHandler().Sync(p)
+		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 15, p.GetParserRuleContext())
+	}
+	p.SetState(131)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ok := true; ok; ok = (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FaRlParserPRINT)|(1<<FaRlParserFAIL)|(1<<FaRlParserTRANSFER))) != 0) {
+	for _la == FaRlParserNEWLINE {
 		{
-			p.SetState(72)
-
-			var _x = p.Statement()
-
-			localctx.(*ScriptContext)._statement = _x
+			p.SetState(128)
+			p.Match(FaRlParserNEWLINE)
 		}
-		localctx.(*ScriptContext).stmts = append(localctx.(*ScriptContext).stmts, localctx.(*ScriptContext)._statement)
 
-		p.SetState(75)
+		p.SetState(133)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(77)
+		p.SetState(134)
 		p.Match(FaRlParserEOF)
 	}
 
