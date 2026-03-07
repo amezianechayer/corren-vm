@@ -1,37 +1,38 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/amezianechayer/aurex-vm/core"
 	"github.com/amezianechayer/aurex-vm/script/compiler"
 	"github.com/amezianechayer/aurex-vm/vm"
 )
 
 func main() {
-	// exemple simple sans variables
-	// p, err := compiler.Compile(`
-	// print 29 + 15 - 2
-	// transfer [DZD.2 100] from @alice to @bob
-	// fail`)
-
 	p, err := compiler.Compile(`vars {
 		account $rider
 		account $driver
+		monetary $value
 	}
-	transfer [DZD.2 999] from $rider to $driver`)
+	transfer $value from $rider to $driver`) // changé : [DZD.2 999] → $value
 	if err != nil {
 		panic(err)
 	}
-
+	p.Print() // changé : machine.Program.Print() → p.Print()
 	machine := vm.NewMachine(p)
-	machine.Program.Print()
-
-	exit_code := machine.Execute(map[string]core.Value{
-		"rider":  core.Account("user:001"),
-		"driver": core.Account("user:002"),
-	})
-
+	var vars map[string]json.RawMessage
+	json.Unmarshal([]byte(`{
+		"rider": "user:001",
+		"driver": "user:002",
+		"value": {
+			"asset": "DZD",
+			"amount": 999
+		}
+	}`), &vars)
+	exit_code, err := machine.ExecuteFromJSON(vars)
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(exit_code)
 	fmt.Println(machine.Postings)
 }

@@ -215,16 +215,12 @@ func (p *parseVisitor) VisitFail(ctx *parser.FailContext) {
 }
 
 func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
-	monetary_ctx := ctx.GetAmount()
-	asset := monetary_ctx.GetAsset().GetText()
-	precision := monetary_ctx.GetPrecision().GetText()
-	amount, err := strconv.ParseUint(monetary_ctx.GetAmount().GetText(), 10, 64)
+	amountTy, err := p.VisitExpr(ctx.GetAmount())
 	if err != nil {
 		return err
 	}
-	mon := core.Monetary{
-		Asset:  asset + "." + precision,
-		Amount: amount,
+	if amountTy != core.TYPE_MONETARY {
+		return errors.New("wrong argument type")
 	}
 
 	srcTy, err := p.VisitExpr(ctx.GetSource())
@@ -241,11 +237,6 @@ func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
 	}
 	if dstTy != core.TYPE_ACCOUNT {
 		return errors.New("wrong argument type")
-	}
-
-	err = p.PushValue(mon)
-	if err != nil {
-		return err
 	}
 
 	p.instructions = append(p.instructions, program.OP_SEND)

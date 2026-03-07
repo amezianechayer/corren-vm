@@ -2,6 +2,7 @@ package vm
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 
 	"github.com/amezianechayer/aurex-vm/core"
@@ -107,7 +108,7 @@ func (m *Machine) getResource(addr program.Address) core.Value {
 	}
 }
 
-func (m *Machine) Tick() (bool, byte) {
+func (m *Machine) tick() (bool, byte) {
 	op := m.Program.Instructions[m.P]
 	switch op {
 	case program.OP_APUSH:
@@ -152,26 +153,32 @@ func (m *Machine) Tick() (bool, byte) {
 	return false, 0
 }
 
-func (m *Machine) Execute(vars map[string]core.Value) byte {
+func (m *Machine) execute(vars []core.Value) byte {
 	go m.Printer(m.print_chan)
 	defer close(m.print_chan)
-	if len(vars) != len(m.Program.Variables) {
-		return EXIT_FAIL
-	}
 
 	m.Constants = m.Program.Constants
-	m.Variables = make([]core.Value, len(vars))
-	for name, info := range m.Program.Variables {
-		if val, ok := vars[name]; ok && val.GetType() == info.Ty {
-			m.Variables[info.Addr.ToIdx()] = val
-		} else {
-			return EXIT_FAIL
-		}
-	}
+	m.Variables = vars
 	for {
-		finished, exit_code := m.Tick()
+		finished, exit_code := m.tick()
 		if finished {
 			return exit_code
 		}
 	}
+}
+
+func (m *Machine) Execute(vars map[string]core.Value) (byte, error) {
+	v, err := m.Program.ParseVariables(vars)
+	if err != nil {
+		return 0, err
+	}
+	return m.execute(v), nil
+}
+
+func (m *Machine) ExecuteFromJSON(vars map[string]json.RawMessage) (byte, error) {
+	v, err := m.Program.ParseVariablesJSON(vars)
+	if err != nil {
+		return 0, err
+	}
+	return m.execute(v), nil
 }

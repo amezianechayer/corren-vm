@@ -76,7 +76,7 @@ varListDecl
 statement
     : PRINT expr=expression                                                # Print
     | FAIL                                                                 # Fail
-    | TRANSFER amount=monetary FROM source=expression TO dest=expression   # Transfer
+    | TRANSFER amount=expression FROM source=expression TO dest=expression  # Transfer
     ;
 
 script

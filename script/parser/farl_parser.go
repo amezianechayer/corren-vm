@@ -44,7 +44,7 @@ var parserATN = []uint16{
 	3, 2, 2, 2, 57, 58, 3, 2, 2, 2, 58, 60, 3, 2, 2, 2, 59, 57, 3, 2, 2, 2,
 	60, 61, 7, 20, 2, 2, 61, 62, 7, 3, 2, 2, 62, 13, 3, 2, 2, 2, 63, 64, 7,
 	5, 2, 2, 64, 74, 5, 6, 4, 2, 65, 74, 7, 6, 2, 2, 66, 67, 7, 7, 2, 2, 67,
-	68, 5, 2, 2, 2, 68, 69, 7, 8, 2, 2, 69, 70, 5, 6, 4, 2, 70, 71, 7, 9, 2,
+	68, 5, 6, 4, 2, 68, 69, 7, 8, 2, 2, 69, 70, 5, 6, 4, 2, 70, 71, 7, 9, 2,
 	2, 71, 72, 5, 6, 4, 2, 72, 74, 3, 2, 2, 2, 73, 63, 3, 2, 2, 2, 73, 65,
 	3, 2, 2, 2, 73, 66, 3, 2, 2, 2, 74, 15, 3, 2, 2, 2, 75, 77, 5, 12, 7, 2,
 	76, 75, 3, 2, 2, 2, 76, 77, 3, 2, 2, 2, 77, 78, 3, 2, 2, 2, 78, 83, 5,
@@ -1437,7 +1437,7 @@ func (s *PrintContext) ExitRule(listener antlr.ParseTreeListener) {
 
 type TransferContext struct {
 	*StatementContext
-	amount IMonetaryContext
+	amount IExpressionContext
 	source IExpressionContext
 	dest   IExpressionContext
 }
@@ -1452,13 +1452,13 @@ func NewTransferContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *Trans
 	return p
 }
 
-func (s *TransferContext) GetAmount() IMonetaryContext { return s.amount }
+func (s *TransferContext) GetAmount() IExpressionContext { return s.amount }
 
 func (s *TransferContext) GetSource() IExpressionContext { return s.source }
 
 func (s *TransferContext) GetDest() IExpressionContext { return s.dest }
 
-func (s *TransferContext) SetAmount(v IMonetaryContext) { s.amount = v }
+func (s *TransferContext) SetAmount(v IExpressionContext) { s.amount = v }
 
 func (s *TransferContext) SetSource(v IExpressionContext) { s.source = v }
 
@@ -1478,16 +1478,6 @@ func (s *TransferContext) FROM() antlr.TerminalNode {
 
 func (s *TransferContext) TO() antlr.TerminalNode {
 	return s.GetToken(FaRlParserTO, 0)
-}
-
-func (s *TransferContext) Monetary() IMonetaryContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IMonetaryContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IMonetaryContext)
 }
 
 func (s *TransferContext) AllExpression() []IExpressionContext {
@@ -1616,7 +1606,7 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		{
 			p.SetState(65)
 
-			var _x = p.Monetary()
+			var _x = p.expression(0)
 
 			localctx.(*TransferContext).amount = _x
 		}
