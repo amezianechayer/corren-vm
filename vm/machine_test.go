@@ -30,7 +30,7 @@ type TestCaseJSON struct {
 	Expected  CaseResult
 }
 
-func test(t *testing.T, code string, variables map[string]core.Value, expected CaseResult) { // signature changée
+func test(t *testing.T, code string, variables map[string]core.Value, expected CaseResult) {
 	testimpl(t, code, expected, func(m *Machine) (byte, error) {
 		return m.Execute(variables)
 	})
@@ -122,7 +122,7 @@ func TestPrint(t *testing.T) {
 
 func TestTransfer(t *testing.T) {
 	test(t,
-		"transfer [DZD.2 100] from @alice to @bob",
+		"transfer [DZD.2 100] from @yanis to @ilyes",
 		map[string]core.Value{},
 		CaseResult{
 			Printed: []core.Value{},
@@ -130,8 +130,8 @@ func TestTransfer(t *testing.T) {
 				{
 					Asset:       "DZD.2",
 					Amount:      100,
-					Source:      "alice",
-					Destination: "bob",
+					Source:      "@yanis",
+					Destination: "@ilyes",
 				},
 			},
 			ExitCode: EXIT_OK,
@@ -147,8 +147,8 @@ func TestVariables(t *testing.T) {
 		}
 		transfer [DZD.2 999] from $rider to $driver`,
 		map[string]core.Value{
-			"rider":  core.Account("user:001"),
-			"driver": core.Account("user:002"),
+			"rider":  core.Account("@user:001"),
+			"driver": core.Account("@user:002"),
 		},
 		CaseResult{
 			Printed: []core.Value{},
@@ -156,8 +156,8 @@ func TestVariables(t *testing.T) {
 				{
 					Asset:       "DZD.2",
 					Amount:      999,
-					Source:      "user:001",
-					Destination: "user:002",
+					Source:      "@user:001",
+					Destination: "@user:002",
 				},
 			},
 			ExitCode: EXIT_OK,
@@ -173,8 +173,8 @@ func TestVariablesJSON(t *testing.T) {
 		}
 		transfer [DZD.2 999] from $rider to $driver`,
 		`{
-			"rider": "user:001",
-			"driver": "user:002"
+			"rider": "@user:001",
+			"driver": "@user:002"
 		}`,
 		CaseResult{
 			Printed: []core.Value{},
@@ -182,8 +182,8 @@ func TestVariablesJSON(t *testing.T) {
 				{
 					Asset:       "DZD.2",
 					Amount:      999,
-					Source:      "user:001",
-					Destination: "user:002",
+					Source:      "@user:001",
+					Destination: "@user:002",
 				},
 			},
 			ExitCode: EXIT_OK,

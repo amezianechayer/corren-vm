@@ -105,15 +105,15 @@ func TestTransfer(t *testing.T) {
 		Case: "transfer [DZD.2 99] from @yanis to @ilyes",
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00, // yanis (source)
-				program.OP_APUSH, 01, 00, // ilyes (dest)
-				program.OP_APUSH, 02, 00, // monetary
+				program.OP_APUSH, 00, 00, // monetary
+				program.OP_APUSH, 01, 00, // @yanis (source)
+				program.OP_APUSH, 02, 00, // @ilyes (dest)
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
-				core.Account("yanis"),
-				core.Account("ilyes"),
 				core.Monetary{Asset: "DZD.2", Amount: 99},
+				core.Account("@yanis"),
+				core.Account("@ilyes"),
 			},
 			Error: "",
 		},
@@ -129,9 +129,9 @@ func TestTransferWithVariables(t *testing.T) {
 transfer [DZD.2 999] from $rider to $driver`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 0x00, 0x80,
-				program.OP_APUSH, 0x01, 0x80,
-				program.OP_APUSH, 0x00, 0x00,
+				program.OP_APUSH, 0x00, 0x00, // monetary — constante 0
+				program.OP_APUSH, 0x00, 0x80, // $rider — variable 0
+				program.OP_APUSH, 0x01, 0x80, // $driver — variable 1
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
@@ -190,18 +190,3 @@ func TestUndeclaredVariable(t *testing.T) {
 		},
 	})
 }
-
-// func TestTooManyConstants(t *testing.T) {
-// 	script := "print 1"
-// 	for i := 0; i < 20000; i++ {
-// 		script += fmt.Sprintf("\ntransfer [A%d.2 0] from @a%d to @b%d", i, i, i)
-// 	}
-// 	test(t, TestCase{
-// 		Case: script,
-// 		Expected: CaseResult{
-// 			Instructions: nil,
-// 			Constants:    nil,
-// 			Error:        "exceeded",
-// 		},
-// 	})
-// }

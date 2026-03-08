@@ -60,7 +60,10 @@ func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 		if vars != nil {
 			switch c := vars.(type) {
 			case *parser.VarListDeclContext:
-				p.VisitVars(c)
+				if err := p.VisitVars(c); err != nil {
+					p.elistener.LogicError(c.GetParser().GetCurrentToken(), err)
+					return err
+				}
 			default:
 				panic("internal compiler error")
 			}
@@ -181,7 +184,7 @@ func (p *parseVisitor) VisitExpr(ctx parser.IExpressionContext) (core.Type, erro
 func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Value, error) {
 	switch c := c.(type) {
 	case *parser.LitAccountContext:
-		addr := core.Account(c.GetText()[1:])
+		addr := core.Account(c.ACCOUNT().GetText())
 		return addr, nil
 	case *parser.LitAssetContext:
 		asset := core.Asset(c.GetText())

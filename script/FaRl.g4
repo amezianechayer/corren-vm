@@ -1,8 +1,8 @@
 grammar FaRl;
 
 // ─── LEXER ───────────────────────────────────────────────────────────────────
-NEWLINE    : [\r\n]+ ;          // changé : NEWLINE redevient token
-WHITESPACE : [ \t]+ -> skip ;   // changé : on skippe plus \r\n
+NEWLINE    : [\r\n]+ ;
+WHITESPACE : [ \t]+ -> skip ;
 
 // Keywords
 PRINT    : 'print' ;
@@ -34,12 +34,11 @@ COLON  : ':' ;
 VARIABLE_NAME : '$' [a-z_] [a-z0-9_]* ;
 ACCOUNT       : '@' [a-z_] [a-z0-9_:]* ;
 ASSET         : [A-Z] [A-Z0-9]* ;
-PRECISION     : [0-9] ;
-NUMBER        : [0-9]+ ;
+NUMBER        : [0-9]+ ;  // supprimé PRECISION
 
 // ─── PARSER ──────────────────────────────────────────────────────────────────
 monetary
-    : LBRACK asset=ASSET DOT precision=PRECISION amount=NUMBER RBRACK
+    : LBRACK asset=ASSET DOT precision=NUMBER amount=NUMBER RBRACK  // precision=NUMBER
     ;
 
 literal
@@ -67,19 +66,21 @@ varDecl
     ;
 
 varListDecl
-    : LBRACE NEWLINE+ (v+=varDecl NEWLINE+)+ RBRACE NEWLINE+
+    : LBRACE NEWLINE+ (v+=varDecl NEWLINE+)+ RBRACE  // supprimé NEWLINE+ après RBRACE
     ;
 
 statement
-    : PRINT expr=expression                                                     # Print
-    | FAIL                                                                      # Fail
+    : PRINT expr=expression                            # Print
+    | FAIL                                             # Fail
     | TRANSFER NEWLINE* amount=expression NEWLINE*
       FROM NEWLINE* source=expression NEWLINE*
-      TO NEWLINE* dest=expression                                               # Transfer
+      TO NEWLINE* dest=expression                      # Transfer
     ;
 
 script
-    : vars=varListDecl?
+    : NEWLINE*
+      vars=varListDecl?
+      NEWLINE*
       stmts+=statement
       (NEWLINE+ stmts+=statement)*
       NEWLINE*
