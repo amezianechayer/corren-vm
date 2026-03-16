@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"math/big"
 
 	"github.com/amezianechayer/aurex-vm/core"
 	"github.com/amezianechayer/aurex-vm/vm/program"
@@ -42,63 +43,7 @@ type Machine struct {
 	print_chan chan core.Value
 }
 
-func (m *Machine) popValue() core.Value {
-	l := len(m.Stack)
-	x := m.Stack[l-1]
-	m.Stack = m.Stack[:l-1]
-	return x
-}
-
-func (m *Machine) popAccount() core.Account {
-	l := len(m.Stack)
-	x := m.Stack[l-1]
-	m.Stack = m.Stack[:l-1]
-	if a, ok := x.(core.Account); ok {
-		return a
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) popAsset() core.Asset {
-	l := len(m.Stack)
-	x := m.Stack[l-1]
-	m.Stack = m.Stack[:l-1]
-	if a, ok := x.(core.Asset); ok {
-		return a
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) popNumber() uint64 {
-	l := len(m.Stack)
-	x := m.Stack[l-1]
-	m.Stack = m.Stack[:l-1]
-	if n, ok := x.(core.Number); ok {
-		return uint64(n)
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) popMonetary() core.Monetary {
-	l := len(m.Stack)
-	x := m.Stack[l-1]
-	m.Stack = m.Stack[:l-1]
-	if mo, ok := x.(core.Monetary); ok {
-		return mo
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) pushNumber(x uint64) {
-	num := core.Number(x)
-	m.Stack = append(m.Stack, num)
-}
-
-func (m *Machine) getResource(addr program.Address) core.Value {
+func (m *Machine) getResource(addr core.Address) core.Value {
 	a := uint16(addr)
 	if a < (1 << 15) {
 		return m.Constants[a]
@@ -110,42 +55,82 @@ func (m *Machine) getResource(addr program.Address) core.Value {
 
 func (m *Machine) tick() (bool, byte) {
 	op := m.Program.Instructions[m.P]
+
 	switch op {
 	case program.OP_APUSH:
 		bytes := m.Program.Instructions[m.P+1 : m.P+3]
-		v := m.getResource(program.Address(binary.LittleEndian.Uint16(bytes)))
-		m.Stack = append(m.Stack, v)
+		v := m.getResource(core.Address(binary.LittleEndian.Uint16(bytes)))
+		m.pushValue(v)
 		m.P += 2
 	case program.OP_IPUSH:
 		bytes := m.Program.Instructions[m.P+1 : m.P+9]
 		v := core.Number(binary.LittleEndian.Uint64(bytes))
-		m.Stack = append(m.Stack, v)
+		m.pushValue(v)
 		m.P += 8
 	case program.OP_IADD:
 		b := m.popNumber()
 		a := m.popNumber()
-		m.pushNumber(a + b)
+		m.pushValue(core.Number(a + b))
 	case program.OP_ISUB:
 		b := m.popNumber()
 		a := m.popNumber()
-		m.pushNumber(a - b)
+		m.pushValue(core.Number(a - b))
 	case program.OP_PRINT:
 		a := m.popValue()
 		m.print_chan <- a
 	case program.OP_FAIL:
 		return true, EXIT_FAIL
+	case program.OP_MAKEALLOC:
+		ndest := m.popNumber()
+		alloc := make([]core.AllocPart, ndest)
+		for i := int(ndest - 1); i >= 0; i-- {
+			acc := m.popAccount()
+			b := int64(m.popNumber())
+			a := int64(m.popNumber())
+			alloc[i] = core.AllocPart{
+				Ratio: big.NewRat(a, b),
+				Dest:  acc,
+			}
+		}
+		m.pushValue(core.Allocation(alloc))
 	case program.OP_SEND:
-		dst := m.popAccount()
+		dest := m.popValue()
 		src := m.popAccount()
 		mon := m.popMonetary()
-		p := ledger.Posting{
-			Source:      string(src),
-			Destination: string(dst),
-			Asset:       mon.Asset,
-			Amount:      int64(mon.Amount),
+		if allocs, ok := dest.(core.Allocation); ok {
+			posting_amounts := []int64{}
+			total := int64(0)
+			for _, alloc := range allocs {
+				var res big.Int
+				res.Mul(alloc.Ratio.Num(), big.NewInt(int64(mon.Amount)))
+				res.Div(&res, alloc.Ratio.Denom())
+				posting_amounts = append(posting_amounts, res.Int64())
+				total += res.Int64()
+			}
+			for i := 0; i < len(allocs); i++ {
+				amt := posting_amounts[i]
+				dst := allocs[i].Dest
+				if total < int64(mon.Amount) {
+					amt += 1
+					total += 1
+				}
+				m.Postings = append(m.Postings, ledger.Posting{
+					Source:      string(src),
+					Destination: string(dst),
+					Asset:       mon.Asset,
+					Amount:      int64(amt),
+				})
+			}
+		} else if dst, ok := dest.(core.Account); ok {
+			m.Postings = append(m.Postings, ledger.Posting{
+				Source:      string(src),
+				Destination: string(dst),
+				Asset:       mon.Asset,
+				Amount:      int64(mon.Amount),
+			})
 		}
-		m.Postings = append(m.Postings, p)
 	}
+
 	m.P += 1
 	if int(m.P) >= len(m.Program.Instructions) {
 		return true, EXIT_OK
@@ -156,7 +141,6 @@ func (m *Machine) tick() (bool, byte) {
 func (m *Machine) execute(vars []core.Value) byte {
 	go m.Printer(m.print_chan)
 	defer close(m.print_chan)
-
 	m.Constants = m.Program.Constants
 	m.Variables = vars
 	for {

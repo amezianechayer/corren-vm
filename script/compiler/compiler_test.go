@@ -44,12 +44,12 @@ func test(t *testing.T, c TestCase) {
 			t.Error(fmt.Errorf("generated program is incorrect: %v", p.Instructions))
 			return
 		} else if len(p.Constants) != len(c.Expected.Constants) {
-			t.Error(fmt.Errorf("unexpected program Constants: %v", p.Constants))
+			t.Error(fmt.Errorf("unexpected program data: %v", p.Constants))
 			return
 		} else {
 			for i := range c.Expected.Constants {
 				if p.Constants[i] != c.Expected.Constants[i] {
-					t.Error(fmt.Errorf("unexpected program Constants: %v", p.Constants))
+					t.Error(fmt.Errorf("unexpected program data: %v", p.Constants))
 					return
 				}
 			}
@@ -100,45 +100,36 @@ func TestFail(t *testing.T) {
 	})
 }
 
-func TestTransfer(t *testing.T) {
+func TestConstant(t *testing.T) {
+	user := core.Account("@user:001")
 	test(t, TestCase{
-		Case: "transfer [DZD.2 99] from @yanis to @ilyes",
+		Case: "print @user:001",
 		Expected: CaseResult{
-			Instructions: []byte{
-				program.OP_APUSH, 00, 00, // monetary
-				program.OP_APUSH, 01, 00, // @yanis (source)
-				program.OP_APUSH, 02, 00, // @ilyes (dest)
-				program.OP_SEND,
-			},
-			Constants: []core.Value{
-				core.Monetary{Asset: "DZD.2", Amount: 99},
-				core.Account("@yanis"),
-				core.Account("@ilyes"),
-			},
-			Error: "",
+			Instructions: []byte{program.OP_APUSH, 00, 00, program.OP_PRINT},
+			Constants:    []core.Value{user},
+			Error:        "",
 		},
 	})
 }
 
-func TestTransferWithVariables(t *testing.T) {
+func TestTransfer(t *testing.T) {
+	alice := core.Account("@alice")
+	bob := core.Account("@bob")
 	test(t, TestCase{
-		Case: `{
-	var $rider: account
-	var $driver: account
-}
-transfer [DZD.2 999] from $rider to $driver`,
+		Case: "transfer [DZD.2 99] from @alice to @bob",
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 0x00, 0x00, // monetary — constante 0
-				program.OP_APUSH, 0x00, 0x80, // $rider — variable 0
-				program.OP_APUSH, 0x01, 0x80, // $driver — variable 1
+				program.OP_APUSH, 00, 00, // monetary
+				program.OP_APUSH, 01, 00, // @alice source
+				program.OP_APUSH, 02, 00, // @bob dest
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
-				core.Monetary{Asset: "DZD.2", Amount: 999},
+				core.Monetary{Asset: "DZD.2", Amount: 99},
+				alice,
+				bob,
 			},
-			Variables: []string{"rider", "driver"},
-			Error:     "",
+			Error: "",
 		},
 	})
 }
@@ -156,37 +147,11 @@ func TestSyntaxError(t *testing.T) {
 
 func TestLogicError(t *testing.T) {
 	test(t, TestCase{
-		Case: "transfer [DZD.2 100] from 100 to @ilyes",
+		Case: "transfer [DZD.2 200] from 200 to @bob",
 		Expected: CaseResult{
 			Instructions: nil,
 			Constants:    nil,
-			Error:        "wrong argument type",
-		},
-	})
-}
-
-func TestDuplicateVariable(t *testing.T) {
-	test(t, TestCase{
-		Case: `{
-	var $rider: account
-	var $rider: account
-}
-fail`,
-		Expected: CaseResult{
-			Instructions: nil,
-			Constants:    nil,
-			Error:        "duplicate variable",
-		},
-	})
-}
-
-func TestUndeclaredVariable(t *testing.T) {
-	test(t, TestCase{
-		Case: "transfer [DZD.2 100] from $unknown to @bank",
-		Expected: CaseResult{
-			Instructions: nil,
-			Constants:    nil,
-			Error:        "variable not declared",
+			Error:        "wrong type",
 		},
 	})
 }

@@ -16,7 +16,7 @@ type Program struct {
 
 type VarInfo struct {
 	Ty   core.Type
-	Addr Address
+	Addr core.Address
 }
 
 func (p Program) Print() {
@@ -26,7 +26,12 @@ func (p Program) Print() {
 		switch p.Instructions[i] {
 		case OP_APUSH:
 			fmt.Print("OP_APUSH\n")
-			fmt.Printf("%02d-%02d   #%d\n", i+1, i+3, binary.LittleEndian.Uint16(p.Instructions[i+1:i+3]))
+			address := binary.LittleEndian.Uint16(p.Instructions[i+1 : i+3])
+			if address >= 32768 {
+				fmt.Printf("%02d-%02d   #VAR(%d)\n", i+1, i+3, address-32768)
+			} else {
+				fmt.Printf("%02d-%02d   #CONST(%d)\n", i+1, i+3, address)
+			}
 			i += 2
 		case OP_IPUSH:
 			fmt.Print("OP_IPUSH\n")
@@ -42,6 +47,8 @@ func (p Program) Print() {
 			fmt.Print("OP_FAIL\n")
 		case OP_SEND:
 			fmt.Print("OP_SEND\n")
+		case OP_MAKEALLOC:
+			fmt.Print("OP_MAKEALLOC\n")
 		}
 	}
 
@@ -51,6 +58,7 @@ func (p Program) Print() {
 		fmt.Printf("%02d ", i)
 		fmt.Printf("%s\n", p.Constants[i])
 	}
+
 	fmt.Println("VARIABLES")
 	for name, info := range p.Variables {
 		fmt.Printf("%02d ", info.Addr.ToIdx())

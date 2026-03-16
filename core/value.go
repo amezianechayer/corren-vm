@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/big"
+)
 
 type Type = byte
 
@@ -9,6 +12,7 @@ const (
 	TYPE_ASSET
 	TYPE_NUMBER
 	TYPE_MONETARY
+	TYPE_ALLOCATION
 )
 
 type Value interface {
@@ -44,4 +48,20 @@ type Monetary struct {
 func (Monetary) GetType() Type { return TYPE_MONETARY }
 func (a Monetary) String() string {
 	return fmt.Sprintf("[%v %v]", a.Asset, a.Amount)
+}
+
+type Allocation []AllocPart
+
+func (Allocation) GetType() Type { return TYPE_ALLOCATION }
+func (a Allocation) String() string {
+	out := "{\n"
+	for _, p := range a {
+		out += fmt.Sprintf("	%v to %v\n", p.Ratio, p.Dest)
+	}
+	return out + "}"
+}
+
+type AllocPart struct {
+	Ratio *big.Rat
+	Dest  Account
 }

@@ -18,18 +18,6 @@ type CaseResult struct {
 	Error    error
 }
 
-type TestCase struct {
-	Code      string
-	Variables map[string]core.Value
-	Expected  CaseResult
-}
-
-type TestCaseJSON struct {
-	Code      string
-	Variables map[string]core.Value
-	Expected  CaseResult
-}
-
 func test(t *testing.T, code string, variables map[string]core.Value, expected CaseResult) {
 	testimpl(t, code, expected, func(m *Machine) (byte, error) {
 		return m.Execute(variables)
@@ -122,7 +110,7 @@ func TestPrint(t *testing.T) {
 
 func TestTransfer(t *testing.T) {
 	test(t,
-		"transfer [DZD.2 100] from @yanis to @ilyes",
+		"transfer [DZD.2 100] from @alice to @bob",
 		map[string]core.Value{},
 		CaseResult{
 			Printed: []core.Value{},
@@ -130,8 +118,8 @@ func TestTransfer(t *testing.T) {
 				{
 					Asset:       "DZD.2",
 					Amount:      100,
-					Source:      "@yanis",
-					Destination: "@ilyes",
+					Source:      "@alice",
+					Destination: "@bob",
 				},
 			},
 			ExitCode: EXIT_OK,
@@ -141,11 +129,9 @@ func TestTransfer(t *testing.T) {
 
 func TestVariables(t *testing.T) {
 	test(t,
-		`{
-			var $rider: account
-			var $driver: account
-		}
-		transfer [DZD.2 999] from $rider to $driver`,
+		`var $rider: account
+var $driver: account
+transfer [DZD.2 999] from $rider to $driver`,
 		map[string]core.Value{
 			"rider":  core.Account("@user:001"),
 			"driver": core.Account("@user:002"),
@@ -167,11 +153,9 @@ func TestVariables(t *testing.T) {
 
 func TestVariablesJSON(t *testing.T) {
 	testJSON(t,
-		`{
-			var $rider: account
-			var $driver: account
-		}
-		transfer [DZD.2 999] from $rider to $driver`,
+		`var $rider: account
+var $driver: account
+transfer [DZD.2 999] from $rider to $driver`,
 		`{
 			"rider": "@user:001",
 			"driver": "@user:002"
@@ -184,6 +168,45 @@ func TestVariablesJSON(t *testing.T) {
 					Amount:      999,
 					Source:      "@user:001",
 					Destination: "@user:002",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestAllocation(t *testing.T) {
+	testJSON(t,
+		`var $rider: account
+var $driver: account
+transfer [DZD.2 15] from $rider
+send 80% to $driver
+send 8% to @a
+send 12% to @b`,
+		`{
+			"rider": "@user:001",
+			"driver": "@user:002"
+		}`,
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      12,
+					Source:      "@user:001",
+					Destination: "@user:002",
+				},
+				{
+					Asset:       "DZD.2",
+					Amount:      2,
+					Source:      "@user:001",
+					Destination: "@a",
+				},
+				{
+					Asset:       "DZD.2",
+					Amount:      1,
+					Source:      "@user:001",
+					Destination: "@b",
 				},
 			},
 			ExitCode: EXIT_OK,

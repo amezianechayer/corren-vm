@@ -4,7 +4,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"math/big"
 	"strconv"
+	"strings"
 
 	"github.com/amezianechayer/aurex-vm/core"
 	"github.com/amezianechayer/aurex-vm/script/parser"
@@ -19,24 +21,24 @@ type parseVisitor struct {
 	variables    map[string]program.VarInfo
 }
 
-func (p *parseVisitor) AllocateValue(v core.Value) (program.Address, error) {
+func (p *parseVisitor) AllocateConstant(v core.Value) (core.Address, error) {
 	for i := 0; i < len(p.constants); i++ {
 		if p.constants[i] == v {
-			return program.Address(i), nil
+			return core.Address(i), nil
 		}
 	}
 	if len(p.constants) >= 32768 {
 		return 0, errors.New("number of unique constants exceeded 32768")
 	}
 	p.constants = append(p.constants, v)
-	return program.Address(len(p.constants) - 1), nil
+	return core.Address(len(p.constants) - 1), nil
 }
 
 func (p *parseVisitor) PushValue(val core.Value) error {
 	switch val := val.(type) {
 	case core.Account, core.Asset, core.Monetary:
 		p.instructions = append(p.instructions, program.OP_APUSH)
-		addr, err := p.AllocateValue(val)
+		addr, err := p.AllocateConstant(val)
 		if err != nil {
 			return err
 		}
@@ -56,16 +58,10 @@ func (p *parseVisitor) PushValue(val core.Value) error {
 func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 	switch c := c.(type) {
 	case *parser.ScriptContext:
-		vars := c.GetVars()
-		if vars != nil {
-			switch c := vars.(type) {
-			case *parser.VarListDeclContext:
-				if err := p.VisitVars(c); err != nil {
-					p.elistener.LogicError(c.GetParser().GetCurrentToken(), err)
-					return err
-				}
-			default:
-				panic("internal compiler error")
+		for _, v := range c.AllVarDecl() {
+			err := p.VisitVarDecl(v)
+			if err != nil {
+				return err
 			}
 		}
 		for _, stmt := range c.GetStmts() {
@@ -77,9 +73,15 @@ func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 					return err
 				}
 			case *parser.FailContext:
-				p.VisitFail(c)
-			case *parser.TransferContext:
-				err := p.VisitTransfer(c)
+				p.instructions = append(p.instructions, program.OP_FAIL)
+			case *parser.TransferSimpleContext:
+				err := p.VisitTransferSimple(c)
+				if err != nil {
+					p.elistener.LogicError(c.GetParser().GetCurrentToken(), err)
+					return err
+				}
+			case *parser.TransferWithDestContext:
+				err := p.VisitTransferWithDest(c)
 				if err != nil {
 					p.elistener.LogicError(c.GetParser().GetCurrentToken(), err)
 					return err
@@ -94,11 +96,9 @@ func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 	return nil
 }
 
-func (p *parseVisitor) VisitVars(c *parser.VarListDeclContext) error {
-	if len(c.GetV()) > 32768 {
-		return fmt.Errorf("number of variables exceeded %v", 32768)
-	}
-	for _, v := range c.GetV() {
+func (p *parseVisitor) VisitVarDecl(v parser.IVarDeclContext) error {
+	switch v := v.(type) {
+	case *parser.VarTypedContext:
 		name := v.GetName().GetText()[1:]
 		if _, ok := p.variables[name]; ok {
 			return fmt.Errorf("duplicate variable: %v", name)
@@ -114,11 +114,13 @@ func (p *parseVisitor) VisitVars(c *parser.VarListDeclContext) error {
 		case "monetary":
 			ty = core.TYPE_MONETARY
 		}
-		addr := program.NewVarAddress(uint16(len(p.variables)))
+		addr := core.NewVarAddress(uint16(len(p.variables)))
 		p.variables[name] = program.VarInfo{
 			Ty:   ty,
 			Addr: addr,
 		}
+	default:
+		panic("internal compiler error: unsupported var decl")
 	}
 	return nil
 }
@@ -157,15 +159,11 @@ func (p *parseVisitor) VisitExpr(ctx parser.IExpressionContext) (core.Type, erro
 		}
 		return core.TYPE_NUMBER, nil
 	case *parser.ExprLiteralContext:
-		val, err := p.VisitLit(ctx.GetLit())
+		ty, err := p.VisitLit(ctx.GetLit())
 		if err != nil {
 			return 0, err
 		}
-		err = p.PushValue(val)
-		if err != nil {
-			return 0, err
-		}
-		return val.GetType(), nil
+		return ty, nil
 	case *parser.ExprVariableContext:
 		name := ctx.GetVariable().GetText()[1:]
 		if info, ok := p.variables[name]; ok {
@@ -181,57 +179,172 @@ func (p *parseVisitor) VisitExpr(ctx parser.IExpressionContext) (core.Type, erro
 	}
 }
 
-func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Value, error) {
+// VisitLit — identique à numscript, retourne core.Type directement
+func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, error) {
 	switch c := c.(type) {
 	case *parser.LitAccountContext:
 		addr := core.Account(c.ACCOUNT().GetText())
-		return addr, nil
+		err := p.PushValue(addr)
+		if err != nil {
+			return 0, err
+		}
+		return core.TYPE_ACCOUNT, nil
 	case *parser.LitAssetContext:
 		asset := core.Asset(c.GetText())
-		return asset, nil
+		err := p.PushValue(asset)
+		if err != nil {
+			return 0, err
+		}
+		return core.TYPE_ASSET, nil
 	case *parser.LitNumberContext:
 		n, err := strconv.ParseUint(c.GetText(), 10, 64)
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
-		number := core.Number(n)
-		return number, nil
+		p.PushValue(core.Number(n))
+		return core.TYPE_NUMBER, nil
 	case *parser.LitMonetaryContext:
-		asset := c.Monetary().GetAsset().GetText()
-		precision := c.Monetary().GetPrecision().GetText()
-		amount, err := strconv.ParseUint(c.Monetary().GetAmount().GetText(), 10, 64)
-		if err != nil {
-			return nil, err
+		switch m := c.Monetary().(type) {
+		case *parser.MonetaryLitContext:
+			asset := m.GetAsset().GetText()
+			precision := m.GetPrecision().GetText()
+			amount, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
+			if err != nil {
+				return 0, err
+			}
+			monetary := core.Monetary{
+				Asset:  asset + "." + precision,
+				Amount: amount,
+			}
+			err = p.PushValue(monetary)
+			if err != nil {
+				return 0, err
+			}
+			return core.TYPE_MONETARY, nil
+		default:
+			panic("internal compiler error")
 		}
-		monetary := core.Monetary{
-			Asset:  asset + "." + precision,
-			Amount: amount,
-		}
-		return monetary, nil
 	default:
 		panic("internal compiler error")
 	}
 }
 
-func (p *parseVisitor) VisitFail(ctx *parser.FailContext) {
-	p.instructions = append(p.instructions, program.OP_FAIL)
+// VisitPortion — gère NUMBER%, RATIO, remaining
+func (p *parseVisitor) VisitPortion(c parser.IPortionContext) (*big.Rat, bool, error) {
+	switch c := c.(type) {
+	case *parser.PortionPercentContext:
+		n, err := strconv.ParseInt(c.GetP().GetText(), 10, 64)
+		if err != nil {
+			return nil, false, err
+		}
+		if n <= 0 || n >= 100 {
+			return nil, false, errors.New("percentage must be greater than zero and less than 100")
+		}
+		return big.NewRat(n, 100), false, nil
+	case *parser.PortionRatioContext:
+		v := strings.Split(c.GetR().GetText(), "/")
+		n, err := strconv.ParseInt(strings.TrimSpace(v[0]), 10, 64)
+		if err != nil {
+			return nil, false, err
+		}
+		if n <= 0 {
+			return nil, false, errors.New("numerator must be greater than zero")
+		}
+		d, err := strconv.ParseInt(strings.TrimSpace(v[1]), 10, 64)
+		if err != nil {
+			return nil, false, err
+		}
+		if d <= 0 {
+			return nil, false, errors.New("denominator must be greater than zero")
+		}
+		return big.NewRat(n, d), false, nil
+	case *parser.PortionRemainingContext:
+		return nil, true, nil
+	default:
+		panic("internal compiler error")
+	}
 }
 
-func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
+// VisitAllocation — identique à numscript LitAllocationContext
+// génère OP_MAKEALLOC comme numscript
+func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error {
+	total := big.NewRat(0, 1)
+	hasRemaining := false
+
+	for _, part := range parts {
+		switch part := part.(type) {
+		case *parser.SendToContext:
+			frac, isRemaining, err := p.VisitPortion(part.Portion())
+			if err != nil {
+				return err
+			}
+			if isRemaining {
+				if hasRemaining {
+					return errors.New("only one 'remaining' allowed in allocation")
+				}
+				hasRemaining = true
+				p.PushValue(core.Number(0))
+				p.PushValue(core.Number(1))
+			} else {
+				total.Add(frac, total)
+				p.PushValue(core.Number(frac.Num().Uint64()))
+				p.PushValue(core.Number(frac.Denom().Uint64()))
+			}
+			ty, err := p.VisitExpr(part.Expression())
+			if err != nil {
+				return err
+			}
+			if ty != core.TYPE_ACCOUNT {
+				return errors.New("expected account as destination of allocation line")
+			}
+		case *parser.SendKeepContext:
+			hasRemaining = true
+			p.PushValue(core.Number(0))
+			p.PushValue(core.Number(1))
+		default:
+			panic("internal compiler error")
+		}
+	}
+
+	if !hasRemaining {
+		if total.Cmp(big.NewRat(1, 1)) != 0 {
+			return errors.New("sum of fractions did not equal 100%")
+		}
+	}
+
+	p.PushValue(core.Number(uint64(len(parts))))
+	// OP_MAKEALLOC comme numscript
+	p.instructions = append(p.instructions, program.OP_MAKEALLOC)
+	return nil
+}
+
+// VisitSource — SrcSimple pour l'instant
+func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) (core.Type, error) {
+	switch ctx := ctx.(type) {
+	case *parser.SrcSimpleContext:
+		return p.VisitExpr(ctx.Expression())
+	default:
+		panic("internal compiler error: unsupported source type")
+	}
+}
+
+// VisitTransferSimple — transfer [DZD.2 100] from @a to @b
+// destination simple → pas de OP_MAKEALLOC, OP_SEND avec Account directement
+func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) error {
 	amountTy, err := p.VisitExpr(ctx.GetAmount())
 	if err != nil {
 		return err
 	}
 	if amountTy != core.TYPE_MONETARY {
-		return errors.New("wrong argument type")
+		return errors.New("wrong type for monetary value")
 	}
 
-	srcTy, err := p.VisitExpr(ctx.GetSource())
+	srcTy, err := p.VisitSource(ctx.GetSrc())
 	if err != nil {
 		return err
 	}
 	if srcTy != core.TYPE_ACCOUNT {
-		return errors.New("wrong argument type")
+		return errors.New("wrong type for source")
 	}
 
 	dstTy, err := p.VisitExpr(ctx.GetDest())
@@ -239,7 +352,35 @@ func (p *parseVisitor) VisitTransfer(ctx *parser.TransferContext) error {
 		return err
 	}
 	if dstTy != core.TYPE_ACCOUNT {
-		return errors.New("wrong argument type")
+		return errors.New("wrong type for destination")
+	}
+
+	p.instructions = append(p.instructions, program.OP_SEND)
+	return nil
+}
+
+// VisitTransferWithDest — transfer [DZD.2 100] from @a \n send 80% to @b \n send remaining to @c
+// génère OP_MAKEALLOC puis OP_SEND
+func (p *parseVisitor) VisitTransferWithDest(ctx *parser.TransferWithDestContext) error {
+	amountTy, err := p.VisitExpr(ctx.GetAmount())
+	if err != nil {
+		return err
+	}
+	if amountTy != core.TYPE_MONETARY {
+		return errors.New("wrong type for monetary value")
+	}
+
+	srcTy, err := p.VisitSource(ctx.GetSrc())
+	if err != nil {
+		return err
+	}
+	if srcTy != core.TYPE_ACCOUNT {
+		return errors.New("wrong type for source")
+	}
+
+	err = p.VisitAllocation(ctx.GetSends())
+	if err != nil {
+		return err
 	}
 
 	p.instructions = append(p.instructions, program.OP_SEND)
