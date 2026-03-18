@@ -273,7 +273,8 @@ var $driver: account
 transfer [DZD.2 15] from $rider
 send 80% to $driver
 send 8% to @a
-send 12% to @b`,
+send 12% to @b
+`,
 		`{
 			"rider": "@users:001",
 			"driver": "@users:002"
@@ -414,7 +415,8 @@ func TestNoEmptyPostings(t *testing.T) {
 	testJSON(t,
 		`transfer [DZD.2 2] from @world
 send 90% to @a
-send 10% to @b`,
+send 10% to @b
+`,
 		`{}`,
 		map[string]map[string]uint64{},
 		CaseResult{
@@ -425,6 +427,47 @@ send 10% to @b`,
 					Amount:      2,
 					Source:      "@world",
 					Destination: "@a",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestAllocateDontTakeTooMuch(t *testing.T) {
+	testJSON(t,
+		`var $u1: account
+var $u2: account
+transfer [CREDIT 200] from $u1 then $u2
+send 1/2 to @foo
+send 1/2 to @bar
+`,
+		`{
+			"u1": "@users:001",
+			"u2": "@users:002"
+		}`,
+		map[string]map[string]uint64{
+			"@users:001": {
+				"CREDIT": 100,
+			},
+			"@users:002": {
+				"CREDIT": 100,
+			},
+		},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "CREDIT",
+					Amount:      100,
+					Source:      "@users:001",
+					Destination: "@bar",
+				},
+				{
+					Asset:       "CREDIT",
+					Amount:      100,
+					Source:      "@users:002",
+					Destination: "@foo",
 				},
 			},
 			ExitCode: EXIT_OK,

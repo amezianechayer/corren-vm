@@ -17,7 +17,7 @@ import (
 type parseVisitor struct {
 	elistener       *ErrorListener
 	instructions    []byte
-	constants       []core.Value // must not exceed 32768 elements
+	constants       []core.Value
 	variables       map[string]program.VarInfo
 	needed_balances map[core.Address]map[core.Address]struct{}
 }
@@ -222,6 +222,21 @@ func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, *core.Addr
 				return 0, nil, err
 			}
 			return core.TYPE_MONETARY, addr, nil
+		case *parser.MonetaryNoPrecisionContext:
+			asset := m.GetAsset().GetText()
+			amount, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
+			if err != nil {
+				return 0, nil, err
+			}
+			monetary := core.Monetary{
+				Asset:  asset,
+				Amount: amount,
+			}
+			addr, err := p.PushValue(monetary)
+			if err != nil {
+				return 0, nil, err
+			}
+			return core.TYPE_MONETARY, addr, nil
 		default:
 			panic("internal compiler error")
 		}
@@ -375,7 +390,6 @@ func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, e
 	return needed_accounts, nil
 }
 
-// collectCascade — extrait toutes les expressions d'une cascade FaRl
 func collectCascade(ctx parser.ISourceContext) []parser.IExpressionContext {
 	switch ctx := ctx.(type) {
 	case *parser.SrcCascadeContext:

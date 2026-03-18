@@ -176,20 +176,27 @@ func (m *Machine) tick() (bool, byte) {
 			parts = append(parts, res.Uint64())
 			total_allocated += res.Uint64()
 		}
+		first_non_empty_idx := 0
 		for _, part := range parts {
 			if total_allocated < uint64(total_src) {
 				part += 1
 				total_allocated += 1
 			}
 			n := 0
-			for i, acc := range source_accounts {
+			for i := first_non_empty_idx; i < len(source_accounts); i++ {
+				if part == 0 {
+					break
+				}
 				amt := source_amounts[i]
-				if source_amounts[i] > part {
+				if amt > part {
 					amt = part
+				} else {
+					first_non_empty_idx++
 				}
 				part -= amt
+				source_amounts[i] -= amt
 				m.pushValue(core.Monetary{Asset: *asset, Amount: amt})
-				m.pushValue(acc)
+				m.pushValue(source_accounts[i])
 				n += 1
 			}
 			m.pushValue(core.Number(n))

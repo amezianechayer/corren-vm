@@ -1,11 +1,8 @@
 grammar FaRl;
 
-// ─── LEXER ───────────────────────────────────────────────────────────────────
-
 NEWLINE    : [\r\n]+ ;
 WHITESPACE : [ \t]+ -> skip ;
 
-// Keywords
 PRINT       : 'print' ;
 FAIL        : 'fail' ;
 TRANSFER    : 'transfer' ;
@@ -34,7 +31,6 @@ SET         : 'set' ;
 TRANSACTION : 'transaction' ;
 METADATA    : 'metadata' ;
 
-// Types
 TY_ACCOUNT  : 'account' ;
 TY_ASSET    : 'asset' ;
 TY_NUMBER   : 'number' ;
@@ -42,12 +38,10 @@ TY_MONETARY : 'monetary' ;
 TY_PORTION  : 'portion' ;
 TY_STRING   : 'string' ;
 
-// Operators
 OP_ADD : '+' ;
 OP_SUB : '-' ;
 PERCENT: '%' ;
 
-// Symbols
 LBRACK : '[' ;
 RBRACK : ']' ;
 LBRACE : '{' ;
@@ -57,19 +51,17 @@ COLON  : ':' ;
 STAR   : '*' ;
 EQ     : '=' ;
 
-// Tokens
-RATIO         : [0-9]+ '/' [0-9]+ ;   // pour 20/100 dans metadata
+RATIO         : [0-9]+ '/' [0-9]+ ;
 VARIABLE_NAME : '$' [a-z_] [a-z0-9_]* ;
 ACCOUNT       : '@' [a-z_] [a-z0-9_:]* ;
 ASSET         : [A-Z] [A-Z0-9]* ;
 NUMBER        : [0-9]+ ;
 STRING        : '"' (~["\r\n])* '"' ;
 
-// ─── PARSER ──────────────────────────────────────────────────────────────────
-
 monetary
     : LBRACK asset=ASSET DOT precision=NUMBER amount=NUMBER RBRACK  # MonetaryLit
     | LBRACK asset=ASSET DOT precision=NUMBER STAR RBRACK           # MonetaryAll
+    | LBRACK asset=ASSET amount=NUMBER RBRACK                       # MonetaryNoPrecision
     | LBRACK asset=ASSET RBRACK                                     # MonetaryAssetOnly
     ;
 
@@ -86,15 +78,11 @@ expression
     | variable=VARIABLE_NAME                               # ExprVariable
     ;
 
-// ─── PORTION ─────────────────────────────────────────────────────────────────
-
 portion
     : p=NUMBER PERCENT    # PortionPercent
     | r=RATIO             # PortionRatio
     | REMAINING           # PortionRemaining
     ;
-
-// ─── SOURCE ──────────────────────────────────────────────────────────────────
 
 source
     : FROM expression                                                # SrcSimple
@@ -107,8 +95,6 @@ source
     | TAKE REMAINING FROM expression                                # SrcRemaining
     ;
 
-// ─── TYPES ───────────────────────────────────────────────────────────────────
-
 type_
     : TY_ACCOUNT
     | TY_ASSET
@@ -118,15 +104,11 @@ type_
     | TY_STRING
     ;
 
-// ─── VARIABLES ───────────────────────────────────────────────────────────────
-
 varDecl
     : VAR name=VARIABLE_NAME COLON ty=type_                                 # VarTyped
     | VAR name=VARIABLE_NAME EQ BALANCE OF expression IN ASSET DOT NUMBER  # VarBalance
     | VAR name=VARIABLE_NAME EQ META OF expression KEY STRING               # VarMeta
     ;
-
-// ─── METADATA ────────────────────────────────────────────────────────────────
 
 metadataValue
     : expression    # MetaValueExpr
@@ -137,16 +119,12 @@ metadataEntry
     : STRING EQ metadataValue
     ;
 
-// ─── DESTINATION SPLITS ──────────────────────────────────────────────────────
-
 sendClause
     : SEND portion TO expression                         # SendTo
     | KEEP REMAINING                                     # SendKeep
     | SPLIT portion AS COLON NEWLINE
         (sendClause NEWLINE)+                            # SendSplit
     ;
-
-// ─── STATEMENTS ──────────────────────────────────────────────────────────────
 
 statement
     : PRINT expr=expression
@@ -179,8 +157,6 @@ statement
     | SET TY_ACCOUNT METADATA OF expression KEY STRING EQ metadataValue
         # SetAccountMeta
     ;
-
-// ─── SCRIPT ──────────────────────────────────────────────────────────────────
 
 script
     : NEWLINE*

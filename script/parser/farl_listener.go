@@ -14,6 +14,9 @@ type FaRlListener interface {
 	// EnterMonetaryAll is called when entering the MonetaryAll production.
 	EnterMonetaryAll(c *MonetaryAllContext)
 
+	// EnterMonetaryNoPrecision is called when entering the MonetaryNoPrecision production.
+	EnterMonetaryNoPrecision(c *MonetaryNoPrecisionContext)
+
 	// EnterMonetaryAssetOnly is called when entering the MonetaryAssetOnly production.
 	EnterMonetaryAssetOnly(c *MonetaryAssetOnlyContext)
 
@@ -136,6 +139,9 @@ type FaRlListener interface {
 
 	// ExitMonetaryAll is called when exiting the MonetaryAll production.
 	ExitMonetaryAll(c *MonetaryAllContext)
+
+	// ExitMonetaryNoPrecision is called when exiting the MonetaryNoPrecision production.
+	ExitMonetaryNoPrecision(c *MonetaryNoPrecisionContext)
 
 	// ExitMonetaryAssetOnly is called when exiting the MonetaryAssetOnly production.
 	ExitMonetaryAssetOnly(c *MonetaryAssetOnlyContext)

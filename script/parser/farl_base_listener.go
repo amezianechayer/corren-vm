@@ -33,6 +33,12 @@ func (s *BaseFaRlListener) EnterMonetaryAll(ctx *MonetaryAllContext) {}
 // ExitMonetaryAll is called when production MonetaryAll is exited.
 func (s *BaseFaRlListener) ExitMonetaryAll(ctx *MonetaryAllContext) {}
 
+// EnterMonetaryNoPrecision is called when production MonetaryNoPrecision is entered.
+func (s *BaseFaRlListener) EnterMonetaryNoPrecision(ctx *MonetaryNoPrecisionContext) {}
+
+// ExitMonetaryNoPrecision is called when production MonetaryNoPrecision is exited.
+func (s *BaseFaRlListener) ExitMonetaryNoPrecision(ctx *MonetaryNoPrecisionContext) {}
+
 // EnterMonetaryAssetOnly is called when production MonetaryAssetOnly is entered.
 func (s *BaseFaRlListener) EnterMonetaryAssetOnly(ctx *MonetaryAssetOnlyContext) {}
 
