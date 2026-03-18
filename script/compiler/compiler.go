@@ -96,7 +96,6 @@ func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 	return nil
 }
 
-// VisitVarDecl — FaRl: var $x: type
 func (p *parseVisitor) VisitVarDecl(v parser.IVarDeclContext) error {
 	switch v := v.(type) {
 	case *parser.VarTypedContext:
@@ -267,7 +266,6 @@ func (p *parseVisitor) VisitPortion(c parser.IPortionContext) (*big.Rat, bool, e
 	}
 }
 
-// FaRl: send 80% to @x \n send remaining to @y
 func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error {
 	total := big.NewRat(0, 1)
 	allotment := []big.Rat{}
@@ -342,12 +340,53 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	return nil
 }
 
-func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) (core.Type, error) {
+// FaRl SrcSimple → équivalent SrcAccount (push 1)
+// FaRl SrcCascade → équivalent SrcBlock (push N + OP_SOURCE)
+func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) error {
 	switch ctx := ctx.(type) {
 	case *parser.SrcSimpleContext:
-		return p.VisitExpr(ctx.Expression())
+		// source simple — équivalent SrcAccount
+		ty, err := p.VisitExpr(ctx.Expression())
+		if err != nil {
+			return err
+		}
+		if ty != core.TYPE_ACCOUNT {
+			return errors.New("expected account as source")
+		}
+		p.PushValue(core.Number(1))
+	case *parser.SrcCascadeContext:
+		// cascade — équivalent SrcBlock
+		// FaRl: from @a then @b then @c
+		sources := collectCascade(ctx)
+		for _, src := range sources {
+			ty, err := p.VisitExpr(src)
+			if err != nil {
+				return err
+			}
+			if ty != core.TYPE_ACCOUNT {
+				return errors.New("expected only accounts in sources")
+			}
+		}
+		p.PushValue(core.Number(len(sources)))
+		p.instructions = append(p.instructions, program.OP_SOURCE)
 	default:
 		panic("internal compiler error: unsupported source type")
+	}
+	return nil
+}
+
+// collectCascade — extrait toutes les expressions d'une cascade FaRl
+// from @a then @b then @c → [@a, @b, @c]
+func collectCascade(ctx parser.ISourceContext) []parser.IExpressionContext {
+	switch ctx := ctx.(type) {
+	case *parser.SrcCascadeContext:
+		left := collectCascade(ctx.Source())
+		right := ctx.Expression()
+		return append(left, right)
+	case *parser.SrcSimpleContext:
+		return []parser.IExpressionContext{ctx.Expression()}
+	default:
+		return []parser.IExpressionContext{}
 	}
 }
 
@@ -361,12 +400,9 @@ func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) er
 		return errors.New("wrong type for monetary value")
 	}
 
-	srcTy, err := p.VisitSource(ctx.GetSrc())
+	err = p.VisitSource(ctx.GetSrc())
 	if err != nil {
 		return err
-	}
-	if srcTy != core.TYPE_ACCOUNT {
-		return errors.New("wrong type for source")
 	}
 
 	dstTy, err := p.VisitExpr(ctx.GetDest())
@@ -377,7 +413,6 @@ func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) er
 		return errors.New("wrong type for destination")
 	}
 
-	p.PushValue(core.Number(1))
 	p.instructions = append(p.instructions, program.OP_SEND)
 	return nil
 }
@@ -392,15 +427,10 @@ func (p *parseVisitor) VisitTransferWithDest(ctx *parser.TransferWithDestContext
 		return errors.New("wrong type for monetary value")
 	}
 
-	srcTy, err := p.VisitSource(ctx.GetSrc())
+	err = p.VisitSource(ctx.GetSrc())
 	if err != nil {
 		return err
 	}
-	if srcTy != core.TYPE_ACCOUNT {
-		return errors.New("wrong type for source")
-	}
-
-	p.PushValue(core.Number(1))
 
 	err = p.VisitAllocation(ctx.GetSends())
 	if err != nil {

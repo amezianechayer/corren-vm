@@ -56,12 +56,14 @@ func (p Program) Print() {
 			fmt.Print("Unknown opcode")
 		}
 	}
+
 	fmt.Println("CONSTANTS")
 	i := 0
 	for i = 0; i < len(p.Constants); i++ {
 		fmt.Printf("%02d ", i)
 		fmt.Printf("%s\n", p.Constants[i])
 	}
+
 	fmt.Println("VARIABLES")
 	for name, info := range p.Variables {
 		fmt.Printf("%02d ", info.Addr.ToIdx())

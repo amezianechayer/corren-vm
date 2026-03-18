@@ -84,12 +84,12 @@ func (m *Machine) tick() (bool, byte) {
 	case program.OP_FAIL:
 		return true, EXIT_FAIL
 	case program.OP_SOURCE:
-		mon := m.popMonetary()
 		n := m.popNumber()
 		sources := []core.Account{}
 		for i := uint64(0); i < n; i++ {
 			sources = append(sources, m.popAccount())
 		}
+		mon := m.popMonetary()
 		asset := mon.Asset
 		target := mon.Amount
 
@@ -104,12 +104,15 @@ func (m *Machine) tick() (bool, byte) {
 			}
 			m.Balances[string(src)][asset] -= amt_to_withdraw
 			target -= amt_to_withdraw
-			m.pushValue(src)
 			m.pushValue(core.Monetary{
 				Asset:  asset,
 				Amount: amt_to_withdraw,
 			})
+			m.pushValue(src)
 			n_actual_src++
+			if target == 0 {
+				break
+			}
 		}
 		m.pushValue(core.Number(n_actual_src))
 	case program.OP_ALLOC:

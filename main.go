@@ -10,11 +10,12 @@ import (
 
 func main() {
 	p, err := compiler.Compile(`
-var $rider: account
+var $wallet: account
+var $payment: account
 var $driver: account
 var $value: monetary
 
-transfer $value from $rider
+transfer $value from $wallet then $payment
 send 80% to $driver
 send 2/25 to @bank
 send 12% to @bank2
@@ -29,8 +30,9 @@ send 12% to @bank2
 
 	var vars map[string]json.RawMessage
 	json.Unmarshal([]byte(`{
-		"rider":  "user:001",
-		"driver": "user:002",
+		"wallet":  "user:001",
+		"payment": "payments:001",
+		"driver":  "user:002",
 		"value": {
 			"asset":  "DZD",
 			"amount": 15
