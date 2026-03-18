@@ -10,15 +10,11 @@ import (
 
 func main() {
 	p, err := compiler.Compile(`
-var $wallet: account
+var $balance: account
 var $payment: account
-var $driver: account
-var $value: monetary
+var $seller: account
 
-transfer $value from $wallet then $payment
-send 80% to $driver
-send 2/25 to @bank
-send 12% to @bank2
+transfer [DZD.2 15] from $balance then $payment to $seller
 `)
 	if err != nil {
 		panic(err)
@@ -30,16 +26,16 @@ send 12% to @bank2
 
 	var vars map[string]json.RawMessage
 	json.Unmarshal([]byte(`{
-		"wallet":  "user:001",
-		"payment": "payments:001",
-		"driver":  "user:002",
-		"value": {
-			"asset":  "DZD",
-			"amount": 15
-		}
+		"balance": "@users:001",
+		"payment": "@payments:001",
+		"seller":  "@users:002"
 	}`), &vars)
 
-	exit_code, err := machine.ExecuteFromJSON(vars)
+	exit_code, err := machine.ExecuteFromJSON(vars, map[string]map[string]uint64{
+		"@users:001": {
+			"DZD.2": 15,
+		},
+	})
 	if err != nil {
 		panic(err)
 	}

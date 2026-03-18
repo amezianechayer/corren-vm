@@ -340,12 +340,11 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	return nil
 }
 
-// FaRl SrcSimple → équivalent SrcAccount (push 1)
-// FaRl SrcCascade → équivalent SrcBlock (push N + OP_SOURCE)
+// FaRl SrcSimple → SrcAccount (push account + 1)
+// FaRl SrcCascade → SrcBlock (push N sources en ordre inversé + N + OP_SOURCE)
 func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) error {
 	switch ctx := ctx.(type) {
 	case *parser.SrcSimpleContext:
-		// source simple — équivalent SrcAccount
 		ty, err := p.VisitExpr(ctx.Expression())
 		if err != nil {
 			return err
@@ -355,11 +354,11 @@ func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) error {
 		}
 		p.PushValue(core.Number(1))
 	case *parser.SrcCascadeContext:
-		// cascade — équivalent SrcBlock
-		// FaRl: from @a then @b then @c
+		// collecter toutes les sources de la cascade
 		sources := collectCascade(ctx)
-		for _, src := range sources {
-			ty, err := p.VisitExpr(src)
+		n := len(sources)
+		for i := n - 1; i >= 0; i-- {
+			ty, err := p.VisitExpr(sources[i])
 			if err != nil {
 				return err
 			}
@@ -367,7 +366,7 @@ func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) error {
 				return errors.New("expected only accounts in sources")
 			}
 		}
-		p.PushValue(core.Number(len(sources)))
+		p.PushValue(core.Number(n))
 		p.instructions = append(p.instructions, program.OP_SOURCE)
 	default:
 		panic("internal compiler error: unsupported source type")
@@ -390,7 +389,6 @@ func collectCascade(ctx parser.ISourceContext) []parser.IExpressionContext {
 	}
 }
 
-// VisitTransferSimple — FaRl: transfer [DZD.2 100] from @a to @b
 func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) error {
 	amountTy, err := p.VisitExpr(ctx.GetAmount())
 	if err != nil {
@@ -417,7 +415,6 @@ func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) er
 	return nil
 }
 
-// VisitTransferWithDest — FaRl: transfer [DZD.2 100] from @a \n send 80% to @b \n send remaining to @c
 func (p *parseVisitor) VisitTransferWithDest(ctx *parser.TransferWithDestContext) error {
 	amountTy, err := p.VisitExpr(ctx.GetAmount())
 	if err != nil {
