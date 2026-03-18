@@ -28,6 +28,7 @@ func NewMachine(p *program.Program) *Machine {
 
 	m := Machine{
 		Program:    p,
+		Constants:  p.Constants,
 		print_chan: printc,
 		Printer:    StdOutPrinter,
 	}
@@ -41,9 +42,9 @@ type Machine struct {
 	Constants  []core.Value
 	Variables  []core.Value
 	Stack      []core.Value
-	Printer    func(chan core.Value)
 	Postings   []ledger.Posting
 	Balances   map[string]map[string]uint64
+	Printer    func(chan core.Value)
 	print_chan chan core.Value
 }
 
@@ -152,12 +153,10 @@ func (m *Machine) tick() (bool, byte) {
 		source_amounts := make([]uint64, n)
 		total_src := uint64(0)
 		var asset *string
-		// extract accounts from stack while checking the assets correspond
 		for i := uint64(0); i < n; i++ {
 			source_accounts[i] = m.popAccount()
 			mon := m.popMonetary()
 			source_amounts[i] = mon.Amount
-			// check that the assets correspond
 			if asset == nil {
 				asset = &mon.Asset
 			} else if *asset != mon.Asset {
@@ -167,7 +166,6 @@ func (m *Machine) tick() (bool, byte) {
 		}
 		parts := []uint64{}
 		total_allocated := uint64(0)
-		// for every part in the allotment, calculate the floored value
 		for _, part := range allotment {
 			var res big.Int
 			res.Mul(part.Num(), new(big.Int).SetUint64(total_src))
@@ -175,16 +173,14 @@ func (m *Machine) tick() (bool, byte) {
 			parts = append(parts, res.Uint64())
 			total_allocated += res.Uint64()
 		}
-		// for every part in the floored values, fetch them from the sources
 		for _, part := range parts {
-			// if the total allocated is less than the target amount, add 1 unit until it isn't
 			if total_allocated < uint64(total_src) {
 				part += 1
 				total_allocated += 1
 			}
-			n := 0 // number of sources needed to fill this part
+			n := 0
 			for i, acc := range source_accounts {
-				amt := source_amounts[i] // amount to withdraw from the account
+				amt := source_amounts[i]
 				if source_amounts[i] > part {
 					amt = part
 				}
@@ -201,7 +197,6 @@ func (m *Machine) tick() (bool, byte) {
 		for i := uint64(0); i < n; i++ {
 			src := string(m.popAccount())
 			mon := m.popMonetary()
-			// verify and withdraw funds
 			if ok := m.withdraw(src, mon.Asset, mon.Amount); !ok {
 				return true, EXIT_FAIL
 			}
@@ -224,14 +219,14 @@ func (m *Machine) tick() (bool, byte) {
 	return false, 0
 }
 
-func (m *Machine) execute(vars []core.Value, balances map[string]map[string]uint64) (byte, error) {
+func (m *Machine) Execute() (byte, error) {
 	go m.Printer(m.print_chan)
 	defer close(m.print_chan)
 
-	m.Constants = m.Program.Constants
-	m.Variables = vars
-	if err := m.SetBalances(balances); err != nil {
-		return 0, err
+	if m.Variables == nil {
+		return 0, errors.New("variables haven't been initialized")
+	} else if m.Balances == nil {
+		return 0, errors.New("balances haven't been initialized")
 	}
 
 	for {
@@ -242,14 +237,32 @@ func (m *Machine) execute(vars []core.Value, balances map[string]map[string]uint
 	}
 }
 
-// SetBalances vérifie que toutes les balances nécessaires sont présentes
+func (m *Machine) GetNeededBalances() (map[string]map[string]struct{}, error) {
+	needed := map[string]map[string]struct{}{}
+	for addr, needed_assets := range m.Program.NeededBalances {
+		account := m.getResource(addr)
+		if account, ok := account.(core.Account); ok {
+			needed[string(account)] = map[string]struct{}{}
+			for addr := range needed_assets {
+				mon := m.getResource(addr)
+				if mon, ok := mon.(core.Monetary); ok {
+					needed[string(account)][mon.Asset] = struct{}{}
+				} else {
+					return nil, errors.New("incorrect program")
+				}
+			}
+		} else {
+			return nil, errors.New("incorrect program")
+		}
+	}
+	return needed, nil
+}
+
 func (m *Machine) SetBalances(balances map[string]map[string]uint64) error {
-	// for every account that we need balances of, check if it's there
 	for addr, needed_assets := range m.Program.NeededBalances {
 		account := m.getResource(addr)
 		if account, ok := account.(core.Account); ok {
 			if b, ok := balances[string(account)]; ok {
-				// for every asset that we need balances of on that account
 				for addr := range needed_assets {
 					mon := m.getResource(addr)
 					if mon, ok := mon.(core.Monetary); ok {
@@ -271,18 +284,20 @@ func (m *Machine) SetBalances(balances map[string]map[string]uint64) error {
 	return nil
 }
 
-func (m *Machine) Execute(vars map[string]core.Value, balances map[string]map[string]uint64) (byte, error) {
+func (m *Machine) SetVars(vars map[string]core.Value) error {
 	v, err := m.Program.ParseVariables(vars)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return m.execute(v, balances)
+	m.Variables = v
+	return nil
 }
 
-func (m *Machine) ExecuteFromJSON(vars map[string]json.RawMessage, balances map[string]map[string]uint64) (byte, error) {
+func (m *Machine) SetVarsFromJSON(vars map[string]json.RawMessage) error {
 	v, err := m.Program.ParseVariablesJSON(vars)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return m.execute(v, balances)
+	m.Variables = v
+	return nil
 }

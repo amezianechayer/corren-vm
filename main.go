@@ -31,7 +31,12 @@ transfer [DZD.2 15] from $balance then $payment to $seller
 		"seller":  "@users:002"
 	}`), &vars)
 
-	exit_code, err := machine.ExecuteFromJSON(vars, map[string]map[string]uint64{
+	err = machine.SetVarsFromJSON(vars)
+	if err != nil {
+		panic(err)
+	}
+
+	err = machine.SetBalances(map[string]map[string]uint64{
 		"@users:001": {
 			"DZD.2": 15,
 		},
@@ -39,6 +44,11 @@ transfer [DZD.2 15] from $balance then $payment to $seller
 			"DZD.2": 0,
 		},
 	})
+	if err != nil {
+		panic(err)
+	}
+
+	exit_code, err := machine.Execute()
 	if err != nil {
 		panic(err)
 	}
