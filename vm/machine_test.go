@@ -3,6 +3,7 @@ package vm
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"sync"
 	"testing"
 
@@ -15,7 +16,7 @@ type CaseResult struct {
 	Printed  []core.Value
 	Postings []ledger.Posting
 	ExitCode byte
-	Error    error
+	Error    string
 }
 
 func test(t *testing.T, code string, variables map[string]core.Value, balances map[string]map[string]uint64, expected CaseResult) {
@@ -52,11 +53,22 @@ func testimpl(t *testing.T, code string, expected CaseResult, exec func(*Machine
 		wg.Done()
 	}
 	exit_code, err := exec(machine)
-	if err != expected.Error {
-		t.Error(fmt.Errorf("unexpected execution error: %v", err))
+
+	if err != nil && expected.Error != "" {
+		if !strings.Contains(err.Error(), expected.Error) {
+			t.Error(fmt.Errorf("unexpected execution error: %v", err))
+			return
+		}
+	} else if err != nil {
+		t.Error(fmt.Errorf("did not expect an execution error: %v", err))
+		return
+	} else if expected.Error != "" {
+		t.Error(fmt.Errorf("expected an execution error"))
 		return
 	}
+
 	wg.Wait()
+
 	if exit_code != expected.ExitCode {
 		t.Error(fmt.Errorf("unexpected exit code: %v", exit_code))
 		return
@@ -277,7 +289,7 @@ send 12% to @b`,
 	)
 }
 
-func TestInsufficient(t *testing.T) {
+func TestInsufficientFunds(t *testing.T) {
 	testJSON(t,
 		`var $balance: account
 var $payment: account
@@ -300,6 +312,24 @@ transfer [DZD.2 16] from $balance then $payment to $seller`,
 			Printed:  []core.Value{},
 			Postings: []ledger.Posting{},
 			ExitCode: EXIT_FAIL,
+		},
+	)
+}
+
+func TestMissingBalance(t *testing.T) {
+	testJSON(t,
+		"transfer [DZD.2 15] from @alice to @bob",
+		`{}`,
+		map[string]map[string]uint64{
+			"@users:001": {
+				"DZD.2": 3,
+			},
+		},
+		CaseResult{
+			Printed:  []core.Value{},
+			Postings: []ledger.Posting{},
+			ExitCode: 0,
+			Error:    "missing balance",
 		},
 	)
 }

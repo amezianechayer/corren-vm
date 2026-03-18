@@ -35,6 +35,9 @@ transfer [DZD.2 15] from $balance then $payment to $seller
 		"@users:001": {
 			"DZD.2": 15,
 		},
+		"@payments:001": {
+			"DZD.2": 0,
+		},
 	})
 	if err != nil {
 		panic(err)
