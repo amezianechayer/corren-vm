@@ -355,6 +355,83 @@ func TestMissingBalance(t *testing.T) {
 	)
 }
 
+func TestMissingWorldBalance(t *testing.T) {
+	testJSON(t,
+		"transfer [DZD.2 15] from @world to @a",
+		`{}`,
+		map[string]map[string]uint64{},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      15,
+					Source:      "@world",
+					Destination: "@a",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestWorldSource(t *testing.T) {
+	testJSON(t,
+		`var $a: account
+var $b: account
+transfer [DZD.2 15] from $a then @world to $b`,
+		`{
+			"a": "@a",
+			"b": "@b"
+		}`,
+		map[string]map[string]uint64{
+			"@a": {
+				"DZD.2": 1,
+			},
+		},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      14,
+					Source:      "@world",
+					Destination: "@b",
+				},
+				{
+					Asset:       "DZD.2",
+					Amount:      1,
+					Source:      "@a",
+					Destination: "@b",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestNoEmptyPostings(t *testing.T) {
+	testJSON(t,
+		`transfer [DZD.2 2] from @world
+send 90% to @a
+send 10% to @b`,
+		`{}`,
+		map[string]map[string]uint64{},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      2,
+					Source:      "@world",
+					Destination: "@a",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
 func TestGetNeededBalances(t *testing.T) {
 	p, err := compiler.Compile(`
 var $a: account
