@@ -16,7 +16,7 @@ var $value: monetary
 
 transfer $value from $rider
 send 80% to $driver
-send 8% to @bank
+send 2/25 to @bank
 send 12% to @bank2
 `)
 	if err != nil {

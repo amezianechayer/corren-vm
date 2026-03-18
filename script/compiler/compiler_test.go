@@ -121,6 +121,7 @@ func TestTransfer(t *testing.T) {
 			Instructions: []byte{
 				program.OP_APUSH, 00, 00, // monetary
 				program.OP_APUSH, 01, 00, // @alice source
+				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
 				program.OP_APUSH, 02, 00, // @bob dest
 				program.OP_SEND,
 			},

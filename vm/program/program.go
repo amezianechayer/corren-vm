@@ -12,6 +12,7 @@ type Program struct {
 	Constants    []core.Value
 	Instructions []byte
 	Variables    map[string]VarInfo
+	Accounts     map[string][]string
 }
 
 type VarInfo struct {
@@ -47,18 +48,20 @@ func (p Program) Print() {
 			fmt.Print("OP_FAIL\n")
 		case OP_SEND:
 			fmt.Print("OP_SEND\n")
-		case OP_MAKEALLOC:
-			fmt.Print("OP_MAKEALLOC\n")
+		case OP_SOURCE:
+			fmt.Print("OP_SOURCE\n")
+		case OP_ALLOC:
+			fmt.Print("OP_ALLOC\n")
+		default:
+			fmt.Print("Unknown opcode")
 		}
 	}
-
 	fmt.Println("CONSTANTS")
 	i := 0
 	for i = 0; i < len(p.Constants); i++ {
 		fmt.Printf("%02d ", i)
 		fmt.Printf("%s\n", p.Constants[i])
 	}
-
 	fmt.Println("VARIABLES")
 	for name, info := range p.Variables {
 		fmt.Printf("%02d ", info.Addr.ToIdx())
