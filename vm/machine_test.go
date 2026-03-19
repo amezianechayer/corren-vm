@@ -478,7 +478,8 @@ send 1/2 to @bar
 func TestGetNeededBalances(t *testing.T) {
 	p, err := compiler.Compile(`
 var $a: account
-transfer [DZD.2 15] from $a then @b to @c`)
+transfer [DZD.2 15] from $a then @b then @world to @c
+`)
 
 	if err != nil {
 		t.Errorf("did not expect error on Compile, got: %v", err)
