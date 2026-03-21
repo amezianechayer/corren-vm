@@ -62,6 +62,7 @@ monetary
     : LBRACK asset=ASSET DOT precision=NUMBER amount=NUMBER RBRACK  # MonetaryLit
     | LBRACK asset=ASSET DOT precision=NUMBER STAR RBRACK           # MonetaryAll
     | LBRACK asset=ASSET amount=NUMBER RBRACK                       # MonetaryNoPrecision
+    | LBRACK asset=ASSET STAR RBRACK                                # MonetaryNoPrecisionAll
     | LBRACK asset=ASSET RBRACK                                     # MonetaryAssetOnly
     ;
 

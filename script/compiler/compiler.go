@@ -57,6 +57,32 @@ func (p *parseVisitor) PushValue(val core.Value) (*core.Address, error) {
 	}
 }
 
+func (p *parseVisitor) isMonetaryAll(addr core.Address) bool {
+	if addr.IsConstant() {
+		idx := addr.ToIdx()
+		if idx < len(p.constants) {
+			if mon, ok := p.constants[idx].(core.Monetary); ok {
+				return mon.Amount.All
+			}
+		}
+	}
+	return false
+}
+
+func (p *parseVisitor) isWorld(addr core.Address) bool {
+	if addr.IsConstant() {
+		idx := addr.ToIdx()
+		if idx < len(p.constants) {
+			if acc, ok := p.constants[idx].(core.Account); ok {
+				if string(acc) == "@world" {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
 func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
 	switch c := c.(type) {
 	case *parser.ScriptContext:
@@ -209,13 +235,25 @@ func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, *core.Addr
 		case *parser.MonetaryLitContext:
 			asset := m.GetAsset().GetText()
 			precision := m.GetPrecision().GetText()
-			amount, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
+			a, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
 			if err != nil {
 				return 0, nil, err
 			}
 			monetary := core.Monetary{
-				Asset:  asset + "." + precision,
-				Amount: amount,
+				Asset:  core.Asset(asset + "." + precision),
+				Amount: core.NewAmountSpecific(a),
+			}
+			addr, err := p.PushValue(monetary)
+			if err != nil {
+				return 0, nil, err
+			}
+			return core.TYPE_MONETARY, addr, nil
+		case *parser.MonetaryAllContext:
+			asset := m.GetAsset().GetText()
+			precision := m.GetPrecision().GetText()
+			monetary := core.Monetary{
+				Asset:  core.Asset(asset + "." + precision),
+				Amount: core.NewAmountAll(),
 			}
 			addr, err := p.PushValue(monetary)
 			if err != nil {
@@ -224,13 +262,24 @@ func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, *core.Addr
 			return core.TYPE_MONETARY, addr, nil
 		case *parser.MonetaryNoPrecisionContext:
 			asset := m.GetAsset().GetText()
-			amount, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
+			a, err := strconv.ParseUint(m.GetAmount().GetText(), 10, 64)
 			if err != nil {
 				return 0, nil, err
 			}
 			monetary := core.Monetary{
-				Asset:  asset,
-				Amount: amount,
+				Asset:  core.Asset(asset),
+				Amount: core.NewAmountSpecific(a),
+			}
+			addr, err := p.PushValue(monetary)
+			if err != nil {
+				return 0, nil, err
+			}
+			return core.TYPE_MONETARY, addr, nil
+		case *parser.MonetaryNoPrecisionAllContext:
+			asset := m.GetAsset().GetText()
+			monetary := core.Monetary{
+				Asset:  core.Asset(asset),
+				Amount: core.NewAmountAll(),
 			}
 			addr, err := p.PushValue(monetary)
 			if err != nil {
@@ -355,17 +404,19 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	return nil
 }
 
-func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, error) {
+func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, bool, error) {
 	needed_accounts := []core.Address{}
+	bottomless := false
 	switch ctx := ctx.(type) {
 	case *parser.SrcSimpleContext:
 		ty, addr, err := p.VisitExpr(ctx.Expression())
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 		if ty != core.TYPE_ACCOUNT {
-			return nil, errors.New("expected account as source")
+			return nil, false, errors.New("expected account as source")
 		}
+		bottomless = bottomless || p.isWorld(*addr)
 		needed_accounts = append(needed_accounts, *addr)
 		p.PushValue(core.Number(1))
 	case *parser.SrcCascadeContext:
@@ -374,11 +425,12 @@ func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, e
 		for i := n - 1; i >= 0; i-- {
 			ty, addr, err := p.VisitExpr(sources[i])
 			if err != nil {
-				return nil, err
+				return nil, false, err
 			}
 			if ty != core.TYPE_ACCOUNT {
-				return nil, errors.New("expected only accounts in sources")
+				return nil, false, errors.New("expected only accounts in sources")
 			}
+			bottomless = bottomless || p.isWorld(*addr)
 			needed_accounts = append(needed_accounts, *addr)
 		}
 		p.PushValue(core.Number(n))
@@ -386,7 +438,7 @@ func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, e
 	default:
 		panic("internal compiler error: unsupported source type")
 	}
-	return needed_accounts, nil
+	return needed_accounts, bottomless, nil
 }
 
 func collectCascade(ctx parser.ISourceContext) []parser.IExpressionContext {
@@ -411,10 +463,14 @@ func (p *parseVisitor) VisitTransferSimple(ctx *parser.TransferSimpleContext) er
 		return errors.New("wrong type for monetary value")
 	}
 
-	needed_accounts, err := p.VisitSource(ctx.GetSrc())
+	needed_accounts, bottomless, err := p.VisitSource(ctx.GetSrc())
 	if err != nil {
 		return err
 	}
+	if p.isMonetaryAll(*mon_addr) && bottomless {
+		return errors.New("cannot take all balance of @world")
+	}
+
 	for _, acc := range needed_accounts {
 		if b, ok := p.needed_balances[acc]; ok {
 			b[*mon_addr] = struct{}{}
@@ -446,10 +502,14 @@ func (p *parseVisitor) VisitTransferWithDest(ctx *parser.TransferWithDestContext
 		return errors.New("wrong type for monetary value")
 	}
 
-	needed_accounts, err := p.VisitSource(ctx.GetSrc())
+	needed_accounts, bottomless, err := p.VisitSource(ctx.GetSrc())
 	if err != nil {
 		return err
 	}
+	if p.isMonetaryAll(*mon_addr) && bottomless {
+		return errors.New("cannot take all balance of @world")
+	}
+
 	for _, acc := range needed_accounts {
 		if b, ok := p.needed_balances[acc]; ok {
 			b[*mon_addr] = struct{}{}

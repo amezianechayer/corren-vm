@@ -311,6 +311,63 @@ send 12% to @b
 	)
 }
 
+func TestSendAll(t *testing.T) {
+	testJSON(t,
+		"transfer [DZD.2 *] from @users:001 to @platform",
+		`{}`,
+		map[string]map[string]uint64{
+			"@users:001": {
+				"DZD.2": 17,
+			},
+		},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      17,
+					Source:      "@users:001",
+					Destination: "@platform",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestSendAllMulti(t *testing.T) {
+	testJSON(t,
+		"transfer [DZD.2 *] from @users:001:wallet then @users:001:credit to @platform",
+		`{}`,
+		map[string]map[string]uint64{
+			"@users:001:wallet": {
+				"DZD.2": 19,
+			},
+			"@users:001:credit": {
+				"DZD.2": 22,
+			},
+		},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{
+					Asset:       "DZD.2",
+					Amount:      19,
+					Source:      "@users:001:wallet",
+					Destination: "@platform",
+				},
+				{
+					Asset:       "DZD.2",
+					Amount:      22,
+					Source:      "@users:001:credit",
+					Destination: "@platform",
+				},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
 func TestInsufficientFunds(t *testing.T) {
 	testJSON(t,
 		`var $balance: account
@@ -429,6 +486,23 @@ send 10% to @b
 					Destination: "@a",
 				},
 			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestNoEmptyPostings2(t *testing.T) {
+	testJSON(t,
+		"transfer [DZD.2 *] from @foo to @bar",
+		`{}`,
+		map[string]map[string]uint64{
+			"@foo": {
+				"DZD.2": 0,
+			},
+		},
+		CaseResult{
+			Printed:  []core.Value{},
+			Postings: []ledger.Posting{},
 			ExitCode: EXIT_OK,
 		},
 	)

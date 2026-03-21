@@ -25,6 +25,7 @@ type TestCase struct {
 
 func test(t *testing.T, c TestCase) {
 	p, err := Compile(c.Case)
+
 	if c.Expected.Error != "" {
 		if err == nil {
 			t.Error(errors.New("expected error and got none"))
@@ -119,14 +120,37 @@ func TestTransfer(t *testing.T) {
 		Case: "transfer [DZD.2 99] from @alice to @bob",
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00, // monetary
-				program.OP_APUSH, 01, 00, // @alice source
+				program.OP_APUSH, 00, 00,
+				program.OP_APUSH, 01, 00,
 				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
-				program.OP_APUSH, 02, 00, // @bob dest
+				program.OP_APUSH, 02, 00,
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
-				core.Monetary{Asset: "DZD.2", Amount: 99},
+				core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(99)},
+				alice,
+				bob,
+			},
+			Error: "",
+		},
+	})
+}
+
+func TestTransferAll(t *testing.T) {
+	alice := core.Account("@alice")
+	bob := core.Account("@bob")
+	test(t, TestCase{
+		Case: "transfer [DZD.2 *] from @alice to @bob",
+		Expected: CaseResult{
+			Instructions: []byte{
+				program.OP_APUSH, 00, 00,
+				program.OP_APUSH, 01, 00,
+				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 02, 00,
+				program.OP_SEND,
+			},
+			Constants: []core.Value{
+				core.Monetary{Asset: "DZD.2", Amount: core.NewAmountAll()},
 				alice,
 				bob,
 			},
@@ -153,6 +177,17 @@ func TestLogicError(t *testing.T) {
 			Instructions: nil,
 			Constants:    nil,
 			Error:        "expected",
+		},
+	})
+}
+
+func TestPreventTakeAllFromWorld(t *testing.T) {
+	test(t, TestCase{
+		Case: "transfer [DZD.2 *] from @world to @foo",
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "cannot",
 		},
 	})
 }

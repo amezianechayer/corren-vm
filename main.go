@@ -10,7 +10,9 @@ import (
 
 func main() {
 	p, err := compiler.Compile(`
-transfer [DZD.2 15] from @a then @b
+var $value: monetary
+
+transfer $value from @a then @b
 send 80% to @c
 send 8% to @d
 send 12% to @e
@@ -24,7 +26,14 @@ send 12% to @e
 	machine := vm.NewMachine(p)
 
 	var vars map[string]json.RawMessage
-	json.Unmarshal([]byte(`{}`), &vars)
+	json.Unmarshal([]byte(`{
+		"value": {
+			"asset": "DZD.2",
+			"amount": 45
+		}
+	}`), &vars)
+
+	fmt.Println(vars)
 
 	err = machine.SetVarsFromJSON(vars)
 	if err != nil {
