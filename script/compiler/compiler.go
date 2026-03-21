@@ -337,8 +337,7 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	p.PushValue(core.Allotment(allotment))
 	p.instructions = append(p.instructions, program.OP_ALLOC)
 
-	for i := len(parts) - 1; i >= 0; i-- {
-		part := parts[i]
+	for _, part := range parts {
 		switch part := part.(type) {
 		case *parser.SendToContext:
 			ty, _, err := p.VisitExpr(part.Expression())

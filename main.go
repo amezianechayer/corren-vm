@@ -10,11 +10,10 @@ import (
 
 func main() {
 	p, err := compiler.Compile(`
-var $balance: account
-var $payment: account
-var $seller: account
-
-transfer [DZD.2 15] from $balance then $payment to $seller
+transfer [DZD.2 15] from @a then @b
+send 80% to @c
+send 8% to @d
+send 12% to @e
 `)
 	if err != nil {
 		panic(err)
@@ -25,11 +24,7 @@ transfer [DZD.2 15] from $balance then $payment to $seller
 	machine := vm.NewMachine(p)
 
 	var vars map[string]json.RawMessage
-	json.Unmarshal([]byte(`{
-		"balance": "@users:001",
-		"payment": "@payments:001",
-		"seller":  "@users:002"
-	}`), &vars)
+	json.Unmarshal([]byte(`{}`), &vars)
 
 	err = machine.SetVarsFromJSON(vars)
 	if err != nil {
@@ -37,11 +32,11 @@ transfer [DZD.2 15] from $balance then $payment to $seller
 	}
 
 	err = machine.SetBalances(map[string]map[string]uint64{
-		"@users:001": {
-			"DZD.2": 15,
+		"@a": {
+			"DZD.2": 3,
 		},
-		"@payments:001": {
-			"DZD.2": 0,
+		"@b": {
+			"DZD.2": 25,
 		},
 	})
 	if err != nil {
