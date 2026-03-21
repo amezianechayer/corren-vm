@@ -297,14 +297,22 @@ func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, *core.Addr
 func (p *parseVisitor) VisitPortion(c parser.IPortionContext) (*big.Rat, bool, error) {
 	switch c := c.(type) {
 	case *parser.PortionPercentContext:
-		n, err := strconv.ParseInt(c.GetP().GetText(), 10, 64)
-		if err != nil {
-			return nil, false, err
+		pint := c.GetP().GetText()
+		var pfrac string
+		if c.GetPfrac() != nil {
+			pfrac = c.GetPfrac().GetText()
+		} else {
+			pfrac = "0"
 		}
-		if n <= 0 || n >= 100 {
+		res, ok := new(big.Rat).SetString(pint + "." + pfrac)
+		if !ok {
+			return nil, false, errors.New("percentage was not in a valid format")
+		}
+		res.Mul(res, big.NewRat(1, 100))
+		if res.Cmp(big.NewRat(0, 1)) != 1 || res.Cmp(big.NewRat(1, 1)) != -1 {
 			return nil, false, errors.New("percentage must be greater than zero and less than 100")
 		}
-		return big.NewRat(n, 100), false, nil
+		return res, false, nil
 	case *parser.PortionRatioContext:
 		v := strings.Split(c.GetR().GetText(), "/")
 		ns := strings.Trim(v[0], " \t")

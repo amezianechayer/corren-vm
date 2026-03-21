@@ -21,7 +21,7 @@ send 12% to @e
 		panic(err)
 	}
 
-	p.Print()
+	fmt.Println(p)
 
 	machine := vm.NewMachine(p)
 

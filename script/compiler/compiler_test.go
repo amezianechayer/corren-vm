@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math/big"
 	"strings"
 	"testing"
 
@@ -42,15 +43,16 @@ func test(t *testing.T, c TestCase) {
 			t.Error(errors.New("did not receive any output"))
 			return
 		} else if !bytes.Equal(p.Instructions, c.Expected.Instructions) {
-			t.Error(fmt.Errorf("generated program is incorrect: %v", p.Instructions))
+			t.Error(fmt.Errorf("generated program is incorrect: %v", *p))
+			fmt.Println(p.Instructions, "vs", c.Expected.Instructions)
 			return
 		} else if len(p.Constants) != len(c.Expected.Constants) {
-			t.Error(fmt.Errorf("unexpected program data: %v", p.Constants))
+			t.Error(fmt.Errorf("unexpected program constants: %v", *p))
 			return
 		} else {
 			for i := range c.Expected.Constants {
-				if p.Constants[i] != c.Expected.Constants[i] {
-					t.Error(fmt.Errorf("unexpected program data: %v", p.Constants))
+				if !core.ValueEquals(p.Constants[i], c.Expected.Constants[i]) {
+					t.Error(fmt.Errorf("unexpected program constants: %v", *p))
 					return
 				}
 			}
@@ -109,6 +111,76 @@ func TestConstant(t *testing.T) {
 			Instructions: []byte{program.OP_APUSH, 00, 00, program.OP_PRINT},
 			Constants:    []core.Value{user},
 			Error:        "",
+		},
+	})
+}
+
+func TestAllocationFractions(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 43] from @foo
+send 1/8 to @bar
+send 7/8 to @baz
+`,
+		Expected: CaseResult{
+			Instructions: []byte{
+				program.OP_APUSH, 00, 00,
+				program.OP_APUSH, 01, 00,
+				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 02, 00,
+				program.OP_ALLOC,
+				program.OP_APUSH, 03, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 04, 00,
+				program.OP_SEND,
+			},
+			Constants: []core.Value{
+				core.Monetary{
+					Asset:  "DZD.2",
+					Amount: core.NewAmountSpecific(43),
+				},
+				core.Account("@foo"),
+				core.Allotment{*big.NewRat(1, 8), *big.NewRat(7, 8)},
+				core.Account("@bar"),
+				core.Account("@baz"),
+			},
+			Error: "",
+		},
+	})
+}
+
+func TestAllocationPercentages(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 43] from @foo
+send 12.5% to @bar
+send 37.5% to @baz
+send 50% to @qux
+`,
+		Expected: CaseResult{
+			Instructions: []byte{
+				program.OP_APUSH, 00, 00,
+				program.OP_APUSH, 01, 00,
+				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 02, 00,
+				program.OP_ALLOC,
+				program.OP_APUSH, 03, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 04, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 05, 00,
+				program.OP_SEND,
+			},
+			Constants: []core.Value{
+				core.Monetary{
+					Asset:  "DZD.2",
+					Amount: core.NewAmountSpecific(43),
+				},
+				core.Account("@foo"),
+				core.Allotment{*big.NewRat(125, 1000), *big.NewRat(375, 1000), *big.NewRat(1, 2)},
+				core.Account("@bar"),
+				core.Account("@baz"),
+				core.Account("@qux"),
+			},
+			Error: "",
 		},
 	})
 }

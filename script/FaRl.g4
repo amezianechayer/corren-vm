@@ -80,9 +80,9 @@ expression
     ;
 
 portion
-    : p=NUMBER PERCENT    # PortionPercent
-    | r=RATIO             # PortionRatio
-    | REMAINING           # PortionRemaining
+    : p=NUMBER ('.' pfrac=NUMBER)? PERCENT  # PortionPercent
+    | r=RATIO                               # PortionRatio
+    | REMAINING                             # PortionRemaining
     ;
 
 source
