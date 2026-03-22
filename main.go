@@ -11,11 +11,11 @@ import (
 func main() {
 	p, err := compiler.Compile(`
 var $value: monetary
+var $commission: portion
 
-transfer $value from @a then @b
-send 80% to @c
-send 8% to @d
-send 12% to @e
+transfer $value from @users:001
+send remaining to @seller
+send $commission to @platform
 `)
 	if err != nil {
 		panic(err)
@@ -30,10 +30,9 @@ send 12% to @e
 		"value": {
 			"asset": "DZD.2",
 			"amount": 45
-		}
+		},
+		"commission": "12.5%"
 	}`), &vars)
-
-	fmt.Println(vars)
 
 	err = machine.SetVarsFromJSON(vars)
 	if err != nil {
@@ -41,11 +40,8 @@ send 12% to @e
 	}
 
 	err = machine.SetBalances(map[string]map[string]uint64{
-		"@a": {
-			"DZD.2": 3,
-		},
-		"@b": {
-			"DZD.2": 25,
+		"@users:001": {
+			"DZD.2": 2500,
 		},
 	})
 	if err != nil {

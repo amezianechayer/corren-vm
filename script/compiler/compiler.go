@@ -4,9 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"math/big"
 	"strconv"
-	"strings"
 
 	"github.com/amezianechayer/aurex-vm/core"
 	"github.com/amezianechayer/aurex-vm/script/parser"
@@ -24,7 +22,7 @@ type parseVisitor struct {
 
 func (p *parseVisitor) AllocateConstant(v core.Value) (core.Address, error) {
 	for i := 0; i < len(p.constants); i++ {
-		if p.constants[i] == v {
+		if core.ValueEquals(p.constants[i], v) {
 			return core.Address(i), nil
 		}
 	}
@@ -37,7 +35,7 @@ func (p *parseVisitor) AllocateConstant(v core.Value) (core.Address, error) {
 
 func (p *parseVisitor) PushValue(val core.Value) (*core.Address, error) {
 	switch val := val.(type) {
-	case core.Account, core.Asset, core.Monetary, core.Allotment:
+	case core.Account, core.Asset, core.Monetary, core.Allotment, core.Portion:
 		p.instructions = append(p.instructions, program.OP_APUSH)
 		addr, err := p.AllocateConstant(val)
 		if err != nil {
@@ -81,6 +79,20 @@ func (p *parseVisitor) isWorld(addr core.Address) bool {
 		}
 	}
 	return false
+}
+
+func (p *parseVisitor) VisitVariable(c parser.IExpressionContext) (core.Type, *core.Address, error) {
+	if ctx, ok := c.(*parser.ExprVariableContext); ok {
+		name := ctx.GetVariable().GetText()[1:]
+		if info, ok := p.variables[name]; ok {
+			p.instructions = append(p.instructions, program.OP_APUSH)
+			bytes := info.Addr.ToBytes()
+			p.instructions = append(p.instructions, bytes...)
+			return info.Ty, &info.Addr, nil
+		}
+		return 0, nil, fmt.Errorf("variable not declared : %v", name)
+	}
+	return 0, nil, errors.New("expected variable")
 }
 
 func (p *parseVisitor) VisitScript(c parser.IScriptContext) error {
@@ -141,6 +153,10 @@ func (p *parseVisitor) VisitVarDecl(v parser.IVarDeclContext) error {
 			ty = core.TYPE_NUMBER
 		case "monetary":
 			ty = core.TYPE_MONETARY
+		case "portion":
+			ty = core.TYPE_PORTION
+		default:
+			return errors.New("internal compiler error: unsupported type")
 		}
 		addr := core.NewVarAddress(uint16(len(p.variables)))
 		p.variables[name] = program.VarInfo{
@@ -292,124 +308,6 @@ func (p *parseVisitor) VisitLit(c parser.ILiteralContext) (core.Type, *core.Addr
 	default:
 		panic("internal compiler error")
 	}
-}
-
-func (p *parseVisitor) VisitPortion(c parser.IPortionContext) (*big.Rat, bool, error) {
-	switch c := c.(type) {
-	case *parser.PortionPercentContext:
-		pint := c.GetP().GetText()
-		var pfrac string
-		if c.GetPfrac() != nil {
-			pfrac = c.GetPfrac().GetText()
-		} else {
-			pfrac = "0"
-		}
-		res, ok := new(big.Rat).SetString(pint + "." + pfrac)
-		if !ok {
-			return nil, false, errors.New("percentage was not in a valid format")
-		}
-		res.Mul(res, big.NewRat(1, 100))
-		if res.Cmp(big.NewRat(0, 1)) != 1 || res.Cmp(big.NewRat(1, 1)) != -1 {
-			return nil, false, errors.New("percentage must be greater than zero and less than 100")
-		}
-		return res, false, nil
-	case *parser.PortionRatioContext:
-		v := strings.Split(c.GetR().GetText(), "/")
-		ns := strings.Trim(v[0], " \t")
-		ds := strings.Trim(v[1], " \t")
-		n, err := strconv.ParseInt(ns, 10, 64)
-		if err != nil {
-			return nil, false, err
-		}
-		if n <= 0 {
-			return nil, false, errors.New("numerator must be greater than zero")
-		}
-		d, err := strconv.ParseInt(ds, 10, 64)
-		if err != nil {
-			return nil, false, err
-		}
-		if d <= 0 {
-			return nil, false, errors.New("denominator must be greater than zero")
-		}
-		return big.NewRat(n, d), false, nil
-	case *parser.PortionRemainingContext:
-		return nil, true, nil
-	default:
-		panic("internal compiler error")
-	}
-}
-
-func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error {
-	total := big.NewRat(0, 1)
-	allotment := []big.Rat{}
-	hasRemaining := false
-	fracs := []*big.Rat{}
-
-	for _, part := range parts {
-		switch part.(type) {
-		case *parser.SendToContext:
-			sendTo := part.(*parser.SendToContext)
-			frac, isRemaining, err := p.VisitPortion(sendTo.Portion())
-			if err != nil {
-				return err
-			}
-			if isRemaining {
-				if hasRemaining {
-					return errors.New("only one 'remaining' allowed in allocation")
-				}
-				hasRemaining = true
-				fracs = append(fracs, nil)
-			} else {
-				total.Add(frac, total)
-				fracs = append(fracs, frac)
-			}
-		case *parser.SendKeepContext:
-			if hasRemaining {
-				return errors.New("only one 'remaining' allowed in allocation")
-			}
-			hasRemaining = true
-			fracs = append(fracs, nil)
-		default:
-			panic("internal compiler error")
-		}
-	}
-
-	if !hasRemaining && total.Cmp(big.NewRat(1, 1)) != 0 {
-		return errors.New("sum of fractions did not equal 100%")
-	}
-
-	if hasRemaining {
-		remaining := new(big.Rat).Sub(big.NewRat(1, 1), total)
-		for i, frac := range fracs {
-			if frac == nil {
-				fracs[i] = remaining
-			}
-		}
-	}
-
-	for _, frac := range fracs {
-		allotment = append(allotment, *frac)
-	}
-
-	p.PushValue(core.Allotment(allotment))
-	p.instructions = append(p.instructions, program.OP_ALLOC)
-
-	for _, part := range parts {
-		switch part := part.(type) {
-		case *parser.SendToContext:
-			ty, _, err := p.VisitExpr(part.Expression())
-			if err != nil {
-				return err
-			}
-			if ty != core.TYPE_ACCOUNT {
-				return errors.New("expected account as destination of allocation line")
-			}
-			p.instructions = append(p.instructions, program.OP_SEND)
-		case *parser.SendKeepContext:
-			continue
-		}
-	}
-	return nil
 }
 
 func (p *parseVisitor) VisitSource(ctx parser.ISourceContext) ([]core.Address, bool, error) {

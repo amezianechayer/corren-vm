@@ -2,7 +2,6 @@ package core
 
 import (
 	"fmt"
-	"math/big"
 	"reflect"
 )
 
@@ -13,6 +12,7 @@ const (
 	TYPE_ASSET
 	TYPE_NUMBER
 	TYPE_MONETARY
+	TYPE_PORTION
 	TYPE_ALLOTMENT
 	TYPE_AMOUNT
 )
@@ -52,44 +52,9 @@ func (a Monetary) String() string {
 	return fmt.Sprintf("[%v %v]", a.Asset, a.Amount)
 }
 
-type Allotment []big.Rat
-
 func (Allotment) GetType() Type { return TYPE_ALLOTMENT }
-func (a Allotment) String() string {
-	out := "{\n"
-	for _, ratio := range a {
-		out += fmt.Sprintf("	%v\n", &ratio)
-	}
-	return out + "}"
-}
-
-type Amount struct {
-	All      bool
-	Specific uint64
-}
-
-func (Amount) GetType() Type { return TYPE_AMOUNT }
-func (a Amount) String() string {
-	if a.All {
-		return "*"
-	} else {
-		return fmt.Sprint(a.Specific)
-	}
-}
-
-func NewAmountAll() Amount {
-	return Amount{
-		All:      true,
-		Specific: 0,
-	}
-}
-
-func NewAmountSpecific(x uint64) Amount {
-	return Amount{
-		All:      false,
-		Specific: x,
-	}
-}
+func (Amount) GetType() Type    { return TYPE_AMOUNT }
+func (Portion) GetType() Type   { return TYPE_PORTION }
 
 func ValueEquals(lhs, rhs Value) bool {
 	if reflect.TypeOf(lhs) != reflect.TypeOf(rhs) {

@@ -134,10 +134,7 @@ send 7/8 to @baz
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
-				core.Monetary{
-					Asset:  "DZD.2",
-					Amount: core.NewAmountSpecific(43),
-				},
+				core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(43)},
 				core.Account("@foo"),
 				core.Allotment{*big.NewRat(1, 8), *big.NewRat(7, 8)},
 				core.Account("@bar"),
@@ -170,10 +167,7 @@ send 50% to @qux
 				program.OP_SEND,
 			},
 			Constants: []core.Value{
-				core.Monetary{
-					Asset:  "DZD.2",
-					Amount: core.NewAmountSpecific(43),
-				},
+				core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(43)},
 				core.Account("@foo"),
 				core.Allotment{*big.NewRat(125, 1000), *big.NewRat(375, 1000), *big.NewRat(1, 2)},
 				core.Account("@bar"),
@@ -260,6 +254,59 @@ func TestPreventTakeAllFromWorld(t *testing.T) {
 			Instructions: nil,
 			Constants:    nil,
 			Error:        "cannot",
+		},
+	})
+}
+
+func TestOverflowingAllocation(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world
+send 2/3 to @a
+send 2/3 to @b
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "100%",
+		},
+	})
+
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world
+send 1/2 to @a
+send 1/2 to @b
+keep remaining
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "100%",
+		},
+	})
+
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world
+send 2/3 to @a
+send 1/2 to @b
+keep remaining
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "100%",
+		},
+	})
+
+	test(t, TestCase{
+		Case: `var $prop: portion
+transfer [DZD.2 15] from @world
+send 2/3 to @a
+send remaining to @b
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "remaining",
 		},
 	})
 }

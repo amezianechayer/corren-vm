@@ -149,19 +149,12 @@ func TestTransfer(t *testing.T) {
 		"transfer [DZD.2 100] from @alice to @bob",
 		map[string]core.Value{},
 		map[string]map[string]uint64{
-			"@alice": {
-				"DZD.2": 100,
-			},
+			"@alice": {"DZD.2": 100},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      100,
-					Source:      "@alice",
-					Destination: "@bob",
-				},
+				{Asset: "DZD.2", Amount: 100, Source: "@alice", Destination: "@bob"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -178,19 +171,12 @@ transfer [DZD.2 999] from $rider to $driver`,
 			"driver": core.Account("@users:002"),
 		},
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 1000,
-			},
+			"@users:001": {"DZD.2": 1000},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      999,
-					Source:      "@users:001",
-					Destination: "@users:002",
-				},
+				{Asset: "DZD.2", Amount: 999, Source: "@users:001", Destination: "@users:002"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -202,24 +188,14 @@ func TestVariablesJSON(t *testing.T) {
 		`var $rider: account
 var $driver: account
 transfer [DZD.2 999] from $rider to $driver`,
-		`{
-			"rider": "@users:001",
-			"driver": "@users:002"
-		}`,
+		`{"rider": "@users:001", "driver": "@users:002"}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 1000,
-			},
+			"@users:001": {"DZD.2": 1000},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      999,
-					Source:      "@users:001",
-					Destination: "@users:002",
-				},
+				{Asset: "DZD.2", Amount: 999, Source: "@users:001", Destination: "@users:002"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -232,34 +208,16 @@ func TestSource(t *testing.T) {
 var $payment: account
 var $seller: account
 transfer [DZD.2 15] from $balance then $payment to $seller`,
-		`{
-			"balance": "@users:001",
-			"payment": "@payments:001",
-			"seller":  "@users:002"
-		}`,
+		`{"balance": "@users:001", "payment": "@payments:001", "seller": "@users:002"}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 3,
-			},
-			"@payments:001": {
-				"DZD.2": 12,
-			},
+			"@users:001":    {"DZD.2": 3},
+			"@payments:001": {"DZD.2": 12},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      3,
-					Source:      "@users:001",
-					Destination: "@users:002",
-				},
-				{
-					Asset:       "DZD.2",
-					Amount:      12,
-					Source:      "@payments:001",
-					Destination: "@users:002",
-				},
+				{Asset: "DZD.2", Amount: 3, Source: "@users:001", Destination: "@users:002"},
+				{Asset: "DZD.2", Amount: 12, Source: "@payments:001", Destination: "@users:002"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -275,36 +233,39 @@ send 80% to $driver
 send 8% to @a
 send 12% to @b
 `,
-		`{
-			"rider": "@users:001",
-			"driver": "@users:002"
-		}`,
+		`{"rider": "@users:001", "driver": "@users:002"}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 15,
-			},
+			"@users:001": {"DZD.2": 15},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      13,
-					Source:      "@users:001",
-					Destination: "@users:002",
-				},
-				{
-					Asset:       "DZD.2",
-					Amount:      1,
-					Source:      "@users:001",
-					Destination: "@a",
-				},
-				{
-					Asset:       "DZD.2",
-					Amount:      1,
-					Source:      "@users:001",
-					Destination: "@b",
-				},
+				{Asset: "DZD.2", Amount: 13, Source: "@users:001", Destination: "@users:002"},
+				{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
+				{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
+			},
+			ExitCode: EXIT_OK,
+		},
+	)
+}
+
+func TestDynamicAllocation(t *testing.T) {
+	testJSON(t,
+		`var $p: portion
+transfer [DZD.2 15] from @a
+send 80% to @b
+send $p to @c
+keep remaining
+`,
+		`{"p": "15%"}`,
+		map[string]map[string]uint64{
+			"@a": {"DZD.2": 15},
+		},
+		CaseResult{
+			Printed: []core.Value{},
+			Postings: []ledger.Posting{
+				{Asset: "DZD.2", Amount: 13, Source: "@a", Destination: "@b"},
+				{Asset: "DZD.2", Amount: 2, Source: "@a", Destination: "@c"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -316,19 +277,12 @@ func TestSendAll(t *testing.T) {
 		"transfer [DZD.2 *] from @users:001 to @platform",
 		`{}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 17,
-			},
+			"@users:001": {"DZD.2": 17},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      17,
-					Source:      "@users:001",
-					Destination: "@platform",
-				},
+				{Asset: "DZD.2", Amount: 17, Source: "@users:001", Destination: "@platform"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -340,28 +294,14 @@ func TestSendAllMulti(t *testing.T) {
 		"transfer [DZD.2 *] from @users:001:wallet then @users:001:credit to @platform",
 		`{}`,
 		map[string]map[string]uint64{
-			"@users:001:wallet": {
-				"DZD.2": 19,
-			},
-			"@users:001:credit": {
-				"DZD.2": 22,
-			},
+			"@users:001:wallet": {"DZD.2": 19},
+			"@users:001:credit": {"DZD.2": 22},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      19,
-					Source:      "@users:001:wallet",
-					Destination: "@platform",
-				},
-				{
-					Asset:       "DZD.2",
-					Amount:      22,
-					Source:      "@users:001:credit",
-					Destination: "@platform",
-				},
+				{Asset: "DZD.2", Amount: 19, Source: "@users:001:wallet", Destination: "@platform"},
+				{Asset: "DZD.2", Amount: 22, Source: "@users:001:credit", Destination: "@platform"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -374,18 +314,10 @@ func TestInsufficientFunds(t *testing.T) {
 var $payment: account
 var $seller: account
 transfer [DZD.2 16] from $balance then $payment to $seller`,
-		`{
-			"balance": "@users:001",
-			"payment": "@payments:001",
-			"seller":  "@users:002"
-		}`,
+		`{"balance": "@users:001", "payment": "@payments:001", "seller": "@users:002"}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 3,
-			},
-			"@payments:001": {
-				"DZD.2": 12,
-			},
+			"@users:001":    {"DZD.2": 3},
+			"@payments:001": {"DZD.2": 12},
 		},
 		CaseResult{
 			Printed:  []core.Value{},
@@ -400,9 +332,7 @@ func TestMissingBalance(t *testing.T) {
 		"transfer [DZD.2 15] from @alice to @bob",
 		`{}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"DZD.2": 3,
-			},
+			"@users:001": {"DZD.2": 3},
 		},
 		CaseResult{
 			Printed:  []core.Value{},
@@ -421,12 +351,7 @@ func TestMissingWorldBalance(t *testing.T) {
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      15,
-					Source:      "@world",
-					Destination: "@a",
-				},
+				{Asset: "DZD.2", Amount: 15, Source: "@world", Destination: "@a"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -438,30 +363,15 @@ func TestWorldSource(t *testing.T) {
 		`var $a: account
 var $b: account
 transfer [DZD.2 15] from $a then @world to $b`,
-		`{
-			"a": "@a",
-			"b": "@b"
-		}`,
+		`{"a": "@a", "b": "@b"}`,
 		map[string]map[string]uint64{
-			"@a": {
-				"DZD.2": 1,
-			},
+			"@a": {"DZD.2": 1},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      1,
-					Source:      "@a",
-					Destination: "@b",
-				},
-				{
-					Asset:       "DZD.2",
-					Amount:      14,
-					Source:      "@world",
-					Destination: "@b",
-				},
+				{Asset: "DZD.2", Amount: 1, Source: "@a", Destination: "@b"},
+				{Asset: "DZD.2", Amount: 14, Source: "@world", Destination: "@b"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -479,12 +389,7 @@ send 10% to @b
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "DZD.2",
-					Amount:      2,
-					Source:      "@world",
-					Destination: "@a",
-				},
+				{Asset: "DZD.2", Amount: 2, Source: "@world", Destination: "@a"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -496,9 +401,7 @@ func TestNoEmptyPostings2(t *testing.T) {
 		"transfer [DZD.2 *] from @foo to @bar",
 		`{}`,
 		map[string]map[string]uint64{
-			"@foo": {
-				"DZD.2": 0,
-			},
+			"@foo": {"DZD.2": 0},
 		},
 		CaseResult{
 			Printed:  []core.Value{},
@@ -516,33 +419,16 @@ transfer [CREDIT 200] from $u1 then $u2
 send 1/2 to @foo
 send 1/2 to @bar
 `,
-		`{
-			"u1": "@users:001",
-			"u2": "@users:002"
-		}`,
+		`{"u1": "@users:001", "u2": "@users:002"}`,
 		map[string]map[string]uint64{
-			"@users:001": {
-				"CREDIT": 100,
-			},
-			"@users:002": {
-				"CREDIT": 100,
-			},
+			"@users:001": {"CREDIT": 100},
+			"@users:002": {"CREDIT": 100},
 		},
 		CaseResult{
 			Printed: []core.Value{},
 			Postings: []ledger.Posting{
-				{
-					Asset:       "CREDIT",
-					Amount:      100,
-					Source:      "@users:001",
-					Destination: "@foo",
-				},
-				{
-					Asset:       "CREDIT",
-					Amount:      100,
-					Source:      "@users:002",
-					Destination: "@bar",
-				},
+				{Asset: "CREDIT", Amount: 100, Source: "@users:001", Destination: "@foo"},
+				{Asset: "CREDIT", Amount: 100, Source: "@users:002", Destination: "@bar"},
 			},
 			ExitCode: EXIT_OK,
 		},
@@ -554,7 +440,6 @@ func TestGetNeededBalances(t *testing.T) {
 var $a: account
 transfer [DZD.2 15] from $a then @b then @world to @c
 `)
-
 	if err != nil {
 		t.Errorf("did not expect error on Compile, got: %v", err)
 		return
@@ -571,12 +456,8 @@ transfer [DZD.2 15] from $a then @b then @world to @c
 	}
 
 	expected := map[string]map[string]struct{}{
-		"@a": {
-			"DZD.2": {},
-		},
-		"@b": {
-			"DZD.2": {},
-		},
+		"@a": {"DZD.2": {}},
+		"@b": {"DZD.2": {}},
 	}
 	actual, err := m.GetNeededBalances()
 	if err != nil {

@@ -52,16 +52,20 @@ func (p Program) String() string {
 			out += fmt.Sprint("OP_SOURCE\n")
 		case OP_ALLOC:
 			out += fmt.Sprint("OP_ALLOC\n")
+		case OP_MAKE_ALLOTMENT:
+			out += fmt.Sprint("OP_MAKE_ALLOTMENT\n")
 		default:
 			out += fmt.Sprint("Unknown opcode")
 		}
 	}
+
 	out += fmt.Sprintln("CONSTANTS")
 	i := 0
 	for i = 0; i < len(p.Constants); i++ {
 		out += fmt.Sprintf("%02d ", i)
 		out += fmt.Sprintf("%s\n", p.Constants[i])
 	}
+
 	out += fmt.Sprintln("VARIABLES")
 	for name, info := range p.Variables {
 		out += fmt.Sprintf("%02d ", info.Addr.ToIdx())
@@ -128,6 +132,17 @@ func (p *Program) ParseVariablesJSON(vars map[string]json.RawMessage) ([]core.Va
 					Asset:  core.Asset(mon.Asset),
 					Amount: core.NewAmountSpecific(mon.Amount),
 				}
+			case core.TYPE_PORTION:
+				var s string
+				err := json.Unmarshal(val, &s)
+				if err != nil {
+					return nil, err
+				}
+				res, err := core.ParsePortionSpecific(s)
+				if err != nil {
+					return nil, err
+				}
+				value = *res
 			}
 			variables[info.Addr.ToIdx()] = value
 		} else {
