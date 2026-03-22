@@ -83,6 +83,7 @@ portion
     : p=NUMBER ('.' pfrac=NUMBER)? PERCENT  # PortionPercent
     | r=RATIO                               # PortionRatio
     | REMAINING                             # PortionRemaining
+    | v=VARIABLE_NAME                       # PortionVar
     ;
 
 source

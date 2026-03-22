@@ -111,6 +111,12 @@ func (s *BaseFaRlListener) EnterPortionRemaining(ctx *PortionRemainingContext) {
 // ExitPortionRemaining is called when production PortionRemaining is exited.
 func (s *BaseFaRlListener) ExitPortionRemaining(ctx *PortionRemainingContext) {}
 
+// EnterPortionVar is called when production PortionVar is entered.
+func (s *BaseFaRlListener) EnterPortionVar(ctx *PortionVarContext) {}
+
+// ExitPortionVar is called when production PortionVar is exited.
+func (s *BaseFaRlListener) ExitPortionVar(ctx *PortionVarContext) {}
+
 // EnterSrcRemaining is called when production SrcRemaining is entered.
 func (s *BaseFaRlListener) EnterSrcRemaining(ctx *SrcRemainingContext) {}
 

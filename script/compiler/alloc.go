@@ -15,22 +15,12 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	for _, part := range parts {
 		if send, ok := part.(*parser.SendToContext); ok {
 			switch send.Portion().(type) {
-			case *parser.PortionRemainingContext:
+			case *parser.PortionRemainingContext, *parser.PortionVarContext:
 				hasDynamic = true
 			}
 		}
 		if _, ok := part.(*parser.SendKeepContext); ok {
 			hasDynamic = true
-		}
-	}
-
-	for _, part := range parts {
-		if send, ok := part.(*parser.SendToContext); ok {
-			switch send.Portion().(type) {
-			case *parser.PortionPercentContext, *parser.PortionRatioContext:
-			default:
-				hasDynamic = true
-			}
 		}
 	}
 
@@ -48,11 +38,9 @@ func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) e
 			switch por := part.Portion().(type) {
 			case *parser.PortionPercentContext:
 				pint := por.GetP().GetText()
-				var pfrac string
+				pfrac := "0"
 				if por.GetPfrac() != nil {
 					pfrac = por.GetPfrac().GetText()
-				} else {
-					pfrac = "0"
 				}
 				portion, err := core.ParsePortionSpecific(pint + "." + pfrac + "%")
 				if err != nil {
@@ -65,11 +53,7 @@ func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) e
 					return err
 				}
 				portions = append(portions, *portion)
-			case *parser.PortionRemainingContext:
-				portions = append(portions, core.NewPortionRemaining())
 			}
-		case *parser.SendKeepContext:
-			portions = append(portions, core.NewPortionRemaining())
 		}
 	}
 
@@ -93,11 +77,9 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 			switch por := part.Portion().(type) {
 			case *parser.PortionPercentContext:
 				pint := por.GetP().GetText()
-				var pfrac string
+				pfrac := "0"
 				if por.GetPfrac() != nil {
 					pfrac = por.GetPfrac().GetText()
-				} else {
-					pfrac = "0"
 				}
 				portion, err := core.ParsePortionSpecific(pint + "." + pfrac + "%")
 				if err != nil {
@@ -114,6 +96,18 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 				rat := big.Rat(*portion.Specific)
 				total.Add(&rat, total)
 				p.PushValue(core.Portion(*portion))
+			case *parser.PortionVarContext:
+				name := por.GetV().GetText()[1:]
+				if info, ok := p.variables[name]; ok {
+					if info.Ty != core.TYPE_PORTION {
+						return fmt.Errorf("tried to use wrong variable type for portion of allocation: %v", info.Ty)
+					}
+					p.instructions = append(p.instructions, program.OP_APUSH)
+					bytes := info.Addr.ToBytes()
+					p.instructions = append(p.instructions, bytes...)
+				} else {
+					return fmt.Errorf("variable not declared: %v", name)
+				}
 			case *parser.PortionRemainingContext:
 				if has_remaining {
 					return errors.New("two uses of `remaining` in the same allocation")
@@ -127,24 +121,6 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 			}
 			p.PushValue(core.NewPortionRemaining())
 			has_remaining = true
-		}
-	}
-
-	for _, part := range parts {
-		if send, ok := part.(*parser.SendToContext); ok {
-			if _, isVar := send.Portion().(*parser.PortionRemainingContext); !isVar {
-				if _, isVar2 := send.Portion().(*parser.PortionPercentContext); !isVar2 {
-					if _, isVar3 := send.Portion().(*parser.PortionRatioContext); !isVar3 {
-						ty, _, err := p.VisitExpr(send.Expression())
-						if err != nil {
-							return err
-						}
-						if ty != core.TYPE_PORTION {
-							return fmt.Errorf("tried to use wrong variable type for portion of allocation: %v", ty)
-						}
-					}
-				}
-			}
 		}
 	}
 

@@ -53,6 +53,9 @@ type FaRlListener interface {
 	// EnterPortionRemaining is called when entering the PortionRemaining production.
 	EnterPortionRemaining(c *PortionRemainingContext)
 
+	// EnterPortionVar is called when entering the PortionVar production.
+	EnterPortionVar(c *PortionVarContext)
+
 	// EnterSrcRemaining is called when entering the SrcRemaining production.
 	EnterSrcRemaining(c *SrcRemainingContext)
 
@@ -181,6 +184,9 @@ type FaRlListener interface {
 
 	// ExitPortionRemaining is called when exiting the PortionRemaining production.
 	ExitPortionRemaining(c *PortionRemainingContext)
+
+	// ExitPortionVar is called when exiting the PortionVar production.
+	ExitPortionVar(c *PortionVarContext)
 
 	// ExitSrcRemaining is called when exiting the SrcRemaining production.
 	ExitSrcRemaining(c *SrcRemainingContext)

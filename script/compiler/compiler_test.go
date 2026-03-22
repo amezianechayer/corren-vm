@@ -301,7 +301,7 @@ keep remaining
 		Case: `var $prop: portion
 transfer [DZD.2 15] from @world
 send 2/3 to @a
-send remaining to @b
+send $prop to @b
 `,
 		Expected: CaseResult{
 			Instructions: nil,
