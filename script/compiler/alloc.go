@@ -10,7 +10,7 @@ import (
 	"github.com/amezianechayer/aurex-vm/vm/program"
 )
 
-func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error {
+func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) *CompileError {
 	hasDynamic := false
 	for _, part := range parts {
 		if send, ok := part.(*parser.SendToContext); ok {
@@ -30,7 +30,7 @@ func (p *parseVisitor) VisitAllocation(parts []parser.ISendClauseContext) error 
 	return p.VisitAllocationConst(parts)
 }
 
-func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) error {
+func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) *CompileError {
 	portions := []core.Portion{}
 	for _, part := range parts {
 		switch part := part.(type) {
@@ -44,29 +44,33 @@ func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) e
 				}
 				portion, err := core.ParsePortionSpecific(pint + "." + pfrac + "%")
 				if err != nil {
-					return err
+					return LogicError(part, err)
 				}
 				portions = append(portions, *portion)
 			case *parser.PortionRatioContext:
 				portion, err := core.ParsePortionSpecific(por.GetR().GetText())
 				if err != nil {
-					return err
+					return LogicError(part, err)
 				}
 				portions = append(portions, *portion)
+			case *parser.PortionRemainingContext:
+				portions = append(portions, core.NewPortionRemaining())
 			}
+		case *parser.SendKeepContext:
+			portions = append(portions, core.NewPortionRemaining())
 		}
 	}
 
 	allotment, err := core.NewAllotment(portions)
 	if err != nil {
-		return err
+		return LogicError(parts[0].(*parser.SendToContext), err)
 	}
 	p.PushValue(*allotment)
 	p.instructions = append(p.instructions, program.OP_ALLOC)
 	return p.VisitAllocDestinations(parts)
 }
 
-func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) error {
+func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *CompileError {
 	total := big.NewRat(0, 1)
 	has_remaining := false
 
@@ -83,7 +87,7 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 				}
 				portion, err := core.ParsePortionSpecific(pint + "." + pfrac + "%")
 				if err != nil {
-					return err
+					return LogicError(part, err)
 				}
 				rat := big.Rat(*portion.Specific)
 				total.Add(&rat, total)
@@ -91,7 +95,7 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 			case *parser.PortionRatioContext:
 				portion, err := core.ParsePortionSpecific(por.GetR().GetText())
 				if err != nil {
-					return err
+					return LogicError(part, err)
 				}
 				rat := big.Rat(*portion.Specific)
 				total.Add(&rat, total)
@@ -100,24 +104,24 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 				name := por.GetV().GetText()[1:]
 				if info, ok := p.variables[name]; ok {
 					if info.Ty != core.TYPE_PORTION {
-						return fmt.Errorf("tried to use wrong variable type for portion of allocation: %v", info.Ty)
+						return LogicError(part, fmt.Errorf("tried to use wrong variable type for portion of allocation: %v", info.Ty))
 					}
 					p.instructions = append(p.instructions, program.OP_APUSH)
 					bytes := info.Addr.ToBytes()
 					p.instructions = append(p.instructions, bytes...)
 				} else {
-					return fmt.Errorf("variable not declared: %v", name)
+					return LogicError(part, fmt.Errorf("variable not declared: %v", name))
 				}
 			case *parser.PortionRemainingContext:
 				if has_remaining {
-					return errors.New("two uses of `remaining` in the same allocation")
+					return LogicError(part, errors.New("two uses of `remaining` in the same allocation"))
 				}
 				p.PushValue(core.NewPortionRemaining())
 				has_remaining = true
 			}
 		case *parser.SendKeepContext:
 			if has_remaining {
-				return errors.New("two uses of `remaining` in the same allocation")
+				return LogicError(part, errors.New("two uses of `remaining` in the same allocation"))
 			}
 			p.PushValue(core.NewPortionRemaining())
 			has_remaining = true
@@ -125,10 +129,10 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 	}
 
 	if !has_remaining {
-		return errors.New("allocation has variable portions but no 'remaining'")
+		return LogicError(parts[0].(*parser.SendToContext), errors.New("allocation has variable portions but no 'remaining'"))
 	}
 	if total.Cmp(big.NewRat(1, 1)) != -1 {
-		return errors.New("sum of portions did not equal 100%")
+		return LogicError(parts[0].(*parser.SendToContext), errors.New("sum of known portions is already equal or is greater than 100%"))
 	}
 
 	p.PushValue(core.Number(len(parts)))
@@ -137,7 +141,7 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) err
 	return p.VisitAllocDestinations(parts)
 }
 
-func (p *parseVisitor) VisitAllocDestinations(parts []parser.ISendClauseContext) error {
+func (p *parseVisitor) VisitAllocDestinations(parts []parser.ISendClauseContext) *CompileError {
 	for _, part := range parts {
 		switch part := part.(type) {
 		case *parser.SendToContext:
@@ -146,7 +150,7 @@ func (p *parseVisitor) VisitAllocDestinations(parts []parser.ISendClauseContext)
 				return err
 			}
 			if ty != core.TYPE_ACCOUNT {
-				return errors.New("expected account as destination of allocation line")
+				return LogicError(part, errors.New("expected account as destination of allocation line"))
 			}
 			p.instructions = append(p.instructions, program.OP_SEND)
 		case *parser.SendKeepContext:

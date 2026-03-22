@@ -31,6 +31,8 @@ func test(t *testing.T, c TestCase) {
 		if err == nil {
 			t.Error(errors.New("expected error and got none"))
 			return
+		} else if err.Error() == "" {
+			t.Error(errors.New("error was not fed to the error listener"))
 		} else if !strings.Contains(err.Error(), c.Expected.Error) {
 			t.Error(fmt.Errorf("error is not the one expected: %v", err))
 			return
@@ -111,6 +113,17 @@ func TestConstant(t *testing.T) {
 			Instructions: []byte{program.OP_APUSH, 00, 00, program.OP_PRINT},
 			Constants:    []core.Value{user},
 			Error:        "",
+		},
+	})
+}
+
+func TestUndeclaredVariable(t *testing.T) {
+	test(t, TestCase{
+		Case: "print $nope",
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "declared",
 		},
 	})
 }
@@ -242,7 +255,7 @@ func TestLogicError(t *testing.T) {
 		Expected: CaseResult{
 			Instructions: nil,
 			Constants:    nil,
-			Error:        "expected",
+			Error:        "wrong type",
 		},
 	})
 }
@@ -259,6 +272,7 @@ func TestPreventTakeAllFromWorld(t *testing.T) {
 }
 
 func TestOverflowingAllocation(t *testing.T) {
+	fmt.Println("case: >100%")
 	test(t, TestCase{
 		Case: `transfer [DZD.2 15] from @world
 send 2/3 to @a
@@ -271,6 +285,7 @@ send 2/3 to @b
 		},
 	})
 
+	fmt.Println("case: =100% + remaining")
 	test(t, TestCase{
 		Case: `transfer [DZD.2 15] from @world
 send 1/2 to @a
@@ -284,6 +299,7 @@ keep remaining
 		},
 	})
 
+	fmt.Println("case: >100% + remaining")
 	test(t, TestCase{
 		Case: `transfer [DZD.2 15] from @world
 send 2/3 to @a
@@ -297,6 +313,52 @@ keep remaining
 		},
 	})
 
+	fmt.Println("case: const remaining + remaining")
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world
+send 2/3 to @a
+keep remaining
+keep remaining
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "`remaining` in the same",
+		},
+	})
+
+	fmt.Println("case: dyn remaining + remaining")
+	test(t, TestCase{
+		Case: `var $p: portion
+transfer [DZD.2 15] from @world
+send $p to @a
+keep remaining
+keep remaining
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "`remaining` in the same",
+		},
+	})
+
+	fmt.Println("case: >100% + remaining + variable")
+	test(t, TestCase{
+		Case: `var $prop: portion
+transfer [DZD.2 15] from @world
+send 1/2 to @a
+send 2/3 to @b
+keep remaining
+send $prop to @d
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "100%",
+		},
+	})
+
+	fmt.Println("case: variable - remaining")
 	test(t, TestCase{
 		Case: `var $prop: portion
 transfer [DZD.2 15] from @world
@@ -307,6 +369,44 @@ send $prop to @b
 			Instructions: nil,
 			Constants:    nil,
 			Error:        "remaining",
+		},
+	})
+}
+
+func TestAllocationWrongDestination(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world to [DZD.2 10]`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "wrong type",
+		},
+	})
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] from @world
+send 2/3 to @a
+send 1/3 to [DZD.2 10]
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "account",
+		},
+	})
+}
+
+func TestAllocationInvalidPortion(t *testing.T) {
+	test(t, TestCase{
+		Case: `var $p: account
+transfer [DZD.2 15] from @world
+send 10% to @a
+send $p to @b
+keep remaining
+`,
+		Expected: CaseResult{
+			Instructions: nil,
+			Constants:    nil,
+			Error:        "type",
 		},
 	})
 }
