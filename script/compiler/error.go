@@ -85,11 +85,12 @@ func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 }
 
 func LogicError(c antlr.ParserRuleContext, err error) *CompileError {
+	endc := c.GetStop().GetColumn() + len(c.GetStop().GetText())
 	return &CompileError{
 		startl: c.GetStart().GetLine(),
 		startc: c.GetStart().GetColumn(),
 		endl:   c.GetStop().GetLine(),
-		endc:   c.GetStop().GetColumn(),
+		endc:   endc,
 		msg:    err.Error(),
 	}
 }

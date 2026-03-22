@@ -13,7 +13,6 @@ TO          : 'to' ;
 THEN        : 'then' ;
 SEND        : 'send' ;
 KEEP        : 'keep' ;
-REMAINING   : 'remaining' ;
 ALL         : 'all' ;
 TAKE        : 'take' ;
 LIMIT       : 'limit' ;
@@ -42,7 +41,8 @@ TY_STRING   : 'string' ;
 
 OP_ADD : '+' ;
 OP_SUB : '-' ;
-PERCENT: '%' ;
+PERCENT           : '%' ;
+PORTION_REMAINING : 'remaining' ;
 
 LBRACK : '[' ;
 RBRACK : ']' ;
@@ -84,7 +84,7 @@ expression
 portion
     : p=NUMBER ('.' pfrac=NUMBER)? PERCENT  # PortionPercent
     | r=RATIO                               # PortionRatio
-    | REMAINING                             # PortionRemaining
+    | PORTION_REMAINING                     # PortionRemaining
     | v=VARIABLE_NAME                       # PortionVar
     ;
 
@@ -96,7 +96,7 @@ source
     | source THEN expression                                        # SrcCascade
     | TAKE NUMBER PERCENT FROM expression                           # SrcPercent
     | TAKE NUMBER PERCENT FROM expression LIMIT monetary            # SrcPercentLimit
-    | TAKE REMAINING FROM expression                                # SrcRemaining
+    | TAKE PORTION_REMAINING FROM expression                        # SrcRemaining
     ;
 
 type_
@@ -125,7 +125,7 @@ metadataEntry
 
 sendClause
     : SEND portion TO expression                         # SendTo
-    | KEEP REMAINING                                     # SendKeep
+    | KEEP PORTION_REMAINING                             # SendKeep
     | SPLIT portion AS COLON NEWLINE
         (sendClause NEWLINE)+                            # SendSplit
     ;

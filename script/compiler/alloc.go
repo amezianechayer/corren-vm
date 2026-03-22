@@ -63,11 +63,11 @@ func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) *
 
 	allotment, err := core.NewAllotment(portions)
 	if err != nil {
-		return LogicError(parts[0].(*parser.SendToContext), err)
+		return LogicError(parts[0], err)
 	}
 	p.PushValue(*allotment)
 	p.instructions = append(p.instructions, program.OP_ALLOC)
-	return p.VisitAllocDestinations(parts)
+	return p.VisitAllocDestination(parts)
 }
 
 func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *CompileError {
@@ -104,7 +104,7 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 				name := por.GetV().GetText()[1:]
 				if info, ok := p.variables[name]; ok {
 					if info.Ty != core.TYPE_PORTION {
-						return LogicError(part, fmt.Errorf("tried to use wrong variable type for portion of allocation: %v", info.Ty))
+						return LogicError(part, fmt.Errorf("wrong type: expected type portion for variable: %v", info.Ty))
 					}
 					p.instructions = append(p.instructions, program.OP_APUSH)
 					bytes := info.Addr.ToBytes()
@@ -129,19 +129,19 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 	}
 
 	if !has_remaining {
-		return LogicError(parts[0].(*parser.SendToContext), errors.New("allocation has variable portions but no 'remaining'"))
+		return LogicError(parts[0], errors.New("allocation has variable portions but no 'remaining'"))
 	}
 	if total.Cmp(big.NewRat(1, 1)) != -1 {
-		return LogicError(parts[0].(*parser.SendToContext), errors.New("sum of known portions is already equal or is greater than 100%"))
+		return LogicError(parts[0], errors.New("sum of known portions is already equal or is greater than 100%"))
 	}
 
 	p.PushValue(core.Number(len(parts)))
 	p.instructions = append(p.instructions, program.OP_MAKE_ALLOTMENT)
 	p.instructions = append(p.instructions, program.OP_ALLOC)
-	return p.VisitAllocDestinations(parts)
+	return p.VisitAllocDestination(parts)
 }
 
-func (p *parseVisitor) VisitAllocDestinations(parts []parser.ISendClauseContext) *CompileError {
+func (p *parseVisitor) VisitAllocDestination(parts []parser.ISendClauseContext) *CompileError {
 	for _, part := range parts {
 		switch part := part.(type) {
 		case *parser.SendToContext:

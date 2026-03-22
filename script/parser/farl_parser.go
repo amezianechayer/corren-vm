@@ -46,7 +46,7 @@ var parserATN = []uint16{
 	13, 3, 13, 6, 13, 272, 10, 13, 13, 13, 14, 13, 273, 3, 13, 7, 13, 277,
 	10, 13, 12, 13, 14, 13, 280, 11, 13, 3, 13, 5, 13, 283, 10, 13, 3, 13,
 	3, 13, 3, 13, 2, 4, 6, 10, 14, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22,
-	24, 2, 4, 3, 2, 40, 41, 3, 2, 34, 39, 2, 316, 2, 49, 3, 2, 2, 2, 4, 55,
+	24, 2, 4, 3, 2, 39, 40, 3, 2, 33, 38, 2, 316, 2, 49, 3, 2, 2, 2, 4, 55,
 	3, 2, 2, 2, 6, 60, 3, 2, 2, 2, 8, 79, 3, 2, 2, 2, 10, 121, 3, 2, 2, 2,
 	12, 131, 3, 2, 2, 2, 14, 157, 3, 2, 2, 2, 16, 161, 3, 2, 2, 2, 18, 163,
 	3, 2, 2, 2, 20, 186, 3, 2, 2, 2, 22, 250, 3, 2, 2, 2, 24, 255, 3, 2, 2,
@@ -66,42 +66,42 @@ var parserATN = []uint16{
 	64, 66, 5, 6, 4, 6, 65, 62, 3, 2, 2, 2, 66, 69, 3, 2, 2, 2, 67, 65, 3,
 	2, 2, 2, 67, 68, 3, 2, 2, 2, 68, 7, 3, 2, 2, 2, 69, 67, 3, 2, 2, 2, 70,
 	73, 7, 55, 2, 2, 71, 72, 7, 47, 2, 2, 72, 74, 7, 55, 2, 2, 73, 71, 3, 2,
-	2, 2, 73, 74, 3, 2, 2, 2, 74, 75, 3, 2, 2, 2, 75, 80, 7, 42, 2, 2, 76,
-	80, 7, 51, 2, 2, 77, 80, 7, 15, 2, 2, 78, 80, 7, 52, 2, 2, 79, 70, 3, 2,
+	2, 2, 73, 74, 3, 2, 2, 2, 74, 75, 3, 2, 2, 2, 75, 80, 7, 41, 2, 2, 76,
+	80, 7, 51, 2, 2, 77, 80, 7, 42, 2, 2, 78, 80, 7, 52, 2, 2, 79, 70, 3, 2,
 	2, 2, 79, 76, 3, 2, 2, 2, 79, 77, 3, 2, 2, 2, 79, 78, 3, 2, 2, 2, 80, 9,
 	3, 2, 2, 2, 81, 82, 8, 6, 1, 2, 82, 83, 7, 10, 2, 2, 83, 122, 5, 6, 4,
-	2, 84, 85, 7, 10, 2, 2, 85, 86, 5, 6, 4, 2, 86, 87, 7, 19, 2, 2, 87, 88,
-	7, 20, 2, 2, 88, 122, 3, 2, 2, 2, 89, 90, 7, 10, 2, 2, 90, 91, 5, 6, 4,
-	2, 91, 92, 7, 19, 2, 2, 92, 93, 7, 20, 2, 2, 93, 94, 7, 21, 2, 2, 94, 95,
+	2, 84, 85, 7, 10, 2, 2, 85, 86, 5, 6, 4, 2, 86, 87, 7, 18, 2, 2, 87, 88,
+	7, 19, 2, 2, 88, 122, 3, 2, 2, 2, 89, 90, 7, 10, 2, 2, 90, 91, 5, 6, 4,
+	2, 91, 92, 7, 18, 2, 2, 92, 93, 7, 19, 2, 2, 93, 94, 7, 20, 2, 2, 94, 95,
 	7, 11, 2, 2, 95, 96, 5, 2, 2, 2, 96, 122, 3, 2, 2, 2, 97, 98, 7, 10, 2,
-	2, 98, 99, 5, 6, 4, 2, 99, 100, 7, 18, 2, 2, 100, 101, 5, 2, 2, 2, 101,
+	2, 98, 99, 5, 6, 4, 2, 99, 100, 7, 17, 2, 2, 100, 101, 5, 2, 2, 2, 101,
 	102, 7, 12, 2, 2, 102, 103, 5, 10, 6, 7, 103, 122, 3, 2, 2, 2, 104, 105,
-	7, 17, 2, 2, 105, 106, 7, 55, 2, 2, 106, 107, 7, 42, 2, 2, 107, 108, 7,
-	10, 2, 2, 108, 122, 5, 6, 4, 2, 109, 110, 7, 17, 2, 2, 110, 111, 7, 55,
-	2, 2, 111, 112, 7, 42, 2, 2, 112, 113, 7, 10, 2, 2, 113, 114, 5, 6, 4,
-	2, 114, 115, 7, 18, 2, 2, 115, 116, 5, 2, 2, 2, 116, 122, 3, 2, 2, 2, 117,
-	118, 7, 17, 2, 2, 118, 119, 7, 15, 2, 2, 119, 120, 7, 10, 2, 2, 120, 122,
+	7, 16, 2, 2, 105, 106, 7, 55, 2, 2, 106, 107, 7, 41, 2, 2, 107, 108, 7,
+	10, 2, 2, 108, 122, 5, 6, 4, 2, 109, 110, 7, 16, 2, 2, 110, 111, 7, 55,
+	2, 2, 111, 112, 7, 41, 2, 2, 112, 113, 7, 10, 2, 2, 113, 114, 5, 6, 4,
+	2, 114, 115, 7, 17, 2, 2, 115, 116, 5, 2, 2, 2, 116, 122, 3, 2, 2, 2, 117,
+	118, 7, 16, 2, 2, 118, 119, 7, 42, 2, 2, 119, 120, 7, 10, 2, 2, 120, 122,
 	5, 6, 4, 2, 121, 81, 3, 2, 2, 2, 121, 84, 3, 2, 2, 2, 121, 89, 3, 2, 2,
 	2, 121, 97, 3, 2, 2, 2, 121, 104, 3, 2, 2, 2, 121, 109, 3, 2, 2, 2, 121,
 	117, 3, 2, 2, 2, 122, 128, 3, 2, 2, 2, 123, 124, 12, 6, 2, 2, 124, 125,
 	7, 12, 2, 2, 125, 127, 5, 6, 4, 2, 126, 123, 3, 2, 2, 2, 127, 130, 3, 2,
 	2, 2, 128, 126, 3, 2, 2, 2, 128, 129, 3, 2, 2, 2, 129, 11, 3, 2, 2, 2,
 	130, 128, 3, 2, 2, 2, 131, 132, 9, 3, 2, 2, 132, 13, 3, 2, 2, 2, 133, 134,
-	7, 26, 2, 2, 134, 135, 7, 52, 2, 2, 135, 136, 7, 48, 2, 2, 136, 158, 5,
-	12, 7, 2, 137, 138, 7, 26, 2, 2, 138, 139, 7, 52, 2, 2, 139, 140, 7, 50,
-	2, 2, 140, 141, 7, 27, 2, 2, 141, 142, 7, 28, 2, 2, 142, 143, 5, 6, 4,
-	2, 143, 144, 7, 23, 2, 2, 144, 145, 7, 54, 2, 2, 145, 146, 7, 47, 2, 2,
-	146, 147, 7, 55, 2, 2, 147, 158, 3, 2, 2, 2, 148, 149, 7, 26, 2, 2, 149,
-	150, 7, 52, 2, 2, 150, 151, 7, 50, 2, 2, 151, 152, 7, 29, 2, 2, 152, 153,
-	7, 28, 2, 2, 153, 154, 5, 6, 4, 2, 154, 155, 7, 30, 2, 2, 155, 156, 7,
+	7, 25, 2, 2, 134, 135, 7, 52, 2, 2, 135, 136, 7, 48, 2, 2, 136, 158, 5,
+	12, 7, 2, 137, 138, 7, 25, 2, 2, 138, 139, 7, 52, 2, 2, 139, 140, 7, 50,
+	2, 2, 140, 141, 7, 26, 2, 2, 141, 142, 7, 27, 2, 2, 142, 143, 5, 6, 4,
+	2, 143, 144, 7, 22, 2, 2, 144, 145, 7, 54, 2, 2, 145, 146, 7, 47, 2, 2,
+	146, 147, 7, 55, 2, 2, 147, 158, 3, 2, 2, 2, 148, 149, 7, 25, 2, 2, 149,
+	150, 7, 52, 2, 2, 150, 151, 7, 50, 2, 2, 151, 152, 7, 28, 2, 2, 152, 153,
+	7, 27, 2, 2, 153, 154, 5, 6, 4, 2, 154, 155, 7, 29, 2, 2, 155, 156, 7,
 	56, 2, 2, 156, 158, 3, 2, 2, 2, 157, 133, 3, 2, 2, 2, 157, 137, 3, 2, 2,
 	2, 157, 148, 3, 2, 2, 2, 158, 15, 3, 2, 2, 2, 159, 162, 5, 6, 4, 2, 160,
 	162, 7, 51, 2, 2, 161, 159, 3, 2, 2, 2, 161, 160, 3, 2, 2, 2, 162, 17,
 	3, 2, 2, 2, 163, 164, 7, 56, 2, 2, 164, 165, 7, 50, 2, 2, 165, 166, 5,
 	16, 9, 2, 166, 19, 3, 2, 2, 2, 167, 168, 7, 13, 2, 2, 168, 169, 5, 8, 5,
 	2, 169, 170, 7, 11, 2, 2, 170, 171, 5, 6, 4, 2, 171, 187, 3, 2, 2, 2, 172,
-	173, 7, 14, 2, 2, 173, 187, 7, 15, 2, 2, 174, 175, 7, 24, 2, 2, 175, 176,
-	5, 8, 5, 2, 176, 177, 7, 25, 2, 2, 177, 178, 7, 48, 2, 2, 178, 182, 7,
+	173, 7, 14, 2, 2, 173, 187, 7, 42, 2, 2, 174, 175, 7, 23, 2, 2, 175, 176,
+	5, 8, 5, 2, 176, 177, 7, 24, 2, 2, 177, 178, 7, 48, 2, 2, 178, 182, 7,
 	3, 2, 2, 179, 180, 5, 20, 11, 2, 180, 181, 7, 3, 2, 2, 181, 183, 3, 2,
 	2, 2, 182, 179, 3, 2, 2, 2, 183, 184, 3, 2, 2, 2, 184, 182, 3, 2, 2, 2,
 	184, 185, 3, 2, 2, 2, 185, 187, 3, 2, 2, 2, 186, 167, 3, 2, 2, 2, 186,
@@ -112,19 +112,19 @@ var parserATN = []uint16{
 	199, 5, 6, 4, 2, 199, 200, 5, 10, 6, 2, 200, 204, 7, 3, 2, 2, 201, 202,
 	5, 20, 11, 2, 202, 203, 7, 3, 2, 2, 203, 205, 3, 2, 2, 2, 204, 201, 3,
 	2, 2, 2, 205, 206, 3, 2, 2, 2, 206, 204, 3, 2, 2, 2, 206, 207, 3, 2, 2,
-	2, 207, 251, 3, 2, 2, 2, 208, 209, 7, 9, 2, 2, 209, 210, 7, 16, 2, 2, 210,
+	2, 207, 251, 3, 2, 2, 2, 208, 209, 7, 9, 2, 2, 209, 210, 7, 15, 2, 2, 210,
 	211, 5, 2, 2, 2, 211, 212, 5, 10, 6, 2, 212, 213, 7, 11, 2, 2, 213, 214,
-	5, 6, 4, 2, 214, 251, 3, 2, 2, 2, 215, 216, 7, 22, 2, 2, 216, 217, 5, 2,
-	2, 2, 217, 218, 7, 23, 2, 2, 218, 219, 5, 6, 4, 2, 219, 251, 3, 2, 2, 2,
-	220, 221, 7, 31, 2, 2, 221, 222, 7, 32, 2, 2, 222, 223, 7, 33, 2, 2, 223,
+	5, 6, 4, 2, 214, 251, 3, 2, 2, 2, 215, 216, 7, 21, 2, 2, 216, 217, 5, 2,
+	2, 2, 217, 218, 7, 22, 2, 2, 218, 219, 5, 6, 4, 2, 219, 251, 3, 2, 2, 2,
+	220, 221, 7, 30, 2, 2, 221, 222, 7, 31, 2, 2, 222, 223, 7, 32, 2, 2, 223,
 	224, 7, 56, 2, 2, 224, 225, 7, 50, 2, 2, 225, 251, 5, 16, 9, 2, 226, 227,
-	7, 31, 2, 2, 227, 228, 7, 32, 2, 2, 228, 229, 7, 33, 2, 2, 229, 230, 7,
+	7, 30, 2, 2, 227, 228, 7, 31, 2, 2, 228, 229, 7, 32, 2, 2, 229, 230, 7,
 	45, 2, 2, 230, 234, 7, 3, 2, 2, 231, 232, 5, 18, 10, 2, 232, 233, 7, 3,
 	2, 2, 233, 235, 3, 2, 2, 2, 234, 231, 3, 2, 2, 2, 235, 236, 3, 2, 2, 2,
 	236, 234, 3, 2, 2, 2, 236, 237, 3, 2, 2, 2, 237, 238, 3, 2, 2, 2, 238,
-	239, 7, 46, 2, 2, 239, 251, 3, 2, 2, 2, 240, 241, 7, 31, 2, 2, 241, 242,
-	7, 34, 2, 2, 242, 243, 7, 33, 2, 2, 243, 244, 7, 28, 2, 2, 244, 245, 5,
-	6, 4, 2, 245, 246, 7, 30, 2, 2, 246, 247, 7, 56, 2, 2, 247, 248, 7, 50,
+	239, 7, 46, 2, 2, 239, 251, 3, 2, 2, 2, 240, 241, 7, 30, 2, 2, 241, 242,
+	7, 33, 2, 2, 242, 243, 7, 32, 2, 2, 243, 244, 7, 27, 2, 2, 244, 245, 5,
+	6, 4, 2, 245, 246, 7, 29, 2, 2, 246, 247, 7, 56, 2, 2, 247, 248, 7, 50,
 	2, 2, 248, 249, 5, 16, 9, 2, 249, 251, 3, 2, 2, 2, 250, 188, 3, 2, 2, 2,
 	250, 190, 3, 2, 2, 2, 250, 191, 3, 2, 2, 2, 250, 197, 3, 2, 2, 2, 250,
 	208, 3, 2, 2, 2, 250, 215, 3, 2, 2, 2, 250, 220, 3, 2, 2, 2, 250, 226,
@@ -146,22 +146,22 @@ var parserATN = []uint16{
 }
 var literalNames = []string{
 	"", "", "", "", "", "'print'", "'fail'", "'transfer'", "'from'", "'to'",
-	"'then'", "'send'", "'keep'", "'remaining'", "'all'", "'take'", "'limit'",
-	"'allow'", "'overdraft'", "'up'", "'reserve'", "'in'", "'split'", "'as'",
-	"'var'", "'balance'", "'of'", "'meta'", "'key'", "'set'", "'transaction'",
-	"'metadata'", "'account'", "'asset'", "'number'", "'monetary'", "'portion'",
-	"'string'", "'+'", "'-'", "'%'", "'['", "']'", "'{'", "'}'", "'.'", "':'",
-	"'*'", "'='",
+	"'then'", "'send'", "'keep'", "'all'", "'take'", "'limit'", "'allow'",
+	"'overdraft'", "'up'", "'reserve'", "'in'", "'split'", "'as'", "'var'",
+	"'balance'", "'of'", "'meta'", "'key'", "'set'", "'transaction'", "'metadata'",
+	"'account'", "'asset'", "'number'", "'monetary'", "'portion'", "'string'",
+	"'+'", "'-'", "'%'", "'remaining'", "'['", "']'", "'{'", "'}'", "'.'",
+	"':'", "'*'", "'='",
 }
 var symbolicNames = []string{
 	"", "NEWLINE", "WHITESPACE", "MULTILINE_COMMENT", "LINE_COMMENT", "PRINT",
-	"FAIL", "TRANSFER", "FROM", "TO", "THEN", "SEND", "KEEP", "REMAINING",
-	"ALL", "TAKE", "LIMIT", "ALLOW", "OVERDRAFT", "UP", "RESERVE", "IN", "SPLIT",
-	"AS", "VAR", "BALANCE", "OF", "META", "KEY", "SET", "TRANSACTION", "METADATA",
-	"TY_ACCOUNT", "TY_ASSET", "TY_NUMBER", "TY_MONETARY", "TY_PORTION", "TY_STRING",
-	"OP_ADD", "OP_SUB", "PERCENT", "LBRACK", "RBRACK", "LBRACE", "RBRACE",
-	"DOT", "COLON", "STAR", "EQ", "RATIO", "VARIABLE_NAME", "ACCOUNT", "ASSET",
-	"NUMBER", "STRING",
+	"FAIL", "TRANSFER", "FROM", "TO", "THEN", "SEND", "KEEP", "ALL", "TAKE",
+	"LIMIT", "ALLOW", "OVERDRAFT", "UP", "RESERVE", "IN", "SPLIT", "AS", "VAR",
+	"BALANCE", "OF", "META", "KEY", "SET", "TRANSACTION", "METADATA", "TY_ACCOUNT",
+	"TY_ASSET", "TY_NUMBER", "TY_MONETARY", "TY_PORTION", "TY_STRING", "OP_ADD",
+	"OP_SUB", "PERCENT", "PORTION_REMAINING", "LBRACK", "RBRACK", "LBRACE",
+	"RBRACE", "DOT", "COLON", "STAR", "EQ", "RATIO", "VARIABLE_NAME", "ACCOUNT",
+	"ASSET", "NUMBER", "STRING",
 }
 
 var ruleNames = []string{
@@ -213,34 +213,34 @@ const (
 	FaRlParserTHEN              = 10
 	FaRlParserSEND              = 11
 	FaRlParserKEEP              = 12
-	FaRlParserREMAINING         = 13
-	FaRlParserALL               = 14
-	FaRlParserTAKE              = 15
-	FaRlParserLIMIT             = 16
-	FaRlParserALLOW             = 17
-	FaRlParserOVERDRAFT         = 18
-	FaRlParserUP                = 19
-	FaRlParserRESERVE           = 20
-	FaRlParserIN                = 21
-	FaRlParserSPLIT             = 22
-	FaRlParserAS                = 23
-	FaRlParserVAR               = 24
-	FaRlParserBALANCE           = 25
-	FaRlParserOF                = 26
-	FaRlParserMETA              = 27
-	FaRlParserKEY               = 28
-	FaRlParserSET               = 29
-	FaRlParserTRANSACTION       = 30
-	FaRlParserMETADATA          = 31
-	FaRlParserTY_ACCOUNT        = 32
-	FaRlParserTY_ASSET          = 33
-	FaRlParserTY_NUMBER         = 34
-	FaRlParserTY_MONETARY       = 35
-	FaRlParserTY_PORTION        = 36
-	FaRlParserTY_STRING         = 37
-	FaRlParserOP_ADD            = 38
-	FaRlParserOP_SUB            = 39
-	FaRlParserPERCENT           = 40
+	FaRlParserALL               = 13
+	FaRlParserTAKE              = 14
+	FaRlParserLIMIT             = 15
+	FaRlParserALLOW             = 16
+	FaRlParserOVERDRAFT         = 17
+	FaRlParserUP                = 18
+	FaRlParserRESERVE           = 19
+	FaRlParserIN                = 20
+	FaRlParserSPLIT             = 21
+	FaRlParserAS                = 22
+	FaRlParserVAR               = 23
+	FaRlParserBALANCE           = 24
+	FaRlParserOF                = 25
+	FaRlParserMETA              = 26
+	FaRlParserKEY               = 27
+	FaRlParserSET               = 28
+	FaRlParserTRANSACTION       = 29
+	FaRlParserMETADATA          = 30
+	FaRlParserTY_ACCOUNT        = 31
+	FaRlParserTY_ASSET          = 32
+	FaRlParserTY_NUMBER         = 33
+	FaRlParserTY_MONETARY       = 34
+	FaRlParserTY_PORTION        = 35
+	FaRlParserTY_STRING         = 36
+	FaRlParserOP_ADD            = 37
+	FaRlParserOP_SUB            = 38
+	FaRlParserPERCENT           = 39
+	FaRlParserPORTION_REMAINING = 40
 	FaRlParserLBRACK            = 41
 	FaRlParserRBRACK            = 42
 	FaRlParserLBRACE            = 43
@@ -1469,8 +1469,8 @@ func (s *PortionRemainingContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *PortionRemainingContext) REMAINING() antlr.TerminalNode {
-	return s.GetToken(FaRlParserREMAINING, 0)
+func (s *PortionRemainingContext) PORTION_REMAINING() antlr.TerminalNode {
+	return s.GetToken(FaRlParserPORTION_REMAINING, 0)
 }
 
 func (s *PortionRemainingContext) EnterRule(listener antlr.ParseTreeListener) {
@@ -1649,12 +1649,12 @@ func (p *FaRlParser) Portion() (localctx IPortionContext) {
 			localctx.(*PortionRatioContext).r = _m
 		}
 
-	case FaRlParserREMAINING:
+	case FaRlParserPORTION_REMAINING:
 		localctx = NewPortionRemainingContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(75)
-			p.Match(FaRlParserREMAINING)
+			p.Match(FaRlParserPORTION_REMAINING)
 		}
 
 	case FaRlParserVARIABLE_NAME:
@@ -1747,8 +1747,8 @@ func (s *SrcRemainingContext) TAKE() antlr.TerminalNode {
 	return s.GetToken(FaRlParserTAKE, 0)
 }
 
-func (s *SrcRemainingContext) REMAINING() antlr.TerminalNode {
-	return s.GetToken(FaRlParserREMAINING, 0)
+func (s *SrcRemainingContext) PORTION_REMAINING() antlr.TerminalNode {
+	return s.GetToken(FaRlParserPORTION_REMAINING, 0)
 }
 
 func (s *SrcRemainingContext) FROM() antlr.TerminalNode {
@@ -2395,7 +2395,7 @@ func (p *FaRlParser) source(_p int) (localctx ISourceContext) {
 		}
 		{
 			p.SetState(116)
-			p.Match(FaRlParserREMAINING)
+			p.Match(FaRlParserPORTION_REMAINING)
 		}
 		{
 			p.SetState(117)
@@ -2551,7 +2551,7 @@ func (p *FaRlParser) Type_() (localctx IType_Context) {
 		p.SetState(129)
 		_la = p.GetTokenStream().LA(1)
 
-		if !(((_la-32)&-(0x1f+1)) == 0 && ((1<<uint((_la-32)))&((1<<(FaRlParserTY_ACCOUNT-32))|(1<<(FaRlParserTY_ASSET-32))|(1<<(FaRlParserTY_NUMBER-32))|(1<<(FaRlParserTY_MONETARY-32))|(1<<(FaRlParserTY_PORTION-32))|(1<<(FaRlParserTY_STRING-32)))) != 0) {
+		if !(((_la-31)&-(0x1f+1)) == 0 && ((1<<uint((_la-31)))&((1<<(FaRlParserTY_ACCOUNT-31))|(1<<(FaRlParserTY_ASSET-31))|(1<<(FaRlParserTY_NUMBER-31))|(1<<(FaRlParserTY_MONETARY-31))|(1<<(FaRlParserTY_PORTION-31))|(1<<(FaRlParserTY_STRING-31)))) != 0) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -3465,8 +3465,8 @@ func (s *SendKeepContext) KEEP() antlr.TerminalNode {
 	return s.GetToken(FaRlParserKEEP, 0)
 }
 
-func (s *SendKeepContext) REMAINING() antlr.TerminalNode {
-	return s.GetToken(FaRlParserREMAINING, 0)
+func (s *SendKeepContext) PORTION_REMAINING() antlr.TerminalNode {
+	return s.GetToken(FaRlParserPORTION_REMAINING, 0)
 }
 
 func (s *SendKeepContext) EnterRule(listener antlr.ParseTreeListener) {
@@ -3535,7 +3535,7 @@ func (p *FaRlParser) SendClause() (localctx ISendClauseContext) {
 		}
 		{
 			p.SetState(171)
-			p.Match(FaRlParserREMAINING)
+			p.Match(FaRlParserPORTION_REMAINING)
 		}
 
 	case FaRlParserSPLIT:
