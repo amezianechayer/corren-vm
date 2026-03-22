@@ -1,7 +1,9 @@
 grammar FaRl;
 
-NEWLINE    : [\r\n]+ ;
-WHITESPACE : [ \t]+ -> skip ;
+NEWLINE           : [\r\n]+ ;
+WHITESPACE        : [ \t]+ -> skip ;
+MULTILINE_COMMENT : '/*' (MULTILINE_COMMENT|.)*? '*/' -> skip ;
+LINE_COMMENT      : '//' .*? NEWLINE -> skip ;
 
 PRINT       : 'print' ;
 FAIL        : 'fail' ;
