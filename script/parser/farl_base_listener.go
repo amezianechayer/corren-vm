@@ -171,23 +171,17 @@ func (s *BaseFaRlListener) EnterType_(ctx *Type_Context) {}
 // ExitType_ is called when production type_ is exited.
 func (s *BaseFaRlListener) ExitType_(ctx *Type_Context) {}
 
+// EnterOrigin is called when production origin is entered.
+func (s *BaseFaRlListener) EnterOrigin(ctx *OriginContext) {}
+
+// ExitOrigin is called when production origin is exited.
+func (s *BaseFaRlListener) ExitOrigin(ctx *OriginContext) {}
+
 // EnterVarTyped is called when production VarTyped is entered.
 func (s *BaseFaRlListener) EnterVarTyped(ctx *VarTypedContext) {}
 
 // ExitVarTyped is called when production VarTyped is exited.
 func (s *BaseFaRlListener) ExitVarTyped(ctx *VarTypedContext) {}
-
-// EnterVarBalance is called when production VarBalance is entered.
-func (s *BaseFaRlListener) EnterVarBalance(ctx *VarBalanceContext) {}
-
-// ExitVarBalance is called when production VarBalance is exited.
-func (s *BaseFaRlListener) ExitVarBalance(ctx *VarBalanceContext) {}
-
-// EnterVarMeta is called when production VarMeta is entered.
-func (s *BaseFaRlListener) EnterVarMeta(ctx *VarMetaContext) {}
-
-// ExitVarMeta is called when production VarMeta is exited.
-func (s *BaseFaRlListener) ExitVarMeta(ctx *VarMetaContext) {}
 
 // EnterMetaValueExpr is called when production MetaValueExpr is entered.
 func (s *BaseFaRlListener) EnterMetaValueExpr(ctx *MetaValueExprContext) {}

@@ -83,14 +83,11 @@ type FaRlListener interface {
 	// EnterType_ is called when entering the type_ production.
 	EnterType_(c *Type_Context)
 
+	// EnterOrigin is called when entering the origin production.
+	EnterOrigin(c *OriginContext)
+
 	// EnterVarTyped is called when entering the VarTyped production.
 	EnterVarTyped(c *VarTypedContext)
-
-	// EnterVarBalance is called when entering the VarBalance production.
-	EnterVarBalance(c *VarBalanceContext)
-
-	// EnterVarMeta is called when entering the VarMeta production.
-	EnterVarMeta(c *VarMetaContext)
 
 	// EnterMetaValueExpr is called when entering the MetaValueExpr production.
 	EnterMetaValueExpr(c *MetaValueExprContext)
@@ -215,14 +212,11 @@ type FaRlListener interface {
 	// ExitType_ is called when exiting the type_ production.
 	ExitType_(c *Type_Context)
 
+	// ExitOrigin is called when exiting the origin production.
+	ExitOrigin(c *OriginContext)
+
 	// ExitVarTyped is called when exiting the VarTyped production.
 	ExitVarTyped(c *VarTypedContext)
-
-	// ExitVarBalance is called when exiting the VarBalance production.
-	ExitVarBalance(c *VarBalanceContext)
-
-	// ExitVarMeta is called when exiting the VarMeta production.
-	ExitVarMeta(c *VarMetaContext)
 
 	// ExitMetaValueExpr is called when exiting the MetaValueExpr production.
 	ExitMetaValueExpr(c *MetaValueExprContext)

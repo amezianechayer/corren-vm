@@ -27,6 +27,9 @@ VAR         : 'var' ;
 BALANCE     : 'balance' ;
 OF          : 'of' ;
 META        : 'meta' ;
+META_OPEN   : 'meta(' ;
+COMMA       : ',' ;
+RPAREN      : ')' ;
 KEY         : 'key' ;
 SET         : 'set' ;
 TRANSACTION : 'transaction' ;
@@ -108,10 +111,12 @@ type_
     | TY_STRING
     ;
 
+origin
+    : META_OPEN acc=expression COMMA key=STRING RPAREN
+    ;
+
 varDecl
-    : VAR name=VARIABLE_NAME COLON ty=type_                                 # VarTyped
-    | VAR name=VARIABLE_NAME EQ BALANCE OF expression IN ASSET DOT NUMBER  # VarBalance
-    | VAR name=VARIABLE_NAME EQ META OF expression KEY STRING               # VarMeta
+    : VAR name=VARIABLE_NAME COLON ty=type_ (EQ orig=origin)?              # VarTyped
     ;
 
 metadataValue

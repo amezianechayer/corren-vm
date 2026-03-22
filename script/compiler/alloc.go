@@ -65,7 +65,11 @@ func (p *parseVisitor) VisitAllocationConst(parts []parser.ISendClauseContext) *
 	if err != nil {
 		return LogicError(parts[0], err)
 	}
-	p.PushValue(*allotment)
+	addr, aerr := p.AllocateResource(program.Constant{Inner: *allotment})
+	if aerr != nil {
+		return LogicError(parts[0], aerr)
+	}
+	p.PushAddress(addr)
 	p.instructions = append(p.instructions, program.OP_ALLOC)
 	return p.VisitAllocDestination(parts)
 }
@@ -91,7 +95,11 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 				}
 				rat := big.Rat(*portion.Specific)
 				total.Add(&rat, total)
-				p.PushValue(core.Portion(*portion))
+				addr, aerr := p.AllocateResource(program.Constant{Inner: core.Portion(*portion)})
+				if aerr != nil {
+					return LogicError(part, aerr)
+				}
+				p.PushAddress(addr)
 			case *parser.PortionRatioContext:
 				portion, err := core.ParsePortionSpecific(por.GetR().GetText())
 				if err != nil {
@@ -99,15 +107,20 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 				}
 				rat := big.Rat(*portion.Specific)
 				total.Add(&rat, total)
-				p.PushValue(core.Portion(*portion))
+				addr, aerr := p.AllocateResource(program.Constant{Inner: core.Portion(*portion)})
+				if aerr != nil {
+					return LogicError(part, aerr)
+				}
+				p.PushAddress(addr)
 			case *parser.PortionVarContext:
 				name := por.GetV().GetText()[1:]
-				if info, ok := p.variables[name]; ok {
-					if info.Ty != core.TYPE_PORTION {
-						return LogicError(part, fmt.Errorf("wrong type: expected type portion for variable: %v", info.Ty))
+				if idx, ok := p.var_idx[name]; ok {
+					res := p.resources[idx]
+					if res.GetType() != core.TYPE_PORTION {
+						return LogicError(part, fmt.Errorf("wrong type: expected type portion for variable: %v", res.GetType()))
 					}
 					p.instructions = append(p.instructions, program.OP_APUSH)
-					bytes := info.Addr.ToBytes()
+					bytes := idx.ToBytes()
 					p.instructions = append(p.instructions, bytes...)
 				} else {
 					return LogicError(part, fmt.Errorf("variable not declared: %v", name))
@@ -116,14 +129,22 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 				if has_remaining {
 					return LogicError(part, errors.New("two uses of `remaining` in the same allocation"))
 				}
-				p.PushValue(core.NewPortionRemaining())
+				addr, aerr := p.AllocateResource(program.Constant{Inner: core.NewPortionRemaining()})
+				if aerr != nil {
+					return LogicError(part, aerr)
+				}
+				p.PushAddress(addr)
 				has_remaining = true
 			}
 		case *parser.SendKeepContext:
 			if has_remaining {
 				return LogicError(part, errors.New("two uses of `remaining` in the same allocation"))
 			}
-			p.PushValue(core.NewPortionRemaining())
+			addr, aerr := p.AllocateResource(program.Constant{Inner: core.NewPortionRemaining()})
+			if aerr != nil {
+				return LogicError(part, aerr)
+			}
+			p.PushAddress(addr)
 			has_remaining = true
 		}
 	}
@@ -135,7 +156,7 @@ func (p *parseVisitor) VisitAllocationDyn(parts []parser.ISendClauseContext) *Co
 		return LogicError(parts[0], errors.New("sum of known portions is already equal or is greater than 100%"))
 	}
 
-	p.PushValue(core.Number(len(parts)))
+	p.PushInteger(core.Number(len(parts)))
 	p.instructions = append(p.instructions, program.OP_MAKE_ALLOTMENT)
 	p.instructions = append(p.instructions, program.OP_ALLOC)
 	return p.VisitAllocDestination(parts)
@@ -145,7 +166,7 @@ func (p *parseVisitor) VisitAllocDestination(parts []parser.ISendClauseContext) 
 	for _, part := range parts {
 		switch part := part.(type) {
 		case *parser.SendToContext:
-			ty, _, err := p.VisitExpr(part.Expression())
+			ty, _, err := p.VisitExpr(part.Expression(), true)
 			if err != nil {
 				return err
 			}

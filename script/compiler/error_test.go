@@ -22,7 +22,7 @@ send 50% to @c
 	if lerr.startl != 3 {
 		t.Fatal(fmt.Sprintf("start line was %v", lerr.startl))
 	}
-	if lerr.startc != 5 {
+	if lerr.startc != 0 {
 		t.Fatal(fmt.Sprintf("start character was %v", lerr.startc))
 	}
 }
