@@ -123,7 +123,7 @@ type_
     ;
 
 origin
-    : 'meta(' acc=expression ',' key=STRING ')'
+    : META LPAREN acc=expression ',' key=STRING RPAREN
     ;
 
 varDecl
