@@ -10,38 +10,38 @@ import (
 )
 
 type CompileError struct {
-	startl, startc int
-	endl, endc     int
-	msg            string
+	Startl, Startc int
+	Endl, Endc     int
+	Msg            string
 }
 
 type CompileErrorList struct {
-	errors []CompileError
-	source string
+	Errors []CompileError
+	Source string
 }
 
 func (c *CompileErrorList) Error() string {
-	source := strings.ReplaceAll(c.source, "\t", " ")
+	source := strings.ReplaceAll(c.Source, "\t", " ")
 	lines := strings.SplitAfter(strings.ReplaceAll(source, "\r\n", "\n"), "\n")
 	lines[len(lines)-1] += "\n"
 	txt_bar_good := aurora.Blue("|")
 	s := ""
-	for _, e := range c.errors {
-		ln_pad := int(math.Log10(float64(e.endl))) + 1
-		s += fmt.Sprintf("%v error:%v:%v\n", aurora.Red("-->"), e.startl, e.startc)
+	for _, e := range c.Errors {
+		ln_pad := int(math.Log10(float64(e.Endl))) + 1
+		s += fmt.Sprintf("%v error:%v:%v\n", aurora.Red("-->"), e.Startl, e.Startc)
 		s += fmt.Sprintf("%v %v\n", strings.Repeat(" ", ln_pad), txt_bar_good)
-		for l := e.startl; l <= e.endl; l++ {
+		for l := e.Startl; l <= e.Endl; l++ {
 			line := lines[l-1]
 			before := ""
 			after := ""
 			start := 0
-			if l == e.startl {
-				before = line[:e.startc]
-				line = line[e.startc:]
-				start = e.startc
+			if l == e.Startl {
+				before = line[:e.Startc]
+				line = line[e.Startc:]
+				start = e.Startc
 			}
-			if l == e.endl {
-				idx := e.endc - start + 1
+			if l == e.Endl {
+				idx := e.Endc - start + 1
 				if idx >= len(line) {
 					idx = len(line) - 1
 				}
@@ -51,18 +51,18 @@ func (c *CompileErrorList) Error() string {
 			s += aurora.Red(fmt.Sprintf("%0*d | ", ln_pad, l)).String()
 			s += fmt.Sprintf("%v%v%v", aurora.BrightBlack(before), line, aurora.BrightBlack(after))
 		}
-		start := strings.IndexFunc(lines[e.endl-1], func(r rune) bool {
+		start := strings.IndexFunc(lines[e.Endl-1], func(r rune) bool {
 			return r != ' '
 		})
-		span := e.endc - start + 1
-		if e.startl == e.endl {
-			start = e.startc
-			span = e.endc - e.startc
+		span := e.Endc - start + 1
+		if e.Startl == e.Endl {
+			start = e.Startc
+			span = e.Endc - e.Startc
 		}
 		if span == 0 {
 			span = 1
 		}
-		s += fmt.Sprintf("%v %v %v%v %v\n", strings.Repeat(" ", ln_pad), txt_bar_good, strings.Repeat(" ", start), aurora.Red(strings.Repeat("^", span)), e.msg)
+		s += fmt.Sprintf("%v %v %v%v %v\n", strings.Repeat(" ", ln_pad), txt_bar_good, strings.Repeat(" ", start), aurora.Red(strings.Repeat("^", span)), e.Msg)
 	}
 	return s
 }
@@ -80,22 +80,22 @@ func (l *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 	endl := startl
 	endc := startc + length - 1
 	l.Errors = append(l.Errors, CompileError{
-		startl: startl,
-		startc: startc,
-		endl:   endl,
-		endc:   endc,
-		msg:    msg,
+		Startl: startl,
+		Startc: startc,
+		Endl:   endl,
+		Endc:   endc,
+		Msg:    msg,
 	})
 }
 
 func LogicError(c antlr.ParserRuleContext, err error) *CompileError {
 	endc := c.GetStop().GetColumn() + len(c.GetStop().GetText())
 	return &CompileError{
-		startl: c.GetStart().GetLine(),
-		startc: c.GetStart().GetColumn(),
-		endl:   c.GetStop().GetLine(),
-		endc:   endc,
-		msg:    err.Error(),
+		Startl: c.GetStart().GetLine(),
+		Startc: c.GetStart().GetColumn(),
+		Endl:   c.GetStop().GetLine(),
+		Endc:   endc,
+		Msg:    err.Error(),
 	}
 }
 
@@ -103,10 +103,10 @@ const INTERNAL_ERROR_MSG = "internal compiler error, please report to the issue 
 
 func InternalError(c antlr.ParserRuleContext) *CompileError {
 	return &CompileError{
-		startl: c.GetStart().GetLine(),
-		startc: c.GetStart().GetColumn(),
-		endl:   c.GetStop().GetLine(),
-		endc:   c.GetStop().GetColumn(),
-		msg:    INTERNAL_ERROR_MSG,
+		Startl: c.GetStart().GetLine(),
+		Startc: c.GetStart().GetColumn(),
+		Endl:   c.GetStop().GetLine(),
+		Endc:   c.GetStop().GetColumn(),
+		Msg:    INTERNAL_ERROR_MSG,
 	}
 }

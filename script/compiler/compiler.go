@@ -87,7 +87,7 @@ func (p *parseVisitor) VisitVariable(c parser.IExpressionContext, push bool) (co
 		}
 		return 0, nil, LogicError(ctx, errors.New("variable not declared"))
 	}
-	return 0, nil, &CompileError{msg: "expected variable"}
+	return 0, nil, &CompileError{Msg: "expected variable"}
 }
 
 func (p *parseVisitor) VisitScript(c parser.IScriptContext) *CompileError {
@@ -385,8 +385,8 @@ func Compile(input string) (*program.Program, error) {
 
 	if len(elistener.Errors) != 0 {
 		err := CompileErrorList{
-			errors: elistener.Errors,
-			source: input,
+			Errors: elistener.Errors,
+			Source: input,
 		}
 		return nil, &err
 	}
@@ -403,8 +403,8 @@ func Compile(input string) (*program.Program, error) {
 
 	if cerr != nil {
 		err := CompileErrorList{
-			errors: []CompileError{*cerr},
-			source: input,
+			Errors: []CompileError{*cerr},
+			Source: input,
 		}
 		return nil, &err
 	}

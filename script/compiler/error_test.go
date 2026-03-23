@@ -22,8 +22,14 @@ transfer [DZD.2 200] (
 	if _, ok := err.(*CompileErrorList); !ok {
 		t.Fatal("error had wrong type")
 	}
-	lerr := err.(*CompileErrorList).errors[0]
-	if lerr.startl != 5 {
-		t.Fatal(fmt.Sprintf("start line was %v", lerr.startl))
+	lerr := err.(*CompileErrorList).Errors[0]
+	if lerr.Startl != 5 {
+		t.Fatal(fmt.Sprintf("start line was %v", lerr.Startl))
+	}
+	if lerr.Startc != 2 {
+		t.Fatal(fmt.Sprintf("start character was %v", lerr.Startc))
+	}
+	if lerr.Endl != 5 {
+		t.Fatal(fmt.Sprintf("end line was %v", lerr.Endl))
 	}
 }
