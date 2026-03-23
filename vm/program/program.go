@@ -16,18 +16,18 @@ type Program struct {
 }
 
 func (p Program) String() string {
-	out := "Program:\nINSTRUCTIONS"
+	out := "Program:\nINSTRUCTIONS\n"
 	for i := 0; i < len(p.Instructions); i++ {
 		out += fmt.Sprintf("%02d----- ", i)
 		switch p.Instructions[i] {
 		case OP_APUSH:
-			out += "OP_APUSH\n"
+			out += "OP_APUSH "
 			address := binary.LittleEndian.Uint16(p.Instructions[i+1 : i+3])
-			out += fmt.Sprintf("%02d-%02d   #RES(%d)\n", i+1, i+3, address)
+			out += fmt.Sprintf("#%d\n", address)
 			i += 2
 		case OP_IPUSH:
-			out += "OP_IPUSH\n"
-			out += fmt.Sprintf("%02d-%02d   %d\n", i+1, i+9, binary.LittleEndian.Uint64(p.Instructions[i+1:i+9]))
+			out += "OP_IPUSH "
+			out += fmt.Sprintf("%d\n", binary.LittleEndian.Uint64(p.Instructions[i+1:i+9]))
 			i += 8
 		case OP_IADD:
 			out += "OP_IADD\n"
@@ -37,16 +37,26 @@ func (p Program) String() string {
 			out += "OP_PRINT\n"
 		case OP_FAIL:
 			out += "OP_FAIL\n"
-		case OP_SEND:
-			out += "OP_SEND\n"
-		case OP_SOURCE:
-			out += "OP_SOURCE\n"
-		case OP_ALLOC:
-			out += "OP_ALLOC\n"
+		case OP_ASSET:
+			out += "OP_ASSET\n"
 		case OP_MAKE_ALLOTMENT:
 			out += "OP_MAKE_ALLOTMENT\n"
+		case OP_TAKE_ALL:
+			out += "OP_TAKE_ALL\n"
+		case OP_TAKE:
+			out += "OP_TAKE\n"
+		case OP_TAKE_MAX:
+			out += "OP_TAKE_MAX\n"
+		case OP_TAKE_SPLIT:
+			out += "OP_TAKE_SPLIT\n"
+		case OP_ASSEMBLE:
+			out += "OP_ASSEMBLE\n"
+		case OP_ALLOC:
+			out += "OP_ALLOC\n"
+		case OP_SEND:
+			out += "OP_SEND\n"
 		default:
-			out += "Unknown opcode"
+			out += "Unknown opcode\n"
 		}
 	}
 	out += fmt.Sprintln("RESOURCES")

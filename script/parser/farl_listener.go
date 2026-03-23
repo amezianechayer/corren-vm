@@ -11,17 +11,14 @@ type FaRlListener interface {
 	// EnterMonetaryLit is called when entering the MonetaryLit production.
 	EnterMonetaryLit(c *MonetaryLitContext)
 
-	// EnterMonetaryAll is called when entering the MonetaryAll production.
-	EnterMonetaryAll(c *MonetaryAllContext)
-
 	// EnterMonetaryNoPrecision is called when entering the MonetaryNoPrecision production.
 	EnterMonetaryNoPrecision(c *MonetaryNoPrecisionContext)
 
-	// EnterMonetaryNoPrecisionAll is called when entering the MonetaryNoPrecisionAll production.
-	EnterMonetaryNoPrecisionAll(c *MonetaryNoPrecisionAllContext)
+	// EnterMonetaryAllPrec is called when entering the MonetaryAllPrec production.
+	EnterMonetaryAllPrec(c *MonetaryAllPrecContext)
 
-	// EnterMonetaryAssetOnly is called when entering the MonetaryAssetOnly production.
-	EnterMonetaryAssetOnly(c *MonetaryAssetOnlyContext)
+	// EnterMonetaryAllNoPrec is called when entering the MonetaryAllNoPrec production.
+	EnterMonetaryAllNoPrec(c *MonetaryAllNoPrecContext)
 
 	// EnterLitAccount is called when entering the LitAccount production.
 	EnterLitAccount(c *LitAccountContext)
@@ -44,41 +41,50 @@ type FaRlListener interface {
 	// EnterExprVariable is called when entering the ExprVariable production.
 	EnterExprVariable(c *ExprVariableContext)
 
-	// EnterPortionPercent is called when entering the PortionPercent production.
-	EnterPortionPercent(c *PortionPercentContext)
+	// EnterAllotmentPortionConst is called when entering the allotmentPortionConst production.
+	EnterAllotmentPortionConst(c *AllotmentPortionConstContext)
 
-	// EnterPortionRatio is called when entering the PortionRatio production.
-	EnterPortionRatio(c *PortionRatioContext)
+	// EnterAllotmentPortionConstPercent is called when entering the allotmentPortionConstPercent production.
+	EnterAllotmentPortionConstPercent(c *AllotmentPortionConstPercentContext)
 
-	// EnterPortionRemaining is called when entering the PortionRemaining production.
-	EnterPortionRemaining(c *PortionRemainingContext)
+	// EnterAllotmentPortionVar is called when entering the allotmentPortionVar production.
+	EnterAllotmentPortionVar(c *AllotmentPortionVarContext)
 
-	// EnterPortionVar is called when entering the PortionVar production.
-	EnterPortionVar(c *PortionVarContext)
+	// EnterAllotmentPortionRemaining is called when entering the allotmentPortionRemaining production.
+	EnterAllotmentPortionRemaining(c *AllotmentPortionRemainingContext)
 
-	// EnterSrcRemaining is called when entering the SrcRemaining production.
-	EnterSrcRemaining(c *SrcRemainingContext)
+	// EnterDestinationAllotment is called when entering the destinationAllotment production.
+	EnterDestinationAllotment(c *DestinationAllotmentContext)
 
-	// EnterSrcPercentLimit is called when entering the SrcPercentLimit production.
-	EnterSrcPercentLimit(c *SrcPercentLimitContext)
+	// EnterDestAccount is called when entering the DestAccount production.
+	EnterDestAccount(c *DestAccountContext)
 
-	// EnterSrcCascade is called when entering the SrcCascade production.
-	EnterSrcCascade(c *SrcCascadeContext)
+	// EnterDestAllotment is called when entering the DestAllotment production.
+	EnterDestAllotment(c *DestAllotmentContext)
 
-	// EnterSrcSimple is called when entering the SrcSimple production.
-	EnterSrcSimple(c *SrcSimpleContext)
+	// EnterSourceAllotment is called when entering the sourceAllotment production.
+	EnterSourceAllotment(c *SourceAllotmentContext)
 
-	// EnterSrcOverdraft is called when entering the SrcOverdraft production.
-	EnterSrcOverdraft(c *SrcOverdraftContext)
+	// EnterSourceMaxed is called when entering the sourceMaxed production.
+	EnterSourceMaxed(c *SourceMaxedContext)
 
-	// EnterSrcOverdraftCapped is called when entering the SrcOverdraftCapped production.
-	EnterSrcOverdraftCapped(c *SrcOverdraftCappedContext)
+	// EnterSourceInOrder is called when entering the sourceInOrder production.
+	EnterSourceInOrder(c *SourceInOrderContext)
 
-	// EnterSrcLimit is called when entering the SrcLimit production.
-	EnterSrcLimit(c *SrcLimitContext)
+	// EnterSrcAccount is called when entering the SrcAccount production.
+	EnterSrcAccount(c *SrcAccountContext)
 
-	// EnterSrcPercent is called when entering the SrcPercent production.
-	EnterSrcPercent(c *SrcPercentContext)
+	// EnterSrcMaxed is called when entering the SrcMaxed production.
+	EnterSrcMaxed(c *SrcMaxedContext)
+
+	// EnterSrcInOrder is called when entering the SrcInOrder production.
+	EnterSrcInOrder(c *SrcInOrderContext)
+
+	// EnterSrc is called when entering the Src production.
+	EnterSrc(c *SrcContext)
+
+	// EnterSrcAllotment is called when entering the SrcAllotment production.
+	EnterSrcAllotment(c *SrcAllotmentContext)
 
 	// EnterType_ is called when entering the type_ production.
 	EnterType_(c *Type_Context)
@@ -98,32 +104,14 @@ type FaRlListener interface {
 	// EnterMetadataEntry is called when entering the metadataEntry production.
 	EnterMetadataEntry(c *MetadataEntryContext)
 
-	// EnterSendTo is called when entering the SendTo production.
-	EnterSendTo(c *SendToContext)
-
-	// EnterSendKeep is called when entering the SendKeep production.
-	EnterSendKeep(c *SendKeepContext)
-
-	// EnterSendSplit is called when entering the SendSplit production.
-	EnterSendSplit(c *SendSplitContext)
-
 	// EnterPrint is called when entering the Print production.
 	EnterPrint(c *PrintContext)
 
 	// EnterFail is called when entering the Fail production.
 	EnterFail(c *FailContext)
 
-	// EnterTransferSimple is called when entering the TransferSimple production.
-	EnterTransferSimple(c *TransferSimpleContext)
-
-	// EnterTransferWithDest is called when entering the TransferWithDest production.
-	EnterTransferWithDest(c *TransferWithDestContext)
-
-	// EnterTransferAll is called when entering the TransferAll production.
-	EnterTransferAll(c *TransferAllContext)
-
-	// EnterReserve is called when entering the Reserve production.
-	EnterReserve(c *ReserveContext)
+	// EnterTransfer is called when entering the Transfer production.
+	EnterTransfer(c *TransferContext)
 
 	// EnterSetTxMeta is called when entering the SetTxMeta production.
 	EnterSetTxMeta(c *SetTxMetaContext)
@@ -140,17 +128,14 @@ type FaRlListener interface {
 	// ExitMonetaryLit is called when exiting the MonetaryLit production.
 	ExitMonetaryLit(c *MonetaryLitContext)
 
-	// ExitMonetaryAll is called when exiting the MonetaryAll production.
-	ExitMonetaryAll(c *MonetaryAllContext)
-
 	// ExitMonetaryNoPrecision is called when exiting the MonetaryNoPrecision production.
 	ExitMonetaryNoPrecision(c *MonetaryNoPrecisionContext)
 
-	// ExitMonetaryNoPrecisionAll is called when exiting the MonetaryNoPrecisionAll production.
-	ExitMonetaryNoPrecisionAll(c *MonetaryNoPrecisionAllContext)
+	// ExitMonetaryAllPrec is called when exiting the MonetaryAllPrec production.
+	ExitMonetaryAllPrec(c *MonetaryAllPrecContext)
 
-	// ExitMonetaryAssetOnly is called when exiting the MonetaryAssetOnly production.
-	ExitMonetaryAssetOnly(c *MonetaryAssetOnlyContext)
+	// ExitMonetaryAllNoPrec is called when exiting the MonetaryAllNoPrec production.
+	ExitMonetaryAllNoPrec(c *MonetaryAllNoPrecContext)
 
 	// ExitLitAccount is called when exiting the LitAccount production.
 	ExitLitAccount(c *LitAccountContext)
@@ -173,41 +158,50 @@ type FaRlListener interface {
 	// ExitExprVariable is called when exiting the ExprVariable production.
 	ExitExprVariable(c *ExprVariableContext)
 
-	// ExitPortionPercent is called when exiting the PortionPercent production.
-	ExitPortionPercent(c *PortionPercentContext)
+	// ExitAllotmentPortionConst is called when exiting the allotmentPortionConst production.
+	ExitAllotmentPortionConst(c *AllotmentPortionConstContext)
 
-	// ExitPortionRatio is called when exiting the PortionRatio production.
-	ExitPortionRatio(c *PortionRatioContext)
+	// ExitAllotmentPortionConstPercent is called when exiting the allotmentPortionConstPercent production.
+	ExitAllotmentPortionConstPercent(c *AllotmentPortionConstPercentContext)
 
-	// ExitPortionRemaining is called when exiting the PortionRemaining production.
-	ExitPortionRemaining(c *PortionRemainingContext)
+	// ExitAllotmentPortionVar is called when exiting the allotmentPortionVar production.
+	ExitAllotmentPortionVar(c *AllotmentPortionVarContext)
 
-	// ExitPortionVar is called when exiting the PortionVar production.
-	ExitPortionVar(c *PortionVarContext)
+	// ExitAllotmentPortionRemaining is called when exiting the allotmentPortionRemaining production.
+	ExitAllotmentPortionRemaining(c *AllotmentPortionRemainingContext)
 
-	// ExitSrcRemaining is called when exiting the SrcRemaining production.
-	ExitSrcRemaining(c *SrcRemainingContext)
+	// ExitDestinationAllotment is called when exiting the destinationAllotment production.
+	ExitDestinationAllotment(c *DestinationAllotmentContext)
 
-	// ExitSrcPercentLimit is called when exiting the SrcPercentLimit production.
-	ExitSrcPercentLimit(c *SrcPercentLimitContext)
+	// ExitDestAccount is called when exiting the DestAccount production.
+	ExitDestAccount(c *DestAccountContext)
 
-	// ExitSrcCascade is called when exiting the SrcCascade production.
-	ExitSrcCascade(c *SrcCascadeContext)
+	// ExitDestAllotment is called when exiting the DestAllotment production.
+	ExitDestAllotment(c *DestAllotmentContext)
 
-	// ExitSrcSimple is called when exiting the SrcSimple production.
-	ExitSrcSimple(c *SrcSimpleContext)
+	// ExitSourceAllotment is called when exiting the sourceAllotment production.
+	ExitSourceAllotment(c *SourceAllotmentContext)
 
-	// ExitSrcOverdraft is called when exiting the SrcOverdraft production.
-	ExitSrcOverdraft(c *SrcOverdraftContext)
+	// ExitSourceMaxed is called when exiting the sourceMaxed production.
+	ExitSourceMaxed(c *SourceMaxedContext)
 
-	// ExitSrcOverdraftCapped is called when exiting the SrcOverdraftCapped production.
-	ExitSrcOverdraftCapped(c *SrcOverdraftCappedContext)
+	// ExitSourceInOrder is called when exiting the sourceInOrder production.
+	ExitSourceInOrder(c *SourceInOrderContext)
 
-	// ExitSrcLimit is called when exiting the SrcLimit production.
-	ExitSrcLimit(c *SrcLimitContext)
+	// ExitSrcAccount is called when exiting the SrcAccount production.
+	ExitSrcAccount(c *SrcAccountContext)
 
-	// ExitSrcPercent is called when exiting the SrcPercent production.
-	ExitSrcPercent(c *SrcPercentContext)
+	// ExitSrcMaxed is called when exiting the SrcMaxed production.
+	ExitSrcMaxed(c *SrcMaxedContext)
+
+	// ExitSrcInOrder is called when exiting the SrcInOrder production.
+	ExitSrcInOrder(c *SrcInOrderContext)
+
+	// ExitSrc is called when exiting the Src production.
+	ExitSrc(c *SrcContext)
+
+	// ExitSrcAllotment is called when exiting the SrcAllotment production.
+	ExitSrcAllotment(c *SrcAllotmentContext)
 
 	// ExitType_ is called when exiting the type_ production.
 	ExitType_(c *Type_Context)
@@ -227,32 +221,14 @@ type FaRlListener interface {
 	// ExitMetadataEntry is called when exiting the metadataEntry production.
 	ExitMetadataEntry(c *MetadataEntryContext)
 
-	// ExitSendTo is called when exiting the SendTo production.
-	ExitSendTo(c *SendToContext)
-
-	// ExitSendKeep is called when exiting the SendKeep production.
-	ExitSendKeep(c *SendKeepContext)
-
-	// ExitSendSplit is called when exiting the SendSplit production.
-	ExitSendSplit(c *SendSplitContext)
-
 	// ExitPrint is called when exiting the Print production.
 	ExitPrint(c *PrintContext)
 
 	// ExitFail is called when exiting the Fail production.
 	ExitFail(c *FailContext)
 
-	// ExitTransferSimple is called when exiting the TransferSimple production.
-	ExitTransferSimple(c *TransferSimpleContext)
-
-	// ExitTransferWithDest is called when exiting the TransferWithDest production.
-	ExitTransferWithDest(c *TransferWithDestContext)
-
-	// ExitTransferAll is called when exiting the TransferAll production.
-	ExitTransferAll(c *TransferAllContext)
-
-	// ExitReserve is called when exiting the Reserve production.
-	ExitReserve(c *ReserveContext)
+	// ExitTransfer is called when exiting the Transfer production.
+	ExitTransfer(c *TransferContext)
 
 	// ExitSetTxMeta is called when exiting the SetTxMeta production.
 	ExitSetTxMeta(c *SetTxMetaContext)

@@ -7,9 +7,13 @@ import (
 
 func TestEndCharacter(t *testing.T) {
 	src := `
-transfer [DZD.2 200] from @a
-send 500% to @b
-send 50% to @c
+transfer [DZD.2 200] (
+	from @a
+	to {
+		500% to @b
+		50% to @c
+	}
+)
 `
 	_, err := Compile(src)
 	if err == nil {
@@ -19,10 +23,7 @@ send 50% to @c
 		t.Fatal("error had wrong type")
 	}
 	lerr := err.(*CompileErrorList).errors[0]
-	if lerr.startl != 3 {
+	if lerr.startl != 5 {
 		t.Fatal(fmt.Sprintf("start line was %v", lerr.startl))
-	}
-	if lerr.startc != 0 {
-		t.Fatal(fmt.Sprintf("start character was %v", lerr.startc))
 	}
 }

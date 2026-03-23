@@ -22,7 +22,8 @@ type CompileErrorList struct {
 
 func (c *CompileErrorList) Error() string {
 	source := strings.ReplaceAll(c.source, "\t", " ")
-	lines := strings.Split(strings.ReplaceAll(source, "\r\n", "\n"), "\n")
+	lines := strings.SplitAfter(strings.ReplaceAll(source, "\r\n", "\n"), "\n")
+	lines[len(lines)-1] += "\n"
 	txt_bar_good := aurora.Blue("|")
 	s := ""
 	for _, e := range c.errors {
@@ -42,13 +43,13 @@ func (c *CompileErrorList) Error() string {
 			if l == e.endl {
 				idx := e.endc - start + 1
 				if idx >= len(line) {
-					idx -= 1
+					idx = len(line) - 1
 				}
 				after = line[idx:]
 				line = line[:idx]
 			}
 			s += aurora.Red(fmt.Sprintf("%0*d | ", ln_pad, l)).String()
-			s += fmt.Sprintf("%v%v%v\n", aurora.BrightBlack(before), line, aurora.BrightBlack(after))
+			s += fmt.Sprintf("%v%v%v", aurora.BrightBlack(before), line, aurora.BrightBlack(after))
 		}
 		start := strings.IndexFunc(lines[e.endl-1], func(r rune) bool {
 			return r != ' '
@@ -57,6 +58,9 @@ func (c *CompileErrorList) Error() string {
 		if e.startl == e.endl {
 			start = e.startc
 			span = e.endc - e.startc
+		}
+		if span == 0 {
+			span = 1
 		}
 		s += fmt.Sprintf("%v %v %v%v %v\n", strings.Repeat(" ", ln_pad), txt_bar_good, strings.Repeat(" ", start), aurora.Red(strings.Repeat("^", span)), e.msg)
 	}

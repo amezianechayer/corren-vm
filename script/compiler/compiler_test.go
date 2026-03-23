@@ -75,7 +75,10 @@ func test(t *testing.T, c TestCase) {
 		} else {
 			for i := range c.Expected.Resources {
 				if !checkResourceEquals(t, p.Resources[i], c.Expected.Resources[i]) {
-					t.Error(fmt.Errorf("%v is not %v", p.Resources[i], c.Expected.Resources[i]))
+					t.Error(fmt.Errorf("%v: %v is not %v: %v",
+						p.Resources[i], reflect.TypeOf(p.Resources[i]).Name(),
+						c.Expected.Resources[i], reflect.TypeOf(c.Expected.Resources[i]).Name(),
+					))
 					t.Error(fmt.Errorf("unexpected program resources: %v", *p))
 					return
 				}
@@ -88,11 +91,8 @@ func TestSimplePrint(t *testing.T) {
 	test(t, TestCase{
 		Case: "print 1",
 		Expected: CaseResult{
-			Instructions: []byte{
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
-				program.OP_PRINT,
-			},
-			Resources: []program.Resource{},
+			Instructions: []byte{program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00, program.OP_PRINT},
+			Resources:    []program.Resource{},
 		},
 	})
 }
@@ -116,11 +116,8 @@ func TestCompositeExpr(t *testing.T) {
 
 func TestFail(t *testing.T) {
 	test(t, TestCase{
-		Case: "fail",
-		Expected: CaseResult{
-			Instructions: []byte{program.OP_FAIL},
-			Resources:    []program.Resource{},
-		},
+		Case:     "fail",
+		Expected: CaseResult{Instructions: []byte{program.OP_FAIL}, Resources: []program.Resource{}},
 	})
 }
 
@@ -138,10 +135,9 @@ func TestConstant(t *testing.T) {
 func TestComments(t *testing.T) {
 	test(t, TestCase{
 		Case: `
-/* This is a multi-line comment, it spans multiple lines
-and /* doesn't choke on nested comments */ ! */
+/* multi-line comment */
 var $a: account
-// this is a single-line comment
+// single-line comment
 print $a
 `,
 		Expected: CaseResult{
@@ -153,35 +149,43 @@ print $a
 
 func TestUndeclaredVariable(t *testing.T) {
 	test(t, TestCase{
-		Case: "print $nope",
-		Expected: CaseResult{
-			Error: "declared",
-		},
+		Case:     "print $nope",
+		Expected: CaseResult{Error: "declared"},
 	})
 }
 
 func TestAllocationFractions(t *testing.T) {
 	test(t, TestCase{
-		Case: `transfer [DZD.2 43] from @foo
-send 1/8 to @bar
-send 7/8 to @baz
-`,
+		Case: `transfer [DZD.2 43] (
+	from @foo
+	to {
+		1/8 to @bar
+		7/8 to @baz
+	}
+)`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00,
 				program.OP_APUSH, 01, 00,
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 00, 00,
+				program.OP_ASSET,
+				program.OP_TAKE_ALL,
+				program.OP_APUSH, 00, 00,
+				program.OP_TAKE,
 				program.OP_APUSH, 02, 00,
-				program.OP_ALLOC,
 				program.OP_APUSH, 03, 00,
-				program.OP_SEND,
+				program.OP_IPUSH, 02, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_MAKE_ALLOTMENT,
+				program.OP_ALLOC,
 				program.OP_APUSH, 04, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 05, 00,
 				program.OP_SEND,
 			},
 			Resources: []program.Resource{
-				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(43)}},
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 43}},
 				program.Constant{Inner: core.Account("@foo")},
-				program.Constant{Inner: core.Allotment{*big.NewRat(1, 8), *big.NewRat(7, 8)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(7, 8)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(1, 8)}},
 				program.Constant{Inner: core.Account("@bar")},
 				program.Constant{Inner: core.Account("@baz")},
 			},
@@ -191,29 +195,41 @@ send 7/8 to @baz
 
 func TestAllocationPercentages(t *testing.T) {
 	test(t, TestCase{
-		Case: `transfer [DZD.2 43] from @foo
-send 12.5% to @bar
-send 37.5% to @baz
-send 50% to @qux
-`,
+		Case: `transfer [DZD.2 43] (
+	from @foo
+	to {
+		12.5% to @bar
+		37.5% to @baz
+		50% to @qux
+	}
+)`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00,
 				program.OP_APUSH, 01, 00,
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 00, 00,
+				program.OP_ASSET,
+				program.OP_TAKE_ALL,
+				program.OP_APUSH, 00, 00,
+				program.OP_TAKE,
 				program.OP_APUSH, 02, 00,
-				program.OP_ALLOC,
 				program.OP_APUSH, 03, 00,
-				program.OP_SEND,
 				program.OP_APUSH, 04, 00,
-				program.OP_SEND,
+				program.OP_IPUSH, 03, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_MAKE_ALLOTMENT,
+				program.OP_ALLOC,
 				program.OP_APUSH, 05, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 06, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 07, 00,
 				program.OP_SEND,
 			},
 			Resources: []program.Resource{
-				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(43)}},
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 43}},
 				program.Constant{Inner: core.Account("@foo")},
-				program.Constant{Inner: core.Allotment{*big.NewRat(125, 1000), *big.NewRat(375, 1000), *big.NewRat(1, 2)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(1, 2)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(3, 8)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(1, 8)}},
 				program.Constant{Inner: core.Account("@bar")},
 				program.Constant{Inner: core.Account("@baz")},
 				program.Constant{Inner: core.Account("@qux")},
@@ -226,17 +242,23 @@ func TestTransfer(t *testing.T) {
 	alice := core.Account("@alice")
 	bob := core.Account("@bob")
 	test(t, TestCase{
-		Case: "transfer [DZD.2 99] from @alice to @bob",
+		Case: `transfer [DZD.2 99] (
+	from @alice
+	to @bob
+)`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00,
 				program.OP_APUSH, 01, 00,
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 00, 00,
+				program.OP_ASSET,
+				program.OP_TAKE_ALL,
+				program.OP_APUSH, 00, 00,
+				program.OP_TAKE,
 				program.OP_APUSH, 02, 00,
 				program.OP_SEND,
 			},
 			Resources: []program.Resource{
-				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(99)}},
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 99}},
 				program.Constant{Inner: alice},
 				program.Constant{Inner: bob},
 			},
@@ -245,22 +267,23 @@ func TestTransfer(t *testing.T) {
 }
 
 func TestTransferAll(t *testing.T) {
-	alice := core.Account("@alice")
-	bob := core.Account("@bob")
 	test(t, TestCase{
-		Case: "transfer [DZD.2 *] from @alice to @bob",
+		Case: `transfer [DZD.2 *] (
+	from @alice
+	to @bob
+)`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 00, 00,
 				program.OP_APUSH, 01, 00,
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 00, 00,
+				program.OP_TAKE_ALL,
 				program.OP_APUSH, 02, 00,
 				program.OP_SEND,
 			},
 			Resources: []program.Resource{
-				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: core.NewAmountAll()}},
-				program.Constant{Inner: alice},
-				program.Constant{Inner: bob},
+				program.Constant{Inner: core.Asset("DZD.2")},
+				program.Constant{Inner: core.Account("@alice")},
+				program.Constant{Inner: core.Account("@bob")},
 			},
 		},
 	})
@@ -271,15 +294,21 @@ func TestMetadata(t *testing.T) {
 		Case: `var $sale: account
 var $seller: account = meta($sale, "seller")
 var $commission: portion = meta($seller, "commission")
-transfer [DZD.2 53] from $sale
-send remaining to $seller
-send $commission to @platform
-`,
+transfer [DZD.2 53] (
+	from $sale
+	to {
+		remaining to $seller
+		$commission to @platform
+	}
+)`,
 		Expected: CaseResult{
 			Instructions: []byte{
-				program.OP_APUSH, 03, 00,
 				program.OP_APUSH, 00, 00,
-				program.OP_IPUSH, 01, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_APUSH, 03, 00,
+				program.OP_ASSET,
+				program.OP_TAKE_ALL,
+				program.OP_APUSH, 03, 00,
+				program.OP_TAKE,
 				program.OP_APUSH, 02, 00,
 				program.OP_APUSH, 04, 00,
 				program.OP_IPUSH, 02, 00, 00, 00, 00, 00, 00, 00,
@@ -294,7 +323,7 @@ send $commission to @platform
 				program.Parameter{Name: "sale", Typ: core.TYPE_ACCOUNT},
 				program.Metadata{SourceAccount: core.NewAddress(0), Key: "seller", Typ: core.TYPE_ACCOUNT},
 				program.Metadata{SourceAccount: core.NewAddress(1), Key: "commission", Typ: core.TYPE_PORTION},
-				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: core.NewAmountSpecific(53)}},
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 53}},
 				program.Constant{Inner: core.NewPortionRemaining()},
 				program.Constant{Inner: core.Account("@platform")},
 			},
@@ -304,115 +333,107 @@ send $commission to @platform
 
 func TestSyntaxError(t *testing.T) {
 	test(t, TestCase{
-		Case: "print fail",
-		Expected: CaseResult{
-			Error: "mismatched input",
-		},
+		Case:     "print fail",
+		Expected: CaseResult{Error: "mismatched input"},
 	})
 }
 
 func TestLogicError(t *testing.T) {
 	test(t, TestCase{
-		Case: "transfer [DZD.2 200] from 200 to @bob",
-		Expected: CaseResult{
-			Error: "wrong type",
-		},
+		Case: `transfer [DZD.2 200] (
+	from 200
+	to @bob
+)`,
+		Expected: CaseResult{Error: "wrong type"},
 	})
 }
 
 func TestPreventTakeAllFromWorld(t *testing.T) {
 	test(t, TestCase{
-		Case: "transfer [DZD.2 *] from @world to @foo",
-		Expected: CaseResult{
-			Error: "cannot",
-		},
+		Case: `transfer [DZD.2 *] (
+	from @world
+	to @foo
+)`,
+		Expected: CaseResult{Error: "cannot"},
+	})
+}
+
+func TestPreventAddToBottomlessSource(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 1000] (
+	from {
+		@a
+		@world
+		@c
+	}
+	to @out
+)`,
+		Expected: CaseResult{Error: "world"},
+	})
+}
+
+func TestPreventSourceAlreadyEmptied(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 1000] (
+	from {
+		{
+			@a
+			@world
+		}
+		@a
+	}
+	to @out
+)`,
+		Expected: CaseResult{Error: "@a"},
 	})
 }
 
 func TestOverflowingAllocation(t *testing.T) {
 	fmt.Println("case: >100%")
 	test(t, TestCase{
-		Case: `transfer [DZD.2 15] from @world
-send 2/3 to @a
-send 2/3 to @b
-`,
+		Case: `transfer [DZD.2 15] (
+	from @world
+	to {
+		2/3 to @a
+		2/3 to @b
+	}
+)`,
 		Expected: CaseResult{Error: "100%"},
 	})
 
 	fmt.Println("case: =100% + remaining")
 	test(t, TestCase{
-		Case: `transfer [DZD.2 15] from @world
-send 1/2 to @a
-send 1/2 to @b
-keep remaining
-`,
-		Expected: CaseResult{Error: "100%"},
-	})
-
-	fmt.Println("case: >100% + remaining")
-	test(t, TestCase{
-		Case: `transfer [DZD.2 15] from @world
-send 2/3 to @a
-send 1/2 to @b
-keep remaining
-`,
-		Expected: CaseResult{Error: "100%"},
-	})
-
-	fmt.Println("case: const remaining + remaining")
-	test(t, TestCase{
-		Case: `transfer [DZD.2 15] from @world
-send 2/3 to @a
-keep remaining
-keep remaining
-`,
-		Expected: CaseResult{Error: "`remaining` in the same"},
-	})
-
-	fmt.Println("case: dyn remaining + remaining")
-	test(t, TestCase{
-		Case: `var $p: portion
-transfer [DZD.2 15] from @world
-send $p to @a
-keep remaining
-keep remaining
-`,
-		Expected: CaseResult{Error: "`remaining` in the same"},
-	})
-
-	fmt.Println("case: >100% + remaining + variable")
-	test(t, TestCase{
-		Case: `var $prop: portion
-transfer [DZD.2 15] from @world
-send 1/2 to @a
-send 2/3 to @b
-keep remaining
-send $prop to @d
-`,
+		Case: `transfer [DZD.2 15] (
+	from @world
+	to {
+		1/2 to @a
+		1/2 to @b
+		remaining to @c
+	}
+)`,
 		Expected: CaseResult{Error: "100%"},
 	})
 
 	fmt.Println("case: variable - remaining")
 	test(t, TestCase{
 		Case: `var $prop: portion
-transfer [DZD.2 15] from @world
-send 2/3 to @a
-send $prop to @b
-`,
+transfer [DZD.2 15] (
+	from @world
+	to {
+		2/3 to @a
+		$prop to @b
+	}
+)`,
 		Expected: CaseResult{Error: "remaining"},
 	})
 }
 
 func TestAllocationWrongDestination(t *testing.T) {
 	test(t, TestCase{
-		Case:     `transfer [DZD.2 15] from @world to [DZD.2 10]`,
-		Expected: CaseResult{Error: "wrong type"},
-	})
-	test(t, TestCase{
-		Case: `transfer [DZD.2 15] from @world
-send 2/3 to @a
-send 1/3 to [DZD.2 10]
-`,
+		Case: `transfer [DZD.2 15] (
+	from @world
+	to [DZD.2 10]
+)`,
 		Expected: CaseResult{Error: "account"},
 	})
 }
@@ -420,11 +441,14 @@ send 1/3 to [DZD.2 10]
 func TestAllocationInvalidPortion(t *testing.T) {
 	test(t, TestCase{
 		Case: `var $p: account
-transfer [DZD.2 15] from @world
-send 10% to @a
-send $p to @b
-keep remaining
-`,
+transfer [DZD.2 15] (
+	from @world
+	to {
+		10% to @a
+		$p to @b
+		remaining to @c
+	}
+)`,
 		Expected: CaseResult{Error: "type"},
 	})
 }

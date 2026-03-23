@@ -14,7 +14,7 @@ const (
 	TYPE_MONETARY
 	TYPE_PORTION
 	TYPE_ALLOTMENT
-	TYPE_AMOUNT
+	TYPE_FUNDING
 )
 
 func (t Type) String() string {
@@ -31,8 +31,8 @@ func (t Type) String() string {
 		return "portion"
 	case TYPE_ALLOTMENT:
 		return "allotment"
-	case TYPE_AMOUNT:
-		return "amount"
+	case TYPE_FUNDING:
+		return "funding"
 	default:
 		return "invalid type"
 	}
@@ -69,7 +69,7 @@ func (n Number) String() string {
 
 type Monetary struct {
 	Asset  Asset  `json:"asset"`
-	Amount Amount `json:"amount"`
+	Amount uint64 `json:"amount"`
 }
 
 func (Monetary) isValue()      {}
@@ -81,11 +81,19 @@ func (a Monetary) String() string {
 func (Allotment) isValue()      {}
 func (Allotment) GetType() Type { return TYPE_ALLOTMENT }
 
-func (Amount) isValue()      {}
-func (Amount) GetType() Type { return TYPE_AMOUNT }
-
 func (Portion) isValue()      {}
 func (Portion) GetType() Type { return TYPE_PORTION }
+
+func (Funding) isValue()      {}
+func (Funding) GetType() Type { return TYPE_FUNDING }
+
+type HasAsset interface {
+	GetAsset() Asset
+}
+
+func (a Asset) GetAsset() Asset    { return a }
+func (m Monetary) GetAsset() Asset { return m.Asset }
+func (f Funding) GetAsset() Asset  { return f.Asset }
 
 func ValueEquals(lhs, rhs Value) bool {
 	if reflect.TypeOf(lhs) != reflect.TypeOf(rhs) {
@@ -101,6 +109,12 @@ func ValueEquals(lhs, rhs Value) bool {
 				return false
 			}
 		}
+	} else if lhsp, ok := lhs.(Portion); ok {
+		rhsp := rhs.(Portion)
+		return lhsp.Equals(&rhsp)
+	} else if lhsf, ok := lhs.(Funding); ok {
+		rhsf := rhs.(Funding)
+		return lhsf.Equals(&rhsf)
 	} else if lhs != rhs {
 		return false
 	}
