@@ -301,9 +301,9 @@ transfer [DZD.2 15] (
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 15}},
 		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
-			{Asset: "DZD.2", Amount: 12, Source: "@users:001", Destination: "@users:002"},
+			{Asset: "DZD.2", Amount: 13, Source: "@users:001", Destination: "@users:002"},
 			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
-			{Asset: "DZD.2", Amount: 2, Source: "@users:001", Destination: "@b"},
+			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
 		}, ExitCode: EXIT_OK})
 }
 
@@ -322,9 +322,8 @@ transfer [DZD.2 15] (
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@a": {"DZD.2": 15}},
 		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
-			{Asset: "DZD.2", Amount: 12, Source: "@a", Destination: "@b"},
+			{Asset: "DZD.2", Amount: 13, Source: "@a", Destination: "@b"},
 			{Asset: "DZD.2", Amount: 2, Source: "@a", Destination: "@c"},
-			{Asset: "DZD.2", Amount: 1, Source: "@a", Destination: "@d"},
 		}, ExitCode: EXIT_OK})
 }
 
