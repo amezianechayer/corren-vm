@@ -206,16 +206,16 @@ func (m *Machine) tick() (bool, byte) {
 		parts := allotment.Allocate(mon.Amount)
 		n := len(allotment)
 		res_fundings := make([]core.Funding, n)
-		for i := len(parts) - 1; i >= 0; i-- {
+		for i := 0; i < n; i++ {
 			funding := m.popFunding()
 			if funding.Asset != mon.Asset {
 				return true, EXIT_FAIL_INVALID
 			}
-			res, rem, err := funding.Take(parts[i])
+			res, rem, err := funding.Take(parts[n-1-i])
 			if err != nil {
 				return true, EXIT_FAIL_INSUFFICIENT_FUNDS
 			}
-			res_fundings[i] = res
+			res_fundings[n-1-i] = res
 			m.repay(rem)
 		}
 		result := core.Funding{Asset: mon.Asset, Parts: []core.FundingPart{}}

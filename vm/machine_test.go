@@ -302,8 +302,8 @@ transfer [DZD.2 15] (
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 15}},
 		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
 			{Asset: "DZD.2", Amount: 13, Source: "@users:001", Destination: "@users:002"},
-			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
 			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
+			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
 		}, ExitCode: EXIT_OK})
 }
 

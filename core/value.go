@@ -48,7 +48,7 @@ type Account string
 func (Account) isValue()      {}
 func (Account) GetType() Type { return TYPE_ACCOUNT }
 func (a Account) String() string {
-	return fmt.Sprintf("@%v", string(a))
+	return fmt.Sprintf("%v", string(a))
 }
 
 type Asset string
