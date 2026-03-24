@@ -171,6 +171,8 @@ func TestAllocationFractions(t *testing.T) {
 				program.OP_TAKE_ALL,
 				program.OP_APUSH, 00, 00,
 				program.OP_TAKE,
+				program.OP_SWAP,
+				program.OP_REPAY,
 				program.OP_APUSH, 02, 00,
 				program.OP_APUSH, 03, 00,
 				program.OP_IPUSH, 02, 00, 00, 00, 00, 00, 00, 00,
@@ -211,6 +213,8 @@ func TestAllocationPercentages(t *testing.T) {
 				program.OP_TAKE_ALL,
 				program.OP_APUSH, 00, 00,
 				program.OP_TAKE,
+				program.OP_SWAP,
+				program.OP_REPAY,
 				program.OP_APUSH, 02, 00,
 				program.OP_APUSH, 03, 00,
 				program.OP_APUSH, 04, 00,
@@ -254,6 +258,8 @@ func TestTransfer(t *testing.T) {
 				program.OP_TAKE_ALL,
 				program.OP_APUSH, 00, 00,
 				program.OP_TAKE,
+				program.OP_SWAP,
+				program.OP_REPAY,
 				program.OP_APUSH, 02, 00,
 				program.OP_SEND,
 			},
@@ -309,6 +315,8 @@ transfer [DZD.2 53] (
 				program.OP_TAKE_ALL,
 				program.OP_APUSH, 03, 00,
 				program.OP_TAKE,
+				program.OP_SWAP,
+				program.OP_REPAY,
 				program.OP_APUSH, 02, 00,
 				program.OP_APUSH, 04, 00,
 				program.OP_IPUSH, 02, 00, 00, 00, 00, 00, 00, 00,
@@ -450,5 +458,97 @@ transfer [DZD.2 15] (
 	}
 )`,
 		Expected: CaseResult{Error: "type"},
+	})
+}
+
+func TestComplexDestination(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 43] (
+	from @a
+	to {
+		1/8 to {
+			max [DZD.2 10] to @b
+			@c
+		}
+		7/8 to @d
+	}
+)`,
+		Expected: CaseResult{
+			Instructions: []byte{
+				program.OP_APUSH, 01, 00,
+				program.OP_APUSH, 00, 00,
+				program.OP_ASSET,
+				program.OP_TAKE_ALL,
+				program.OP_APUSH, 00, 00,
+				program.OP_TAKE,
+				program.OP_SWAP,
+				program.OP_REPAY,
+				program.OP_APUSH, 02, 00,
+				program.OP_APUSH, 03, 00,
+				program.OP_IPUSH, 02, 00, 00, 00, 00, 00, 00, 00,
+				program.OP_MAKE_ALLOTMENT,
+				program.OP_ALLOC,
+				program.OP_APUSH, 04, 00,
+				program.OP_TAKE_MAX,
+				program.OP_APUSH, 05, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 06, 00,
+				program.OP_SEND,
+				program.OP_APUSH, 07, 00,
+				program.OP_SEND,
+			},
+			Resources: []program.Resource{
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 43}},
+				program.Constant{Inner: core.Account("@a")},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(7, 8)}},
+				program.Constant{Inner: core.Portion{Specific: big.NewRat(1, 8)}},
+				program.Constant{Inner: core.Monetary{Asset: "DZD.2", Amount: 10}},
+				program.Constant{Inner: core.Account("@b")},
+				program.Constant{Inner: core.Account("@c")},
+				program.Constant{Inner: core.Account("@d")},
+			},
+		},
+	})
+}
+
+func TestPreventAddToBottomlessSource2(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 1000] (
+	from {
+		{
+			@a
+			@world
+		}
+		{
+			@b
+			@world
+		}
+	}
+	to @out
+)`,
+		Expected: CaseResult{Error: "world"},
+	})
+}
+
+func TestCappedDestination(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] (
+	from @world
+	to max [DZD.2 15] to @a
+)`,
+		Expected: CaseResult{Error: "cap"},
+	})
+}
+
+func TestCappedDestination2(t *testing.T) {
+	test(t, TestCase{
+		Case: `transfer [DZD.2 15] (
+	from @world
+	to {
+		50% to max [DZD.2 15] to @a
+		50% to @b
+	}
+)`,
+		Expected: CaseResult{Error: "cap"},
 	})
 }

@@ -1,0 +1,59 @@
+package main
+
+import (
+	"fmt"
+
+	"github.com/amezianechayer/aurex-vm/core"
+	"github.com/amezianechayer/aurex-vm/script/compiler"
+	"github.com/amezianechayer/aurex-vm/vm"
+)
+
+func main() {
+	program, err := compiler.Compile(`
+transfer [COIN 100] (
+	from @world
+	to {
+		50% to @a
+		50% to {
+			max [COIN 10] to @b
+			@c
+		}
+	}
+)
+`)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Print(program)
+
+	m := vm.NewMachine(program)
+	m.SetVars(map[string]core.Value{})
+
+	{
+		ch, err := m.ResolveResources()
+		if err != nil {
+			panic(err)
+		}
+		for range ch {
+		}
+	}
+
+	{
+		ch, err := m.ResolveBalances()
+		if err != nil {
+			panic(err)
+		}
+		for range ch {
+		}
+	}
+
+	m.Debug = true
+	exit_code, err := m.Execute()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Exit code:", exit_code)
+	fmt.Println(m.Postings)
+}

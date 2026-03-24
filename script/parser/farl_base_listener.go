@@ -113,6 +113,18 @@ func (s *BaseFaRlListener) EnterAllotmentPortionRemaining(ctx *AllotmentPortionR
 // ExitAllotmentPortionRemaining is called when production allotmentPortionRemaining is exited.
 func (s *BaseFaRlListener) ExitAllotmentPortionRemaining(ctx *AllotmentPortionRemainingContext) {}
 
+// EnterDestinationInOrder is called when production destinationInOrder is entered.
+func (s *BaseFaRlListener) EnterDestinationInOrder(ctx *DestinationInOrderContext) {}
+
+// ExitDestinationInOrder is called when production destinationInOrder is exited.
+func (s *BaseFaRlListener) ExitDestinationInOrder(ctx *DestinationInOrderContext) {}
+
+// EnterDestinationMaxed is called when production destinationMaxed is entered.
+func (s *BaseFaRlListener) EnterDestinationMaxed(ctx *DestinationMaxedContext) {}
+
+// ExitDestinationMaxed is called when production destinationMaxed is exited.
+func (s *BaseFaRlListener) ExitDestinationMaxed(ctx *DestinationMaxedContext) {}
+
 // EnterDestinationAllotment is called when production destinationAllotment is entered.
 func (s *BaseFaRlListener) EnterDestinationAllotment(ctx *DestinationAllotmentContext) {}
 
@@ -124,6 +136,18 @@ func (s *BaseFaRlListener) EnterDestAccount(ctx *DestAccountContext) {}
 
 // ExitDestAccount is called when production DestAccount is exited.
 func (s *BaseFaRlListener) ExitDestAccount(ctx *DestAccountContext) {}
+
+// EnterDestMaxed is called when production DestMaxed is entered.
+func (s *BaseFaRlListener) EnterDestMaxed(ctx *DestMaxedContext) {}
+
+// ExitDestMaxed is called when production DestMaxed is exited.
+func (s *BaseFaRlListener) ExitDestMaxed(ctx *DestMaxedContext) {}
+
+// EnterDestInOrder is called when production DestInOrder is entered.
+func (s *BaseFaRlListener) EnterDestInOrder(ctx *DestInOrderContext) {}
+
+// ExitDestInOrder is called when production DestInOrder is exited.
+func (s *BaseFaRlListener) ExitDestInOrder(ctx *DestInOrderContext) {}
 
 // EnterDestAllotment is called when production DestAllotment is entered.
 func (s *BaseFaRlListener) EnterDestAllotment(ctx *DestAllotmentContext) {}

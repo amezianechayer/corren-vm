@@ -366,7 +366,18 @@ func (p *parseVisitor) VisitTransfer(c *parser.TransferContext) *CompileError {
 	return p.VisitDestination(c.GetDest())
 }
 
-func Compile(input string) (*program.Program, error) {
+type CompileArtifacts struct {
+	Source  string
+	Tokens  []antlr.Token
+	Errors  []CompileError
+	Program *program.Program
+}
+
+func CompileFull(input string) CompileArtifacts {
+	artifacts := CompileArtifacts{
+		Source: input,
+	}
+
 	elistener := &ErrorListener{}
 
 	is := antlr.NewInputStream(input)
@@ -383,12 +394,11 @@ func Compile(input string) (*program.Program, error) {
 
 	tree := p.Script()
 
+	artifacts.Tokens = stream.GetAllTokens()
+	artifacts.Errors = append(artifacts.Errors, elistener.Errors...)
+
 	if len(elistener.Errors) != 0 {
-		err := CompileErrorList{
-			Errors: elistener.Errors,
-			Source: input,
-		}
-		return nil, &err
+		return artifacts
 	}
 
 	visitor := parseVisitor{
@@ -399,19 +409,30 @@ func Compile(input string) (*program.Program, error) {
 		needed_balances: make(map[core.Address]map[core.Address]struct{}),
 	}
 
-	cerr := visitor.VisitScript(tree)
+	err := visitor.VisitScript(tree)
 
-	if cerr != nil {
-		err := CompileErrorList{
-			Errors: []CompileError{*cerr},
-			Source: input,
-		}
-		return nil, &err
+	if err != nil {
+		artifacts.Errors = append(artifacts.Errors, *err)
+		return artifacts
 	}
 
-	return &program.Program{
+	artifacts.Program = &program.Program{
 		Instructions:   visitor.instructions,
 		Resources:      visitor.resources,
 		NeededBalances: visitor.needed_balances,
-	}, nil
+	}
+
+	return artifacts
+}
+
+func Compile(input string) (*program.Program, error) {
+	artifacts := CompileFull(input)
+	if len(artifacts.Errors) > 0 {
+		err := CompileErrorList{
+			Errors: artifacts.Errors,
+			Source: artifacts.Source,
+		}
+		return nil, &err
+	}
+	return artifacts.Program, nil
 }

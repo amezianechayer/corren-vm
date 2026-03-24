@@ -302,8 +302,8 @@ transfer [DZD.2 15] (
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 15}},
 		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
 			{Asset: "DZD.2", Amount: 13, Source: "@users:001", Destination: "@users:002"},
-			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
 			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
+			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
 		}, ExitCode: EXIT_OK})
 }
 
@@ -648,4 +648,25 @@ transfer [DZD.2 15] (
 	if len(expected) != 0 {
 		t.Fatalf("some balances were not requested: %v", expected)
 	}
+}
+
+func TestDestinationComplex(t *testing.T) {
+	testJSON(t,
+		`transfer [COIN 100] (
+	from @world
+	to {
+		40% to @a
+		60% to {
+			max [COIN 10] to @b
+			@c
+		}
+	}
+)`,
+		`{}`, map[string]map[string]core.Value{},
+		map[string]map[string]uint64{},
+		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+			{Asset: "COIN", Amount: 40, Source: "@world", Destination: "@a"},
+			{Asset: "COIN", Amount: 10, Source: "@world", Destination: "@b"},
+			{Asset: "COIN", Amount: 50, Source: "@world", Destination: "@c"},
+		}, ExitCode: EXIT_OK})
 }

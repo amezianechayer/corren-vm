@@ -123,6 +123,11 @@ func (m *Machine) tick() (bool, byte) {
 		v := core.Number(binary.LittleEndian.Uint64(bytes))
 		m.Stack = append(m.Stack, v)
 		m.P += 8
+	case program.OP_SWAP:
+		a := m.popValue()
+		b := m.popValue()
+		m.pushValue(a)
+		m.pushValue(b)
 	case program.OP_IADD:
 		b := m.popNumber()
 		a := m.popNumber()
@@ -181,7 +186,7 @@ func (m *Machine) tick() (bool, byte) {
 		if err != nil {
 			return true, EXIT_FAIL_INSUFFICIENT_FUNDS
 		}
-		m.repay(remainder)
+		m.pushValue(remainder)
 		m.pushValue(result)
 	case program.OP_TAKE_MAX:
 		mon := m.popMonetary()
@@ -189,8 +194,11 @@ func (m *Machine) tick() (bool, byte) {
 		if funding.Asset != mon.Asset {
 			return true, EXIT_FAIL_INVALID
 		}
-		result, remainder := funding.TakeMax(mon.Amount)
-		m.repay(remainder)
+		result, remainder, err := funding.Take(mon.Amount)
+		if err != nil {
+			return true, EXIT_FAIL_INSUFFICIENT_FUNDS
+		}
+		m.pushValue(remainder)
 		m.pushValue(result)
 	case program.OP_TAKE_SPLIT:
 		mon := m.popMonetary()
@@ -257,6 +265,8 @@ func (m *Machine) tick() (bool, byte) {
 				m.Balances[string(part.Account)][string(funding.Asset)] += part.Amount
 			}
 		}
+	case program.OP_REPAY:
+		m.repay(m.popFunding())
 	case program.OP_SEND:
 		dest := m.popAccount()
 		funding := m.popFunding()

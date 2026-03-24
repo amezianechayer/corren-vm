@@ -3,6 +3,7 @@ package program
 const (
 	OP_APUSH = byte(iota + 1)
 	OP_IPUSH
+	OP_SWAP
 	OP_IADD
 	OP_ISUB
 	OP_PRINT
@@ -14,6 +15,7 @@ const (
 	OP_TAKE_MAX
 	OP_TAKE_SPLIT
 	OP_ASSEMBLE
+	OP_REPAY
 	OP_ALLOC
 	OP_SEND
 )

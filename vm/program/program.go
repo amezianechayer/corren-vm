@@ -41,6 +41,8 @@ func (p Program) String() string {
 			out += "OP_ASSET\n"
 		case OP_MAKE_ALLOTMENT:
 			out += "OP_MAKE_ALLOTMENT\n"
+		case OP_SWAP:
+			out += "OP_SWAP\n"
 		case OP_TAKE_ALL:
 			out += "OP_TAKE_ALL\n"
 		case OP_TAKE:
@@ -51,6 +53,8 @@ func (p Program) String() string {
 			out += "OP_TAKE_SPLIT\n"
 		case OP_ASSEMBLE:
 			out += "OP_ASSEMBLE\n"
+		case OP_REPAY:
+			out += "OP_REPAY\n"
 		case OP_ALLOC:
 			out += "OP_ALLOC\n"
 		case OP_SEND:

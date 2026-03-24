@@ -16,122 +16,132 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 48, 268,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 48, 290,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
-	18, 4, 19, 9, 19, 4, 20, 9, 20, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3,
-	2, 3, 2, 3, 2, 3, 2, 5, 2, 51, 10, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 63, 10, 3, 3, 4, 3, 4, 3, 4, 3, 4, 5,
-	4, 69, 10, 4, 3, 5, 3, 5, 3, 5, 5, 5, 74, 10, 5, 3, 5, 3, 5, 3, 5, 7, 5,
-	79, 10, 5, 12, 5, 14, 5, 82, 11, 5, 3, 6, 3, 6, 3, 6, 3, 6, 5, 6, 88, 10,
-	6, 3, 6, 3, 6, 3, 6, 5, 6, 93, 10, 6, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3,
-	7, 3, 7, 6, 7, 102, 10, 7, 13, 7, 14, 7, 103, 3, 7, 3, 7, 3, 8, 3, 8, 5,
-	8, 110, 10, 8, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9, 6, 9, 119, 10,
-	9, 13, 9, 14, 9, 120, 3, 9, 3, 9, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3,
-	11, 3, 11, 3, 11, 3, 11, 3, 11, 6, 11, 135, 10, 11, 13, 11, 14, 11, 136,
-	3, 11, 3, 11, 3, 12, 3, 12, 3, 12, 5, 12, 144, 10, 12, 3, 13, 3, 13, 5,
-	13, 148, 10, 13, 3, 14, 3, 14, 3, 15, 3, 15, 3, 15, 3, 15, 3, 15, 3, 15,
-	3, 15, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 5, 16, 165, 10, 16, 3,
-	17, 3, 17, 5, 17, 169, 10, 17, 3, 18, 3, 18, 3, 18, 3, 18, 3, 19, 3, 19,
-	3, 19, 3, 19, 3, 19, 3, 19, 5, 19, 181, 10, 19, 3, 19, 3, 19, 3, 19, 3,
-	19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19,
-	5, 19, 197, 10, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3,
-	19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 6, 19,
-	216, 10, 19, 13, 19, 14, 19, 217, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3,
-	19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 5, 19, 232, 10, 19, 3, 20,
-	7, 20, 235, 10, 20, 12, 20, 14, 20, 238, 11, 20, 3, 20, 3, 20, 6, 20, 242,
-	10, 20, 13, 20, 14, 20, 243, 7, 20, 246, 10, 20, 12, 20, 14, 20, 249, 11,
-	20, 3, 20, 3, 20, 6, 20, 253, 10, 20, 13, 20, 14, 20, 254, 3, 20, 7, 20,
-	258, 10, 20, 12, 20, 14, 20, 261, 11, 20, 3, 20, 5, 20, 264, 10, 20, 3,
-	20, 3, 20, 3, 20, 2, 3, 8, 21, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22,
-	24, 26, 28, 30, 32, 34, 36, 38, 2, 4, 3, 2, 29, 30, 3, 2, 23, 28, 2, 282,
-	2, 50, 3, 2, 2, 2, 4, 62, 3, 2, 2, 2, 6, 68, 3, 2, 2, 2, 8, 73, 3, 2, 2,
-	2, 10, 92, 3, 2, 2, 2, 12, 94, 3, 2, 2, 2, 14, 109, 3, 2, 2, 2, 16, 111,
-	3, 2, 2, 2, 18, 124, 3, 2, 2, 2, 20, 129, 3, 2, 2, 2, 22, 143, 3, 2, 2,
-	2, 24, 147, 3, 2, 2, 2, 26, 149, 3, 2, 2, 2, 28, 151, 3, 2, 2, 2, 30, 158,
-	3, 2, 2, 2, 32, 168, 3, 2, 2, 2, 34, 170, 3, 2, 2, 2, 36, 231, 3, 2, 2,
-	2, 38, 236, 3, 2, 2, 2, 40, 41, 7, 33, 2, 2, 41, 42, 7, 47, 2, 2, 42, 43,
-	7, 39, 2, 2, 43, 44, 7, 48, 2, 2, 44, 45, 7, 48, 2, 2, 45, 51, 7, 34, 2,
-	2, 46, 47, 7, 33, 2, 2, 47, 48, 7, 47, 2, 2, 48, 49, 7, 48, 2, 2, 49, 51,
-	7, 34, 2, 2, 50, 40, 3, 2, 2, 2, 50, 46, 3, 2, 2, 2, 51, 3, 3, 2, 2, 2,
-	52, 53, 7, 33, 2, 2, 53, 54, 7, 47, 2, 2, 54, 55, 7, 39, 2, 2, 55, 56,
-	7, 48, 2, 2, 56, 57, 7, 41, 2, 2, 57, 63, 7, 34, 2, 2, 58, 59, 7, 33, 2,
-	2, 59, 60, 7, 47, 2, 2, 60, 61, 7, 41, 2, 2, 61, 63, 7, 34, 2, 2, 62, 52,
-	3, 2, 2, 2, 62, 58, 3, 2, 2, 2, 63, 5, 3, 2, 2, 2, 64, 69, 7, 46, 2, 2,
-	65, 69, 7, 47, 2, 2, 66, 69, 7, 48, 2, 2, 67, 69, 5, 2, 2, 2, 68, 64, 3,
-	2, 2, 2, 68, 65, 3, 2, 2, 2, 68, 66, 3, 2, 2, 2, 68, 67, 3, 2, 2, 2, 69,
-	7, 3, 2, 2, 2, 70, 71, 8, 5, 1, 2, 71, 74, 5, 6, 4, 2, 72, 74, 7, 45, 2,
-	2, 73, 70, 3, 2, 2, 2, 73, 72, 3, 2, 2, 2, 74, 80, 3, 2, 2, 2, 75, 76,
-	12, 5, 2, 2, 76, 77, 9, 2, 2, 2, 77, 79, 5, 8, 5, 6, 78, 75, 3, 2, 2, 2,
-	79, 82, 3, 2, 2, 2, 80, 78, 3, 2, 2, 2, 80, 81, 3, 2, 2, 2, 81, 9, 3, 2,
-	2, 2, 82, 80, 3, 2, 2, 2, 83, 93, 7, 44, 2, 2, 84, 87, 7, 48, 2, 2, 85,
-	86, 7, 39, 2, 2, 86, 88, 7, 48, 2, 2, 87, 85, 3, 2, 2, 2, 87, 88, 3, 2,
-	2, 2, 88, 89, 3, 2, 2, 2, 89, 93, 7, 31, 2, 2, 90, 93, 7, 45, 2, 2, 91,
-	93, 7, 32, 2, 2, 92, 83, 3, 2, 2, 2, 92, 84, 3, 2, 2, 2, 92, 90, 3, 2,
-	2, 2, 92, 91, 3, 2, 2, 2, 93, 11, 3, 2, 2, 2, 94, 95, 7, 35, 2, 2, 95,
-	101, 7, 4, 2, 2, 96, 97, 5, 10, 6, 2, 97, 98, 7, 12, 2, 2, 98, 99, 5, 8,
-	5, 2, 99, 100, 7, 4, 2, 2, 100, 102, 3, 2, 2, 2, 101, 96, 3, 2, 2, 2, 102,
-	103, 3, 2, 2, 2, 103, 101, 3, 2, 2, 2, 103, 104, 3, 2, 2, 2, 104, 105,
-	3, 2, 2, 2, 105, 106, 7, 36, 2, 2, 106, 13, 3, 2, 2, 2, 107, 110, 5, 8,
-	5, 2, 108, 110, 5, 12, 7, 2, 109, 107, 3, 2, 2, 2, 109, 108, 3, 2, 2, 2,
-	110, 15, 3, 2, 2, 2, 111, 112, 7, 35, 2, 2, 112, 118, 7, 4, 2, 2, 113,
-	114, 5, 10, 6, 2, 114, 115, 7, 11, 2, 2, 115, 116, 5, 22, 12, 2, 116, 117,
-	7, 4, 2, 2, 117, 119, 3, 2, 2, 2, 118, 113, 3, 2, 2, 2, 119, 120, 3, 2,
-	2, 2, 120, 118, 3, 2, 2, 2, 120, 121, 3, 2, 2, 2, 121, 122, 3, 2, 2, 2,
-	122, 123, 7, 36, 2, 2, 123, 17, 3, 2, 2, 2, 124, 125, 7, 13, 2, 2, 125,
-	126, 5, 8, 5, 2, 126, 127, 7, 11, 2, 2, 127, 128, 5, 22, 12, 2, 128, 19,
-	3, 2, 2, 2, 129, 130, 7, 35, 2, 2, 130, 134, 7, 4, 2, 2, 131, 132, 5, 22,
-	12, 2, 132, 133, 7, 4, 2, 2, 133, 135, 3, 2, 2, 2, 134, 131, 3, 2, 2, 2,
-	135, 136, 3, 2, 2, 2, 136, 134, 3, 2, 2, 2, 136, 137, 3, 2, 2, 2, 137,
-	138, 3, 2, 2, 2, 138, 139, 7, 36, 2, 2, 139, 21, 3, 2, 2, 2, 140, 144,
-	5, 8, 5, 2, 141, 144, 5, 18, 10, 2, 142, 144, 5, 20, 11, 2, 143, 140, 3,
-	2, 2, 2, 143, 141, 3, 2, 2, 2, 143, 142, 3, 2, 2, 2, 144, 23, 3, 2, 2,
-	2, 145, 148, 5, 22, 12, 2, 146, 148, 5, 16, 9, 2, 147, 145, 3, 2, 2, 2,
-	147, 146, 3, 2, 2, 2, 148, 25, 3, 2, 2, 2, 149, 150, 9, 3, 2, 2, 150, 27,
-	3, 2, 2, 2, 151, 152, 7, 22, 2, 2, 152, 153, 7, 37, 2, 2, 153, 154, 5,
-	8, 5, 2, 154, 155, 7, 3, 2, 2, 155, 156, 7, 43, 2, 2, 156, 157, 7, 38,
-	2, 2, 157, 29, 3, 2, 2, 2, 158, 159, 7, 16, 2, 2, 159, 160, 7, 45, 2, 2,
-	160, 161, 7, 40, 2, 2, 161, 164, 5, 26, 14, 2, 162, 163, 7, 42, 2, 2, 163,
-	165, 5, 28, 15, 2, 164, 162, 3, 2, 2, 2, 164, 165, 3, 2, 2, 2, 165, 31,
-	3, 2, 2, 2, 166, 169, 5, 8, 5, 2, 167, 169, 7, 44, 2, 2, 168, 166, 3, 2,
-	2, 2, 168, 167, 3, 2, 2, 2, 169, 33, 3, 2, 2, 2, 170, 171, 7, 43, 2, 2,
-	171, 172, 7, 42, 2, 2, 172, 173, 5, 32, 17, 2, 173, 35, 3, 2, 2, 2, 174,
-	175, 7, 8, 2, 2, 175, 232, 5, 8, 5, 2, 176, 232, 7, 9, 2, 2, 177, 180,
-	7, 10, 2, 2, 178, 181, 5, 8, 5, 2, 179, 181, 5, 4, 3, 2, 180, 178, 3, 2,
-	2, 2, 180, 179, 3, 2, 2, 2, 181, 182, 3, 2, 2, 2, 182, 183, 7, 37, 2, 2,
-	183, 196, 7, 4, 2, 2, 184, 185, 7, 11, 2, 2, 185, 186, 5, 24, 13, 2, 186,
-	187, 7, 4, 2, 2, 187, 188, 7, 12, 2, 2, 188, 189, 5, 14, 8, 2, 189, 197,
-	3, 2, 2, 2, 190, 191, 7, 12, 2, 2, 191, 192, 5, 14, 8, 2, 192, 193, 7,
-	4, 2, 2, 193, 194, 7, 11, 2, 2, 194, 195, 5, 24, 13, 2, 195, 197, 3, 2,
-	2, 2, 196, 184, 3, 2, 2, 2, 196, 190, 3, 2, 2, 2, 197, 198, 3, 2, 2, 2,
-	198, 199, 7, 4, 2, 2, 199, 200, 7, 38, 2, 2, 200, 232, 3, 2, 2, 2, 201,
-	202, 7, 17, 2, 2, 202, 203, 7, 18, 2, 2, 203, 204, 7, 19, 2, 2, 204, 205,
-	7, 43, 2, 2, 205, 206, 7, 42, 2, 2, 206, 232, 5, 32, 17, 2, 207, 208, 7,
-	17, 2, 2, 208, 209, 7, 18, 2, 2, 209, 210, 7, 19, 2, 2, 210, 211, 7, 35,
-	2, 2, 211, 215, 7, 4, 2, 2, 212, 213, 5, 34, 18, 2, 213, 214, 7, 4, 2,
-	2, 214, 216, 3, 2, 2, 2, 215, 212, 3, 2, 2, 2, 216, 217, 3, 2, 2, 2, 217,
-	215, 3, 2, 2, 2, 217, 218, 3, 2, 2, 2, 218, 219, 3, 2, 2, 2, 219, 220,
-	7, 36, 2, 2, 220, 232, 3, 2, 2, 2, 221, 222, 7, 17, 2, 2, 222, 223, 7,
-	23, 2, 2, 223, 224, 7, 19, 2, 2, 224, 225, 7, 20, 2, 2, 225, 226, 5, 8,
-	5, 2, 226, 227, 7, 21, 2, 2, 227, 228, 7, 43, 2, 2, 228, 229, 7, 42, 2,
-	2, 229, 230, 5, 32, 17, 2, 230, 232, 3, 2, 2, 2, 231, 174, 3, 2, 2, 2,
-	231, 176, 3, 2, 2, 2, 231, 177, 3, 2, 2, 2, 231, 201, 3, 2, 2, 2, 231,
-	207, 3, 2, 2, 2, 231, 221, 3, 2, 2, 2, 232, 37, 3, 2, 2, 2, 233, 235, 7,
-	4, 2, 2, 234, 233, 3, 2, 2, 2, 235, 238, 3, 2, 2, 2, 236, 234, 3, 2, 2,
-	2, 236, 237, 3, 2, 2, 2, 237, 247, 3, 2, 2, 2, 238, 236, 3, 2, 2, 2, 239,
-	241, 5, 30, 16, 2, 240, 242, 7, 4, 2, 2, 241, 240, 3, 2, 2, 2, 242, 243,
-	3, 2, 2, 2, 243, 241, 3, 2, 2, 2, 243, 244, 3, 2, 2, 2, 244, 246, 3, 2,
-	2, 2, 245, 239, 3, 2, 2, 2, 246, 249, 3, 2, 2, 2, 247, 245, 3, 2, 2, 2,
-	247, 248, 3, 2, 2, 2, 248, 250, 3, 2, 2, 2, 249, 247, 3, 2, 2, 2, 250,
-	259, 5, 36, 19, 2, 251, 253, 7, 4, 2, 2, 252, 251, 3, 2, 2, 2, 253, 254,
-	3, 2, 2, 2, 254, 252, 3, 2, 2, 2, 254, 255, 3, 2, 2, 2, 255, 256, 3, 2,
-	2, 2, 256, 258, 5, 36, 19, 2, 257, 252, 3, 2, 2, 2, 258, 261, 3, 2, 2,
-	2, 259, 257, 3, 2, 2, 2, 259, 260, 3, 2, 2, 2, 260, 263, 3, 2, 2, 2, 261,
-	259, 3, 2, 2, 2, 262, 264, 7, 4, 2, 2, 263, 262, 3, 2, 2, 2, 263, 264,
-	3, 2, 2, 2, 264, 265, 3, 2, 2, 2, 265, 266, 7, 2, 2, 3, 266, 39, 3, 2,
-	2, 2, 27, 50, 62, 68, 73, 80, 87, 92, 103, 109, 120, 136, 143, 147, 164,
-	168, 180, 196, 217, 231, 236, 243, 247, 254, 259, 263,
+	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 3, 2, 3, 2,
+	3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 5, 2, 55, 10, 2, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 67, 10, 3,
+	3, 4, 3, 4, 3, 4, 3, 4, 5, 4, 73, 10, 4, 3, 5, 3, 5, 3, 5, 5, 5, 78, 10,
+	5, 3, 5, 3, 5, 3, 5, 7, 5, 83, 10, 5, 12, 5, 14, 5, 86, 11, 5, 3, 6, 3,
+	6, 3, 6, 3, 6, 5, 6, 92, 10, 6, 3, 6, 3, 6, 3, 6, 5, 6, 97, 10, 6, 3, 7,
+	3, 7, 3, 7, 3, 7, 3, 7, 6, 7, 104, 10, 7, 13, 7, 14, 7, 105, 3, 7, 3, 7,
+	3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9, 3, 9,
+	6, 9, 122, 10, 9, 13, 9, 14, 9, 123, 3, 9, 3, 9, 3, 10, 3, 10, 3, 10, 3,
+	10, 5, 10, 132, 10, 10, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11,
+	6, 11, 141, 10, 11, 13, 11, 14, 11, 142, 3, 11, 3, 11, 3, 12, 3, 12, 3,
+	12, 3, 12, 3, 12, 3, 13, 3, 13, 3, 13, 3, 13, 3, 13, 6, 13, 157, 10, 13,
+	13, 13, 14, 13, 158, 3, 13, 3, 13, 3, 14, 3, 14, 3, 14, 5, 14, 166, 10,
+	14, 3, 15, 3, 15, 5, 15, 170, 10, 15, 3, 16, 3, 16, 3, 17, 3, 17, 3, 17,
+	3, 17, 3, 17, 3, 17, 3, 17, 3, 18, 3, 18, 3, 18, 3, 18, 3, 18, 3, 18, 5,
+	18, 187, 10, 18, 3, 19, 3, 19, 5, 19, 191, 10, 19, 3, 20, 3, 20, 3, 20,
+	3, 20, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 5, 21, 203, 10, 21, 3,
+	21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21,
+	3, 21, 3, 21, 3, 21, 5, 21, 219, 10, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3,
+	21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21,
+	3, 21, 3, 21, 6, 21, 238, 10, 21, 13, 21, 14, 21, 239, 3, 21, 3, 21, 3,
+	21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 3, 21, 5, 21,
+	254, 10, 21, 3, 22, 7, 22, 257, 10, 22, 12, 22, 14, 22, 260, 11, 22, 3,
+	22, 3, 22, 6, 22, 264, 10, 22, 13, 22, 14, 22, 265, 7, 22, 268, 10, 22,
+	12, 22, 14, 22, 271, 11, 22, 3, 22, 3, 22, 6, 22, 275, 10, 22, 13, 22,
+	14, 22, 276, 3, 22, 7, 22, 280, 10, 22, 12, 22, 14, 22, 283, 11, 22, 3,
+	22, 5, 22, 286, 10, 22, 3, 22, 3, 22, 3, 22, 2, 3, 8, 23, 2, 4, 6, 8, 10,
+	12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 2, 4, 3,
+	2, 29, 30, 3, 2, 23, 28, 2, 305, 2, 54, 3, 2, 2, 2, 4, 66, 3, 2, 2, 2,
+	6, 72, 3, 2, 2, 2, 8, 77, 3, 2, 2, 2, 10, 96, 3, 2, 2, 2, 12, 98, 3, 2,
+	2, 2, 14, 109, 3, 2, 2, 2, 16, 114, 3, 2, 2, 2, 18, 131, 3, 2, 2, 2, 20,
+	133, 3, 2, 2, 2, 22, 146, 3, 2, 2, 2, 24, 151, 3, 2, 2, 2, 26, 165, 3,
+	2, 2, 2, 28, 169, 3, 2, 2, 2, 30, 171, 3, 2, 2, 2, 32, 173, 3, 2, 2, 2,
+	34, 180, 3, 2, 2, 2, 36, 190, 3, 2, 2, 2, 38, 192, 3, 2, 2, 2, 40, 253,
+	3, 2, 2, 2, 42, 258, 3, 2, 2, 2, 44, 45, 7, 33, 2, 2, 45, 46, 7, 47, 2,
+	2, 46, 47, 7, 39, 2, 2, 47, 48, 7, 48, 2, 2, 48, 49, 7, 48, 2, 2, 49, 55,
+	7, 34, 2, 2, 50, 51, 7, 33, 2, 2, 51, 52, 7, 47, 2, 2, 52, 53, 7, 48, 2,
+	2, 53, 55, 7, 34, 2, 2, 54, 44, 3, 2, 2, 2, 54, 50, 3, 2, 2, 2, 55, 3,
+	3, 2, 2, 2, 56, 57, 7, 33, 2, 2, 57, 58, 7, 47, 2, 2, 58, 59, 7, 39, 2,
+	2, 59, 60, 7, 48, 2, 2, 60, 61, 7, 41, 2, 2, 61, 67, 7, 34, 2, 2, 62, 63,
+	7, 33, 2, 2, 63, 64, 7, 47, 2, 2, 64, 65, 7, 41, 2, 2, 65, 67, 7, 34, 2,
+	2, 66, 56, 3, 2, 2, 2, 66, 62, 3, 2, 2, 2, 67, 5, 3, 2, 2, 2, 68, 73, 7,
+	46, 2, 2, 69, 73, 7, 47, 2, 2, 70, 73, 7, 48, 2, 2, 71, 73, 5, 2, 2, 2,
+	72, 68, 3, 2, 2, 2, 72, 69, 3, 2, 2, 2, 72, 70, 3, 2, 2, 2, 72, 71, 3,
+	2, 2, 2, 73, 7, 3, 2, 2, 2, 74, 75, 8, 5, 1, 2, 75, 78, 5, 6, 4, 2, 76,
+	78, 7, 45, 2, 2, 77, 74, 3, 2, 2, 2, 77, 76, 3, 2, 2, 2, 78, 84, 3, 2,
+	2, 2, 79, 80, 12, 5, 2, 2, 80, 81, 9, 2, 2, 2, 81, 83, 5, 8, 5, 6, 82,
+	79, 3, 2, 2, 2, 83, 86, 3, 2, 2, 2, 84, 82, 3, 2, 2, 2, 84, 85, 3, 2, 2,
+	2, 85, 9, 3, 2, 2, 2, 86, 84, 3, 2, 2, 2, 87, 97, 7, 44, 2, 2, 88, 91,
+	7, 48, 2, 2, 89, 90, 7, 39, 2, 2, 90, 92, 7, 48, 2, 2, 91, 89, 3, 2, 2,
+	2, 91, 92, 3, 2, 2, 2, 92, 93, 3, 2, 2, 2, 93, 97, 7, 31, 2, 2, 94, 97,
+	7, 45, 2, 2, 95, 97, 7, 32, 2, 2, 96, 87, 3, 2, 2, 2, 96, 88, 3, 2, 2,
+	2, 96, 94, 3, 2, 2, 2, 96, 95, 3, 2, 2, 2, 97, 11, 3, 2, 2, 2, 98, 99,
+	7, 35, 2, 2, 99, 103, 7, 4, 2, 2, 100, 101, 5, 18, 10, 2, 101, 102, 7,
+	4, 2, 2, 102, 104, 3, 2, 2, 2, 103, 100, 3, 2, 2, 2, 104, 105, 3, 2, 2,
+	2, 105, 103, 3, 2, 2, 2, 105, 106, 3, 2, 2, 2, 106, 107, 3, 2, 2, 2, 107,
+	108, 7, 36, 2, 2, 108, 13, 3, 2, 2, 2, 109, 110, 7, 13, 2, 2, 110, 111,
+	5, 8, 5, 2, 111, 112, 7, 12, 2, 2, 112, 113, 5, 18, 10, 2, 113, 15, 3,
+	2, 2, 2, 114, 115, 7, 35, 2, 2, 115, 121, 7, 4, 2, 2, 116, 117, 5, 10,
+	6, 2, 117, 118, 7, 12, 2, 2, 118, 119, 5, 18, 10, 2, 119, 120, 7, 4, 2,
+	2, 120, 122, 3, 2, 2, 2, 121, 116, 3, 2, 2, 2, 122, 123, 3, 2, 2, 2, 123,
+	121, 3, 2, 2, 2, 123, 124, 3, 2, 2, 2, 124, 125, 3, 2, 2, 2, 125, 126,
+	7, 36, 2, 2, 126, 17, 3, 2, 2, 2, 127, 132, 5, 8, 5, 2, 128, 132, 5, 14,
+	8, 2, 129, 132, 5, 12, 7, 2, 130, 132, 5, 16, 9, 2, 131, 127, 3, 2, 2,
+	2, 131, 128, 3, 2, 2, 2, 131, 129, 3, 2, 2, 2, 131, 130, 3, 2, 2, 2, 132,
+	19, 3, 2, 2, 2, 133, 134, 7, 35, 2, 2, 134, 140, 7, 4, 2, 2, 135, 136,
+	5, 10, 6, 2, 136, 137, 7, 11, 2, 2, 137, 138, 5, 26, 14, 2, 138, 139, 7,
+	4, 2, 2, 139, 141, 3, 2, 2, 2, 140, 135, 3, 2, 2, 2, 141, 142, 3, 2, 2,
+	2, 142, 140, 3, 2, 2, 2, 142, 143, 3, 2, 2, 2, 143, 144, 3, 2, 2, 2, 144,
+	145, 7, 36, 2, 2, 145, 21, 3, 2, 2, 2, 146, 147, 7, 13, 2, 2, 147, 148,
+	5, 8, 5, 2, 148, 149, 7, 11, 2, 2, 149, 150, 5, 26, 14, 2, 150, 23, 3,
+	2, 2, 2, 151, 152, 7, 35, 2, 2, 152, 156, 7, 4, 2, 2, 153, 154, 5, 26,
+	14, 2, 154, 155, 7, 4, 2, 2, 155, 157, 3, 2, 2, 2, 156, 153, 3, 2, 2, 2,
+	157, 158, 3, 2, 2, 2, 158, 156, 3, 2, 2, 2, 158, 159, 3, 2, 2, 2, 159,
+	160, 3, 2, 2, 2, 160, 161, 7, 36, 2, 2, 161, 25, 3, 2, 2, 2, 162, 166,
+	5, 8, 5, 2, 163, 166, 5, 22, 12, 2, 164, 166, 5, 24, 13, 2, 165, 162, 3,
+	2, 2, 2, 165, 163, 3, 2, 2, 2, 165, 164, 3, 2, 2, 2, 166, 27, 3, 2, 2,
+	2, 167, 170, 5, 26, 14, 2, 168, 170, 5, 20, 11, 2, 169, 167, 3, 2, 2, 2,
+	169, 168, 3, 2, 2, 2, 170, 29, 3, 2, 2, 2, 171, 172, 9, 3, 2, 2, 172, 31,
+	3, 2, 2, 2, 173, 174, 7, 22, 2, 2, 174, 175, 7, 37, 2, 2, 175, 176, 5,
+	8, 5, 2, 176, 177, 7, 3, 2, 2, 177, 178, 7, 43, 2, 2, 178, 179, 7, 38,
+	2, 2, 179, 33, 3, 2, 2, 2, 180, 181, 7, 16, 2, 2, 181, 182, 7, 45, 2, 2,
+	182, 183, 7, 40, 2, 2, 183, 186, 5, 30, 16, 2, 184, 185, 7, 42, 2, 2, 185,
+	187, 5, 32, 17, 2, 186, 184, 3, 2, 2, 2, 186, 187, 3, 2, 2, 2, 187, 35,
+	3, 2, 2, 2, 188, 191, 5, 8, 5, 2, 189, 191, 7, 44, 2, 2, 190, 188, 3, 2,
+	2, 2, 190, 189, 3, 2, 2, 2, 191, 37, 3, 2, 2, 2, 192, 193, 7, 43, 2, 2,
+	193, 194, 7, 42, 2, 2, 194, 195, 5, 36, 19, 2, 195, 39, 3, 2, 2, 2, 196,
+	197, 7, 8, 2, 2, 197, 254, 5, 8, 5, 2, 198, 254, 7, 9, 2, 2, 199, 202,
+	7, 10, 2, 2, 200, 203, 5, 8, 5, 2, 201, 203, 5, 4, 3, 2, 202, 200, 3, 2,
+	2, 2, 202, 201, 3, 2, 2, 2, 203, 204, 3, 2, 2, 2, 204, 205, 7, 37, 2, 2,
+	205, 218, 7, 4, 2, 2, 206, 207, 7, 11, 2, 2, 207, 208, 5, 28, 15, 2, 208,
+	209, 7, 4, 2, 2, 209, 210, 7, 12, 2, 2, 210, 211, 5, 18, 10, 2, 211, 219,
+	3, 2, 2, 2, 212, 213, 7, 12, 2, 2, 213, 214, 5, 18, 10, 2, 214, 215, 7,
+	4, 2, 2, 215, 216, 7, 11, 2, 2, 216, 217, 5, 28, 15, 2, 217, 219, 3, 2,
+	2, 2, 218, 206, 3, 2, 2, 2, 218, 212, 3, 2, 2, 2, 219, 220, 3, 2, 2, 2,
+	220, 221, 7, 4, 2, 2, 221, 222, 7, 38, 2, 2, 222, 254, 3, 2, 2, 2, 223,
+	224, 7, 17, 2, 2, 224, 225, 7, 18, 2, 2, 225, 226, 7, 19, 2, 2, 226, 227,
+	7, 43, 2, 2, 227, 228, 7, 42, 2, 2, 228, 254, 5, 36, 19, 2, 229, 230, 7,
+	17, 2, 2, 230, 231, 7, 18, 2, 2, 231, 232, 7, 19, 2, 2, 232, 233, 7, 35,
+	2, 2, 233, 237, 7, 4, 2, 2, 234, 235, 5, 38, 20, 2, 235, 236, 7, 4, 2,
+	2, 236, 238, 3, 2, 2, 2, 237, 234, 3, 2, 2, 2, 238, 239, 3, 2, 2, 2, 239,
+	237, 3, 2, 2, 2, 239, 240, 3, 2, 2, 2, 240, 241, 3, 2, 2, 2, 241, 242,
+	7, 36, 2, 2, 242, 254, 3, 2, 2, 2, 243, 244, 7, 17, 2, 2, 244, 245, 7,
+	23, 2, 2, 245, 246, 7, 19, 2, 2, 246, 247, 7, 20, 2, 2, 247, 248, 5, 8,
+	5, 2, 248, 249, 7, 21, 2, 2, 249, 250, 7, 43, 2, 2, 250, 251, 7, 42, 2,
+	2, 251, 252, 5, 36, 19, 2, 252, 254, 3, 2, 2, 2, 253, 196, 3, 2, 2, 2,
+	253, 198, 3, 2, 2, 2, 253, 199, 3, 2, 2, 2, 253, 223, 3, 2, 2, 2, 253,
+	229, 3, 2, 2, 2, 253, 243, 3, 2, 2, 2, 254, 41, 3, 2, 2, 2, 255, 257, 7,
+	4, 2, 2, 256, 255, 3, 2, 2, 2, 257, 260, 3, 2, 2, 2, 258, 256, 3, 2, 2,
+	2, 258, 259, 3, 2, 2, 2, 259, 269, 3, 2, 2, 2, 260, 258, 3, 2, 2, 2, 261,
+	263, 5, 34, 18, 2, 262, 264, 7, 4, 2, 2, 263, 262, 3, 2, 2, 2, 264, 265,
+	3, 2, 2, 2, 265, 263, 3, 2, 2, 2, 265, 266, 3, 2, 2, 2, 266, 268, 3, 2,
+	2, 2, 267, 261, 3, 2, 2, 2, 268, 271, 3, 2, 2, 2, 269, 267, 3, 2, 2, 2,
+	269, 270, 3, 2, 2, 2, 270, 272, 3, 2, 2, 2, 271, 269, 3, 2, 2, 2, 272,
+	281, 5, 40, 21, 2, 273, 275, 7, 4, 2, 2, 274, 273, 3, 2, 2, 2, 275, 276,
+	3, 2, 2, 2, 276, 274, 3, 2, 2, 2, 276, 277, 3, 2, 2, 2, 277, 278, 3, 2,
+	2, 2, 278, 280, 5, 40, 21, 2, 279, 274, 3, 2, 2, 2, 280, 283, 3, 2, 2,
+	2, 281, 279, 3, 2, 2, 2, 281, 282, 3, 2, 2, 2, 282, 285, 3, 2, 2, 2, 283,
+	281, 3, 2, 2, 2, 284, 286, 7, 4, 2, 2, 285, 284, 3, 2, 2, 2, 285, 286,
+	3, 2, 2, 2, 286, 287, 3, 2, 2, 2, 287, 288, 7, 2, 2, 3, 288, 43, 3, 2,
+	2, 2, 28, 54, 66, 72, 77, 84, 91, 96, 105, 123, 131, 142, 158, 165, 169,
+	186, 190, 202, 218, 239, 253, 258, 265, 269, 276, 281, 285,
 }
 var literalNames = []string{
 	"", "','", "", "", "", "", "'print'", "'fail'", "'transfer'", "'from'",
@@ -152,9 +162,10 @@ var symbolicNames = []string{
 
 var ruleNames = []string{
 	"monetary", "monetaryAll", "literal", "expression", "allotmentPortion",
-	"destinationAllotment", "destination", "sourceAllotment", "sourceMaxed",
-	"sourceInOrder", "source", "valueAwareSource", "type_", "origin", "varDecl",
-	"metadataValue", "metadataEntry", "statement", "script",
+	"destinationInOrder", "destinationMaxed", "destinationAllotment", "destination",
+	"sourceAllotment", "sourceMaxed", "sourceInOrder", "source", "valueAwareSource",
+	"type_", "origin", "varDecl", "metadataValue", "metadataEntry", "statement",
+	"script",
 }
 
 type FaRlParser struct {
@@ -244,20 +255,22 @@ const (
 	FaRlParserRULE_literal              = 2
 	FaRlParserRULE_expression           = 3
 	FaRlParserRULE_allotmentPortion     = 4
-	FaRlParserRULE_destinationAllotment = 5
-	FaRlParserRULE_destination          = 6
-	FaRlParserRULE_sourceAllotment      = 7
-	FaRlParserRULE_sourceMaxed          = 8
-	FaRlParserRULE_sourceInOrder        = 9
-	FaRlParserRULE_source               = 10
-	FaRlParserRULE_valueAwareSource     = 11
-	FaRlParserRULE_type_                = 12
-	FaRlParserRULE_origin               = 13
-	FaRlParserRULE_varDecl              = 14
-	FaRlParserRULE_metadataValue        = 15
-	FaRlParserRULE_metadataEntry        = 16
-	FaRlParserRULE_statement            = 17
-	FaRlParserRULE_script               = 18
+	FaRlParserRULE_destinationInOrder   = 5
+	FaRlParserRULE_destinationMaxed     = 6
+	FaRlParserRULE_destinationAllotment = 7
+	FaRlParserRULE_destination          = 8
+	FaRlParserRULE_sourceAllotment      = 9
+	FaRlParserRULE_sourceMaxed          = 10
+	FaRlParserRULE_sourceInOrder        = 11
+	FaRlParserRULE_source               = 12
+	FaRlParserRULE_valueAwareSource     = 13
+	FaRlParserRULE_type_                = 14
+	FaRlParserRULE_origin               = 15
+	FaRlParserRULE_varDecl              = 16
+	FaRlParserRULE_metadataValue        = 17
+	FaRlParserRULE_metadataEntry        = 18
+	FaRlParserRULE_statement            = 19
+	FaRlParserRULE_script               = 20
 )
 
 // IMonetaryContext is an interface to support dynamic dispatch.
@@ -455,43 +468,43 @@ func (p *FaRlParser) Monetary() (localctx IMonetaryContext) {
 		}
 	}()
 
-	p.SetState(48)
+	p.SetState(52)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 0, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewMonetaryLitContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(38)
+			p.SetState(42)
 			p.Match(FaRlParserLBRACK)
 		}
 		{
-			p.SetState(39)
+			p.SetState(43)
 
 			var _m = p.Match(FaRlParserASSET)
 
 			localctx.(*MonetaryLitContext).asset = _m
 		}
 		{
-			p.SetState(40)
+			p.SetState(44)
 			p.Match(FaRlParserDOT)
 		}
 		{
-			p.SetState(41)
+			p.SetState(45)
 
 			var _m = p.Match(FaRlParserNUMBER)
 
 			localctx.(*MonetaryLitContext).precision = _m
 		}
 		{
-			p.SetState(42)
+			p.SetState(46)
 
 			var _m = p.Match(FaRlParserNUMBER)
 
 			localctx.(*MonetaryLitContext).amount = _m
 		}
 		{
-			p.SetState(43)
+			p.SetState(47)
 			p.Match(FaRlParserRBRACK)
 		}
 
@@ -499,25 +512,25 @@ func (p *FaRlParser) Monetary() (localctx IMonetaryContext) {
 		localctx = NewMonetaryNoPrecisionContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(44)
+			p.SetState(48)
 			p.Match(FaRlParserLBRACK)
 		}
 		{
-			p.SetState(45)
+			p.SetState(49)
 
 			var _m = p.Match(FaRlParserASSET)
 
 			localctx.(*MonetaryNoPrecisionContext).asset = _m
 		}
 		{
-			p.SetState(46)
+			p.SetState(50)
 
 			var _m = p.Match(FaRlParserNUMBER)
 
 			localctx.(*MonetaryNoPrecisionContext).amount = _m
 		}
 		{
-			p.SetState(47)
+			p.SetState(51)
 			p.Match(FaRlParserRBRACK)
 		}
 
@@ -711,56 +724,33 @@ func (p *FaRlParser) MonetaryAll() (localctx IMonetaryAllContext) {
 		}
 	}()
 
-	p.SetState(60)
+	p.SetState(64)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewMonetaryAllPrecContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(50)
+			p.SetState(54)
 			p.Match(FaRlParserLBRACK)
 		}
 		{
-			p.SetState(51)
+			p.SetState(55)
 
 			var _m = p.Match(FaRlParserASSET)
 
 			localctx.(*MonetaryAllPrecContext).asset = _m
 		}
 		{
-			p.SetState(52)
-			p.Match(FaRlParserDOT)
-		}
-		{
-			p.SetState(53)
-
-			var _m = p.Match(FaRlParserNUMBER)
-
-			localctx.(*MonetaryAllPrecContext).precision = _m
-		}
-		{
-			p.SetState(54)
-			p.Match(FaRlParserSTAR)
-		}
-		{
-			p.SetState(55)
-			p.Match(FaRlParserRBRACK)
-		}
-
-	case 2:
-		localctx = NewMonetaryAllNoPrecContext(p, localctx)
-		p.EnterOuterAlt(localctx, 2)
-		{
 			p.SetState(56)
-			p.Match(FaRlParserLBRACK)
+			p.Match(FaRlParserDOT)
 		}
 		{
 			p.SetState(57)
 
-			var _m = p.Match(FaRlParserASSET)
+			var _m = p.Match(FaRlParserNUMBER)
 
-			localctx.(*MonetaryAllNoPrecContext).asset = _m
+			localctx.(*MonetaryAllPrecContext).precision = _m
 		}
 		{
 			p.SetState(58)
@@ -768,6 +758,29 @@ func (p *FaRlParser) MonetaryAll() (localctx IMonetaryAllContext) {
 		}
 		{
 			p.SetState(59)
+			p.Match(FaRlParserRBRACK)
+		}
+
+	case 2:
+		localctx = NewMonetaryAllNoPrecContext(p, localctx)
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(60)
+			p.Match(FaRlParserLBRACK)
+		}
+		{
+			p.SetState(61)
+
+			var _m = p.Match(FaRlParserASSET)
+
+			localctx.(*MonetaryAllNoPrecContext).asset = _m
+		}
+		{
+			p.SetState(62)
+			p.Match(FaRlParserSTAR)
+		}
+		{
+			p.SetState(63)
 			p.Match(FaRlParserRBRACK)
 		}
 
@@ -988,7 +1001,7 @@ func (p *FaRlParser) Literal() (localctx ILiteralContext) {
 		}
 	}()
 
-	p.SetState(66)
+	p.SetState(70)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -996,7 +1009,7 @@ func (p *FaRlParser) Literal() (localctx ILiteralContext) {
 		localctx = NewLitAccountContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(62)
+			p.SetState(66)
 			p.Match(FaRlParserACCOUNT)
 		}
 
@@ -1004,7 +1017,7 @@ func (p *FaRlParser) Literal() (localctx ILiteralContext) {
 		localctx = NewLitAssetContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(63)
+			p.SetState(67)
 			p.Match(FaRlParserASSET)
 		}
 
@@ -1012,7 +1025,7 @@ func (p *FaRlParser) Literal() (localctx ILiteralContext) {
 		localctx = NewLitNumberContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(64)
+			p.SetState(68)
 			p.Match(FaRlParserNUMBER)
 		}
 
@@ -1020,7 +1033,7 @@ func (p *FaRlParser) Literal() (localctx ILiteralContext) {
 		localctx = NewLitMonetaryContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(65)
+			p.SetState(69)
 			p.Monetary()
 		}
 
@@ -1274,7 +1287,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(71)
+	p.SetState(75)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -1284,7 +1297,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 		_prevctx = localctx
 
 		{
-			p.SetState(69)
+			p.SetState(73)
 
 			var _x = p.Literal()
 
@@ -1296,7 +1309,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(70)
+			p.SetState(74)
 
 			var _m = p.Match(FaRlParserVARIABLE_NAME)
 
@@ -1307,7 +1320,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(78)
+	p.SetState(82)
 	p.GetErrorHandler().Sync(p)
 	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 4, p.GetParserRuleContext())
 
@@ -1321,13 +1334,13 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 			localctx.(*ExprAddSubContext).lhs = _prevctx
 
 			p.PushNewRecursionContext(localctx, _startState, FaRlParserRULE_expression)
-			p.SetState(73)
+			p.SetState(77)
 
 			if !(p.Precpred(p.GetParserRuleContext(), 3)) {
 				panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 3)", ""))
 			}
 			{
-				p.SetState(74)
+				p.SetState(78)
 
 				var _lt = p.GetTokenStream().LT(1)
 
@@ -1345,7 +1358,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 				}
 			}
 			{
-				p.SetState(75)
+				p.SetState(79)
 
 				var _x = p.expression(4)
 
@@ -1353,7 +1366,7 @@ func (p *FaRlParser) expression(_p int) (localctx IExpressionContext) {
 			}
 
 		}
-		p.SetState(80)
+		p.SetState(84)
 		p.GetErrorHandler().Sync(p)
 		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 4, p.GetParserRuleContext())
 	}
@@ -1585,7 +1598,7 @@ func (p *FaRlParser) AllotmentPortion() (localctx IAllotmentPortionContext) {
 		}
 	}()
 
-	p.SetState(90)
+	p.SetState(94)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -1593,7 +1606,7 @@ func (p *FaRlParser) AllotmentPortion() (localctx IAllotmentPortionContext) {
 		localctx = NewAllotmentPortionConstContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(81)
+			p.SetState(85)
 			p.Match(FaRlParserRATIO)
 		}
 
@@ -1601,26 +1614,26 @@ func (p *FaRlParser) AllotmentPortion() (localctx IAllotmentPortionContext) {
 		localctx = NewAllotmentPortionConstPercentContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(82)
+			p.SetState(86)
 			p.Match(FaRlParserNUMBER)
 		}
-		p.SetState(85)
+		p.SetState(89)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		if _la == FaRlParserDOT {
 			{
-				p.SetState(83)
+				p.SetState(87)
 				p.Match(FaRlParserDOT)
 			}
 			{
-				p.SetState(84)
+				p.SetState(88)
 				p.Match(FaRlParserNUMBER)
 			}
 
 		}
 		{
-			p.SetState(87)
+			p.SetState(91)
 			p.Match(FaRlParserPERCENT)
 		}
 
@@ -1628,7 +1641,7 @@ func (p *FaRlParser) AllotmentPortion() (localctx IAllotmentPortionContext) {
 		localctx = NewAllotmentPortionVarContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(88)
+			p.SetState(92)
 
 			var _m = p.Match(FaRlParserVARIABLE_NAME)
 
@@ -1639,12 +1652,346 @@ func (p *FaRlParser) AllotmentPortion() (localctx IAllotmentPortionContext) {
 		localctx = NewAllotmentPortionRemainingContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(89)
+			p.SetState(93)
 			p.Match(FaRlParserPORTION_REMAINING)
 		}
 
 	default:
 		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
+	}
+
+	return localctx
+}
+
+// IDestinationInOrderContext is an interface to support dynamic dispatch.
+type IDestinationInOrderContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Get_destination returns the _destination rule contexts.
+	Get_destination() IDestinationContext
+
+	// Set_destination sets the _destination rule contexts.
+	Set_destination(IDestinationContext)
+
+	// GetDests returns the dests rule context list.
+	GetDests() []IDestinationContext
+
+	// SetDests sets the dests rule context list.
+	SetDests([]IDestinationContext)
+
+	// IsDestinationInOrderContext differentiates from other interfaces.
+	IsDestinationInOrderContext()
+}
+
+type DestinationInOrderContext struct {
+	*antlr.BaseParserRuleContext
+	parser       antlr.Parser
+	_destination IDestinationContext
+	dests        []IDestinationContext
+}
+
+func NewEmptyDestinationInOrderContext() *DestinationInOrderContext {
+	var p = new(DestinationInOrderContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = FaRlParserRULE_destinationInOrder
+	return p
+}
+
+func (*DestinationInOrderContext) IsDestinationInOrderContext() {}
+
+func NewDestinationInOrderContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *DestinationInOrderContext {
+	var p = new(DestinationInOrderContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = FaRlParserRULE_destinationInOrder
+
+	return p
+}
+
+func (s *DestinationInOrderContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *DestinationInOrderContext) Get_destination() IDestinationContext { return s._destination }
+
+func (s *DestinationInOrderContext) Set_destination(v IDestinationContext) { s._destination = v }
+
+func (s *DestinationInOrderContext) GetDests() []IDestinationContext { return s.dests }
+
+func (s *DestinationInOrderContext) SetDests(v []IDestinationContext) { s.dests = v }
+
+func (s *DestinationInOrderContext) LBRACE() antlr.TerminalNode {
+	return s.GetToken(FaRlParserLBRACE, 0)
+}
+
+func (s *DestinationInOrderContext) AllNEWLINE() []antlr.TerminalNode {
+	return s.GetTokens(FaRlParserNEWLINE)
+}
+
+func (s *DestinationInOrderContext) NEWLINE(i int) antlr.TerminalNode {
+	return s.GetToken(FaRlParserNEWLINE, i)
+}
+
+func (s *DestinationInOrderContext) RBRACE() antlr.TerminalNode {
+	return s.GetToken(FaRlParserRBRACE, 0)
+}
+
+func (s *DestinationInOrderContext) AllDestination() []IDestinationContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IDestinationContext)(nil)).Elem())
+	var tst = make([]IDestinationContext, len(ts))
+
+	for i, t := range ts {
+		if t != nil {
+			tst[i] = t.(IDestinationContext)
+		}
+	}
+
+	return tst
+}
+
+func (s *DestinationInOrderContext) Destination(i int) IDestinationContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDestinationContext)(nil)).Elem(), i)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDestinationContext)
+}
+
+func (s *DestinationInOrderContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *DestinationInOrderContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *DestinationInOrderContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.EnterDestinationInOrder(s)
+	}
+}
+
+func (s *DestinationInOrderContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.ExitDestinationInOrder(s)
+	}
+}
+
+func (p *FaRlParser) DestinationInOrder() (localctx IDestinationInOrderContext) {
+	localctx = NewDestinationInOrderContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 10, FaRlParserRULE_destinationInOrder)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(96)
+		p.Match(FaRlParserLBRACE)
+	}
+	{
+		p.SetState(97)
+		p.Match(FaRlParserNEWLINE)
+	}
+	p.SetState(101)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	for ok := true; ok; ok = _la == FaRlParserMAX || _la == FaRlParserLBRACK || (((_la-33)&-(0x1f+1)) == 0 && ((1<<uint((_la-33)))&((1<<(FaRlParserLBRACE-33))|(1<<(FaRlParserVARIABLE_NAME-33))|(1<<(FaRlParserACCOUNT-33))|(1<<(FaRlParserASSET-33))|(1<<(FaRlParserNUMBER-33)))) != 0) {
+		{
+			p.SetState(98)
+
+			var _x = p.Destination()
+
+			localctx.(*DestinationInOrderContext)._destination = _x
+		}
+		localctx.(*DestinationInOrderContext).dests = append(localctx.(*DestinationInOrderContext).dests, localctx.(*DestinationInOrderContext)._destination)
+		{
+			p.SetState(99)
+			p.Match(FaRlParserNEWLINE)
+		}
+
+		p.SetState(103)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+	}
+	{
+		p.SetState(105)
+		p.Match(FaRlParserRBRACE)
+	}
+
+	return localctx
+}
+
+// IDestinationMaxedContext is an interface to support dynamic dispatch.
+type IDestinationMaxedContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// GetMax returns the max rule contexts.
+	GetMax() IExpressionContext
+
+	// GetDest returns the dest rule contexts.
+	GetDest() IDestinationContext
+
+	// SetMax sets the max rule contexts.
+	SetMax(IExpressionContext)
+
+	// SetDest sets the dest rule contexts.
+	SetDest(IDestinationContext)
+
+	// IsDestinationMaxedContext differentiates from other interfaces.
+	IsDestinationMaxedContext()
+}
+
+type DestinationMaxedContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+	max    IExpressionContext
+	dest   IDestinationContext
+}
+
+func NewEmptyDestinationMaxedContext() *DestinationMaxedContext {
+	var p = new(DestinationMaxedContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = FaRlParserRULE_destinationMaxed
+	return p
+}
+
+func (*DestinationMaxedContext) IsDestinationMaxedContext() {}
+
+func NewDestinationMaxedContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *DestinationMaxedContext {
+	var p = new(DestinationMaxedContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = FaRlParserRULE_destinationMaxed
+
+	return p
+}
+
+func (s *DestinationMaxedContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *DestinationMaxedContext) GetMax() IExpressionContext { return s.max }
+
+func (s *DestinationMaxedContext) GetDest() IDestinationContext { return s.dest }
+
+func (s *DestinationMaxedContext) SetMax(v IExpressionContext) { s.max = v }
+
+func (s *DestinationMaxedContext) SetDest(v IDestinationContext) { s.dest = v }
+
+func (s *DestinationMaxedContext) MAX() antlr.TerminalNode {
+	return s.GetToken(FaRlParserMAX, 0)
+}
+
+func (s *DestinationMaxedContext) TO() antlr.TerminalNode {
+	return s.GetToken(FaRlParserTO, 0)
+}
+
+func (s *DestinationMaxedContext) Expression() IExpressionContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *DestinationMaxedContext) Destination() IDestinationContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDestinationContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDestinationContext)
+}
+
+func (s *DestinationMaxedContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *DestinationMaxedContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *DestinationMaxedContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.EnterDestinationMaxed(s)
+	}
+}
+
+func (s *DestinationMaxedContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.ExitDestinationMaxed(s)
+	}
+}
+
+func (p *FaRlParser) DestinationMaxed() (localctx IDestinationMaxedContext) {
+	localctx = NewDestinationMaxedContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 12, FaRlParserRULE_destinationMaxed)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(107)
+		p.Match(FaRlParserMAX)
+	}
+	{
+		p.SetState(108)
+
+		var _x = p.expression(0)
+
+		localctx.(*DestinationMaxedContext).max = _x
+	}
+	{
+		p.SetState(109)
+		p.Match(FaRlParserTO)
+	}
+	{
+		p.SetState(110)
+
+		var _x = p.Destination()
+
+		localctx.(*DestinationMaxedContext).dest = _x
 	}
 
 	return localctx
@@ -1660,26 +2007,26 @@ type IDestinationAllotmentContext interface {
 	// Get_allotmentPortion returns the _allotmentPortion rule contexts.
 	Get_allotmentPortion() IAllotmentPortionContext
 
-	// Get_expression returns the _expression rule contexts.
-	Get_expression() IExpressionContext
+	// Get_destination returns the _destination rule contexts.
+	Get_destination() IDestinationContext
 
 	// Set_allotmentPortion sets the _allotmentPortion rule contexts.
 	Set_allotmentPortion(IAllotmentPortionContext)
 
-	// Set_expression sets the _expression rule contexts.
-	Set_expression(IExpressionContext)
+	// Set_destination sets the _destination rule contexts.
+	Set_destination(IDestinationContext)
 
 	// GetPortions returns the portions rule context list.
 	GetPortions() []IAllotmentPortionContext
 
 	// GetDests returns the dests rule context list.
-	GetDests() []IExpressionContext
+	GetDests() []IDestinationContext
 
 	// SetPortions sets the portions rule context list.
 	SetPortions([]IAllotmentPortionContext)
 
 	// SetDests sets the dests rule context list.
-	SetDests([]IExpressionContext)
+	SetDests([]IDestinationContext)
 
 	// IsDestinationAllotmentContext differentiates from other interfaces.
 	IsDestinationAllotmentContext()
@@ -1690,8 +2037,8 @@ type DestinationAllotmentContext struct {
 	parser            antlr.Parser
 	_allotmentPortion IAllotmentPortionContext
 	portions          []IAllotmentPortionContext
-	_expression       IExpressionContext
-	dests             []IExpressionContext
+	_destination      IDestinationContext
+	dests             []IDestinationContext
 }
 
 func NewEmptyDestinationAllotmentContext() *DestinationAllotmentContext {
@@ -1720,21 +2067,21 @@ func (s *DestinationAllotmentContext) Get_allotmentPortion() IAllotmentPortionCo
 	return s._allotmentPortion
 }
 
-func (s *DestinationAllotmentContext) Get_expression() IExpressionContext { return s._expression }
+func (s *DestinationAllotmentContext) Get_destination() IDestinationContext { return s._destination }
 
 func (s *DestinationAllotmentContext) Set_allotmentPortion(v IAllotmentPortionContext) {
 	s._allotmentPortion = v
 }
 
-func (s *DestinationAllotmentContext) Set_expression(v IExpressionContext) { s._expression = v }
+func (s *DestinationAllotmentContext) Set_destination(v IDestinationContext) { s._destination = v }
 
 func (s *DestinationAllotmentContext) GetPortions() []IAllotmentPortionContext { return s.portions }
 
-func (s *DestinationAllotmentContext) GetDests() []IExpressionContext { return s.dests }
+func (s *DestinationAllotmentContext) GetDests() []IDestinationContext { return s.dests }
 
 func (s *DestinationAllotmentContext) SetPortions(v []IAllotmentPortionContext) { s.portions = v }
 
-func (s *DestinationAllotmentContext) SetDests(v []IExpressionContext) { s.dests = v }
+func (s *DestinationAllotmentContext) SetDests(v []IDestinationContext) { s.dests = v }
 
 func (s *DestinationAllotmentContext) LBRACE() antlr.TerminalNode {
 	return s.GetToken(FaRlParserLBRACE, 0)
@@ -1783,27 +2130,27 @@ func (s *DestinationAllotmentContext) AllotmentPortion(i int) IAllotmentPortionC
 	return t.(IAllotmentPortionContext)
 }
 
-func (s *DestinationAllotmentContext) AllExpression() []IExpressionContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IExpressionContext)(nil)).Elem())
-	var tst = make([]IExpressionContext, len(ts))
+func (s *DestinationAllotmentContext) AllDestination() []IDestinationContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IDestinationContext)(nil)).Elem())
+	var tst = make([]IDestinationContext, len(ts))
 
 	for i, t := range ts {
 		if t != nil {
-			tst[i] = t.(IExpressionContext)
+			tst[i] = t.(IDestinationContext)
 		}
 	}
 
 	return tst
 }
 
-func (s *DestinationAllotmentContext) Expression(i int) IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), i)
+func (s *DestinationAllotmentContext) Destination(i int) IDestinationContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDestinationContext)(nil)).Elem(), i)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IExpressionContext)
+	return t.(IDestinationContext)
 }
 
 func (s *DestinationAllotmentContext) GetRuleContext() antlr.RuleContext {
@@ -1828,7 +2175,7 @@ func (s *DestinationAllotmentContext) ExitRule(listener antlr.ParseTreeListener)
 
 func (p *FaRlParser) DestinationAllotment() (localctx IDestinationAllotmentContext) {
 	localctx = NewDestinationAllotmentContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, FaRlParserRULE_destinationAllotment)
+	p.EnterRule(localctx, 14, FaRlParserRULE_destinationAllotment)
 	var _la int
 
 	defer func() {
@@ -1849,20 +2196,20 @@ func (p *FaRlParser) DestinationAllotment() (localctx IDestinationAllotmentConte
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(92)
+		p.SetState(112)
 		p.Match(FaRlParserLBRACE)
 	}
 	{
-		p.SetState(93)
+		p.SetState(113)
 		p.Match(FaRlParserNEWLINE)
 	}
-	p.SetState(99)
+	p.SetState(119)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = (((_la-30)&-(0x1f+1)) == 0 && ((1<<uint((_la-30)))&((1<<(FaRlParserPORTION_REMAINING-30))|(1<<(FaRlParserRATIO-30))|(1<<(FaRlParserVARIABLE_NAME-30))|(1<<(FaRlParserNUMBER-30)))) != 0) {
 		{
-			p.SetState(94)
+			p.SetState(114)
 
 			var _x = p.AllotmentPortion()
 
@@ -1870,28 +2217,28 @@ func (p *FaRlParser) DestinationAllotment() (localctx IDestinationAllotmentConte
 		}
 		localctx.(*DestinationAllotmentContext).portions = append(localctx.(*DestinationAllotmentContext).portions, localctx.(*DestinationAllotmentContext)._allotmentPortion)
 		{
-			p.SetState(95)
+			p.SetState(115)
 			p.Match(FaRlParserTO)
 		}
 		{
-			p.SetState(96)
+			p.SetState(116)
 
-			var _x = p.expression(0)
+			var _x = p.Destination()
 
-			localctx.(*DestinationAllotmentContext)._expression = _x
+			localctx.(*DestinationAllotmentContext)._destination = _x
 		}
-		localctx.(*DestinationAllotmentContext).dests = append(localctx.(*DestinationAllotmentContext).dests, localctx.(*DestinationAllotmentContext)._expression)
+		localctx.(*DestinationAllotmentContext).dests = append(localctx.(*DestinationAllotmentContext).dests, localctx.(*DestinationAllotmentContext)._destination)
 		{
-			p.SetState(97)
+			p.SetState(117)
 			p.Match(FaRlParserNEWLINE)
 		}
 
-		p.SetState(101)
+		p.SetState(121)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(103)
+		p.SetState(123)
 		p.Match(FaRlParserRBRACE)
 	}
 
@@ -2028,9 +2375,89 @@ func (s *DestAllotmentContext) ExitRule(listener antlr.ParseTreeListener) {
 	}
 }
 
+type DestMaxedContext struct {
+	*DestinationContext
+}
+
+func NewDestMaxedContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *DestMaxedContext {
+	var p = new(DestMaxedContext)
+
+	p.DestinationContext = NewEmptyDestinationContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*DestinationContext))
+
+	return p
+}
+
+func (s *DestMaxedContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *DestMaxedContext) DestinationMaxed() IDestinationMaxedContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDestinationMaxedContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDestinationMaxedContext)
+}
+
+func (s *DestMaxedContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.EnterDestMaxed(s)
+	}
+}
+
+func (s *DestMaxedContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.ExitDestMaxed(s)
+	}
+}
+
+type DestInOrderContext struct {
+	*DestinationContext
+}
+
+func NewDestInOrderContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *DestInOrderContext {
+	var p = new(DestInOrderContext)
+
+	p.DestinationContext = NewEmptyDestinationContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*DestinationContext))
+
+	return p
+}
+
+func (s *DestInOrderContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *DestInOrderContext) DestinationInOrder() IDestinationInOrderContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDestinationInOrderContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDestinationInOrderContext)
+}
+
+func (s *DestInOrderContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.EnterDestInOrder(s)
+	}
+}
+
+func (s *DestInOrderContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(FaRlListener); ok {
+		listenerT.ExitDestInOrder(s)
+	}
+}
+
 func (p *FaRlParser) Destination() (localctx IDestinationContext) {
 	localctx = NewDestinationContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 12, FaRlParserRULE_destination)
+	p.EnterRule(localctx, 16, FaRlParserRULE_destination)
 
 	defer func() {
 		p.ExitRule()
@@ -2048,28 +2475,41 @@ func (p *FaRlParser) Destination() (localctx IDestinationContext) {
 		}
 	}()
 
-	p.SetState(107)
+	p.SetState(129)
 	p.GetErrorHandler().Sync(p)
-
-	switch p.GetTokenStream().LA(1) {
-	case FaRlParserLBRACK, FaRlParserVARIABLE_NAME, FaRlParserACCOUNT, FaRlParserASSET, FaRlParserNUMBER:
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 9, p.GetParserRuleContext()) {
+	case 1:
 		localctx = NewDestAccountContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(105)
+			p.SetState(125)
 			p.expression(0)
 		}
 
-	case FaRlParserLBRACE:
-		localctx = NewDestAllotmentContext(p, localctx)
+	case 2:
+		localctx = NewDestMaxedContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(106)
+			p.SetState(126)
+			p.DestinationMaxed()
+		}
+
+	case 3:
+		localctx = NewDestInOrderContext(p, localctx)
+		p.EnterOuterAlt(localctx, 3)
+		{
+			p.SetState(127)
+			p.DestinationInOrder()
+		}
+
+	case 4:
+		localctx = NewDestAllotmentContext(p, localctx)
+		p.EnterOuterAlt(localctx, 4)
+		{
+			p.SetState(128)
 			p.DestinationAllotment()
 		}
 
-	default:
-		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 
 	return localctx
@@ -2253,7 +2693,7 @@ func (s *SourceAllotmentContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) SourceAllotment() (localctx ISourceAllotmentContext) {
 	localctx = NewSourceAllotmentContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 14, FaRlParserRULE_sourceAllotment)
+	p.EnterRule(localctx, 18, FaRlParserRULE_sourceAllotment)
 	var _la int
 
 	defer func() {
@@ -2274,20 +2714,20 @@ func (p *FaRlParser) SourceAllotment() (localctx ISourceAllotmentContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(109)
+		p.SetState(131)
 		p.Match(FaRlParserLBRACE)
 	}
 	{
-		p.SetState(110)
+		p.SetState(132)
 		p.Match(FaRlParserNEWLINE)
 	}
-	p.SetState(116)
+	p.SetState(138)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = (((_la-30)&-(0x1f+1)) == 0 && ((1<<uint((_la-30)))&((1<<(FaRlParserPORTION_REMAINING-30))|(1<<(FaRlParserRATIO-30))|(1<<(FaRlParserVARIABLE_NAME-30))|(1<<(FaRlParserNUMBER-30)))) != 0) {
 		{
-			p.SetState(111)
+			p.SetState(133)
 
 			var _x = p.AllotmentPortion()
 
@@ -2295,11 +2735,11 @@ func (p *FaRlParser) SourceAllotment() (localctx ISourceAllotmentContext) {
 		}
 		localctx.(*SourceAllotmentContext).portions = append(localctx.(*SourceAllotmentContext).portions, localctx.(*SourceAllotmentContext)._allotmentPortion)
 		{
-			p.SetState(112)
+			p.SetState(134)
 			p.Match(FaRlParserFROM)
 		}
 		{
-			p.SetState(113)
+			p.SetState(135)
 
 			var _x = p.Source()
 
@@ -2307,16 +2747,16 @@ func (p *FaRlParser) SourceAllotment() (localctx ISourceAllotmentContext) {
 		}
 		localctx.(*SourceAllotmentContext).sources = append(localctx.(*SourceAllotmentContext).sources, localctx.(*SourceAllotmentContext)._source)
 		{
-			p.SetState(114)
+			p.SetState(136)
 			p.Match(FaRlParserNEWLINE)
 		}
 
-		p.SetState(118)
+		p.SetState(140)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(120)
+		p.SetState(142)
 		p.Match(FaRlParserRBRACE)
 	}
 
@@ -2433,7 +2873,7 @@ func (s *SourceMaxedContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) SourceMaxed() (localctx ISourceMaxedContext) {
 	localctx = NewSourceMaxedContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, FaRlParserRULE_sourceMaxed)
+	p.EnterRule(localctx, 20, FaRlParserRULE_sourceMaxed)
 
 	defer func() {
 		p.ExitRule()
@@ -2453,22 +2893,22 @@ func (p *FaRlParser) SourceMaxed() (localctx ISourceMaxedContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(122)
+		p.SetState(144)
 		p.Match(FaRlParserMAX)
 	}
 	{
-		p.SetState(123)
+		p.SetState(145)
 
 		var _x = p.expression(0)
 
 		localctx.(*SourceMaxedContext).max = _x
 	}
 	{
-		p.SetState(124)
+		p.SetState(146)
 		p.Match(FaRlParserFROM)
 	}
 	{
-		p.SetState(125)
+		p.SetState(147)
 
 		var _x = p.Source()
 
@@ -2599,7 +3039,7 @@ func (s *SourceInOrderContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) SourceInOrder() (localctx ISourceInOrderContext) {
 	localctx = NewSourceInOrderContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, FaRlParserRULE_sourceInOrder)
+	p.EnterRule(localctx, 22, FaRlParserRULE_sourceInOrder)
 	var _la int
 
 	defer func() {
@@ -2620,20 +3060,20 @@ func (p *FaRlParser) SourceInOrder() (localctx ISourceInOrderContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(127)
+		p.SetState(149)
 		p.Match(FaRlParserLBRACE)
 	}
 	{
-		p.SetState(128)
+		p.SetState(150)
 		p.Match(FaRlParserNEWLINE)
 	}
-	p.SetState(132)
+	p.SetState(154)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == FaRlParserMAX || _la == FaRlParserLBRACK || (((_la-33)&-(0x1f+1)) == 0 && ((1<<uint((_la-33)))&((1<<(FaRlParserLBRACE-33))|(1<<(FaRlParserVARIABLE_NAME-33))|(1<<(FaRlParserACCOUNT-33))|(1<<(FaRlParserASSET-33))|(1<<(FaRlParserNUMBER-33)))) != 0) {
 		{
-			p.SetState(129)
+			p.SetState(151)
 
 			var _x = p.Source()
 
@@ -2641,16 +3081,16 @@ func (p *FaRlParser) SourceInOrder() (localctx ISourceInOrderContext) {
 		}
 		localctx.(*SourceInOrderContext).sources = append(localctx.(*SourceInOrderContext).sources, localctx.(*SourceInOrderContext)._source)
 		{
-			p.SetState(130)
+			p.SetState(152)
 			p.Match(FaRlParserNEWLINE)
 		}
 
-		p.SetState(134)
+		p.SetState(156)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(136)
+		p.SetState(158)
 		p.Match(FaRlParserRBRACE)
 	}
 
@@ -2829,7 +3269,7 @@ func (s *SrcInOrderContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) Source() (localctx ISourceContext) {
 	localctx = NewSourceContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 20, FaRlParserRULE_source)
+	p.EnterRule(localctx, 24, FaRlParserRULE_source)
 
 	defer func() {
 		p.ExitRule()
@@ -2847,7 +3287,7 @@ func (p *FaRlParser) Source() (localctx ISourceContext) {
 		}
 	}()
 
-	p.SetState(141)
+	p.SetState(163)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -2855,7 +3295,7 @@ func (p *FaRlParser) Source() (localctx ISourceContext) {
 		localctx = NewSrcAccountContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(138)
+			p.SetState(160)
 			p.expression(0)
 		}
 
@@ -2863,7 +3303,7 @@ func (p *FaRlParser) Source() (localctx ISourceContext) {
 		localctx = NewSrcMaxedContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(139)
+			p.SetState(161)
 			p.SourceMaxed()
 		}
 
@@ -2871,7 +3311,7 @@ func (p *FaRlParser) Source() (localctx ISourceContext) {
 		localctx = NewSrcInOrderContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(140)
+			p.SetState(162)
 			p.SourceInOrder()
 		}
 
@@ -3014,7 +3454,7 @@ func (s *SrcAllotmentContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) ValueAwareSource() (localctx IValueAwareSourceContext) {
 	localctx = NewValueAwareSourceContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 22, FaRlParserRULE_valueAwareSource)
+	p.EnterRule(localctx, 26, FaRlParserRULE_valueAwareSource)
 
 	defer func() {
 		p.ExitRule()
@@ -3032,14 +3472,14 @@ func (p *FaRlParser) ValueAwareSource() (localctx IValueAwareSourceContext) {
 		}
 	}()
 
-	p.SetState(145)
+	p.SetState(167)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 12, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 13, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewSrcContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(143)
+			p.SetState(165)
 			p.Source()
 		}
 
@@ -3047,7 +3487,7 @@ func (p *FaRlParser) ValueAwareSource() (localctx IValueAwareSourceContext) {
 		localctx = NewSrcAllotmentContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(144)
+			p.SetState(166)
 			p.SourceAllotment()
 		}
 
@@ -3140,7 +3580,7 @@ func (s *Type_Context) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) Type_() (localctx IType_Context) {
 	localctx = NewType_Context(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 24, FaRlParserRULE_type_)
+	p.EnterRule(localctx, 28, FaRlParserRULE_type_)
 	var _la int
 
 	defer func() {
@@ -3161,7 +3601,7 @@ func (p *FaRlParser) Type_() (localctx IType_Context) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(147)
+		p.SetState(169)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FaRlParserTY_ACCOUNT)|(1<<FaRlParserTY_ASSET)|(1<<FaRlParserTY_NUMBER)|(1<<FaRlParserTY_MONETARY)|(1<<FaRlParserTY_PORTION)|(1<<FaRlParserTY_STRING))) != 0) {
@@ -3283,7 +3723,7 @@ func (s *OriginContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) Origin() (localctx IOriginContext) {
 	localctx = NewOriginContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 26, FaRlParserRULE_origin)
+	p.EnterRule(localctx, 30, FaRlParserRULE_origin)
 
 	defer func() {
 		p.ExitRule()
@@ -3303,33 +3743,33 @@ func (p *FaRlParser) Origin() (localctx IOriginContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(149)
+		p.SetState(171)
 		p.Match(FaRlParserMETA)
 	}
 	{
-		p.SetState(150)
+		p.SetState(172)
 		p.Match(FaRlParserLPAREN)
 	}
 	{
-		p.SetState(151)
+		p.SetState(173)
 
 		var _x = p.expression(0)
 
 		localctx.(*OriginContext).acc = _x
 	}
 	{
-		p.SetState(152)
+		p.SetState(174)
 		p.Match(FaRlParserT__0)
 	}
 	{
-		p.SetState(153)
+		p.SetState(175)
 
 		var _m = p.Match(FaRlParserSTRING)
 
 		localctx.(*OriginContext).key = _m
 	}
 	{
-		p.SetState(154)
+		p.SetState(176)
 		p.Match(FaRlParserRPAREN)
 	}
 
@@ -3469,7 +3909,7 @@ func (s *VarTypedContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) VarDecl() (localctx IVarDeclContext) {
 	localctx = NewVarDeclContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 28, FaRlParserRULE_varDecl)
+	p.EnterRule(localctx, 32, FaRlParserRULE_varDecl)
 	var _la int
 
 	defer func() {
@@ -3491,38 +3931,38 @@ func (p *FaRlParser) VarDecl() (localctx IVarDeclContext) {
 	localctx = NewVarTypedContext(p, localctx)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(156)
+		p.SetState(178)
 		p.Match(FaRlParserVAR)
 	}
 	{
-		p.SetState(157)
+		p.SetState(179)
 
 		var _m = p.Match(FaRlParserVARIABLE_NAME)
 
 		localctx.(*VarTypedContext).name = _m
 	}
 	{
-		p.SetState(158)
+		p.SetState(180)
 		p.Match(FaRlParserCOLON)
 	}
 	{
-		p.SetState(159)
+		p.SetState(181)
 
 		var _x = p.Type_()
 
 		localctx.(*VarTypedContext).ty = _x
 	}
-	p.SetState(162)
+	p.SetState(184)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == FaRlParserEQ {
 		{
-			p.SetState(160)
+			p.SetState(182)
 			p.Match(FaRlParserEQ)
 		}
 		{
-			p.SetState(161)
+			p.SetState(183)
 
 			var _x = p.Origin()
 
@@ -3660,7 +4100,7 @@ func (s *MetaValueExprContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) MetadataValue() (localctx IMetadataValueContext) {
 	localctx = NewMetadataValueContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 30, FaRlParserRULE_metadataValue)
+	p.EnterRule(localctx, 34, FaRlParserRULE_metadataValue)
 
 	defer func() {
 		p.ExitRule()
@@ -3678,7 +4118,7 @@ func (p *FaRlParser) MetadataValue() (localctx IMetadataValueContext) {
 		}
 	}()
 
-	p.SetState(166)
+	p.SetState(188)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
@@ -3686,7 +4126,7 @@ func (p *FaRlParser) MetadataValue() (localctx IMetadataValueContext) {
 		localctx = NewMetaValueExprContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(164)
+			p.SetState(186)
 			p.expression(0)
 		}
 
@@ -3694,7 +4134,7 @@ func (p *FaRlParser) MetadataValue() (localctx IMetadataValueContext) {
 		localctx = NewMetaValueRatioContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(165)
+			p.SetState(187)
 			p.Match(FaRlParserRATIO)
 		}
 
@@ -3783,7 +4223,7 @@ func (s *MetadataEntryContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) MetadataEntry() (localctx IMetadataEntryContext) {
 	localctx = NewMetadataEntryContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 32, FaRlParserRULE_metadataEntry)
+	p.EnterRule(localctx, 36, FaRlParserRULE_metadataEntry)
 
 	defer func() {
 		p.ExitRule()
@@ -3803,15 +4243,15 @@ func (p *FaRlParser) MetadataEntry() (localctx IMetadataEntryContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(168)
+		p.SetState(190)
 		p.Match(FaRlParserSTRING)
 	}
 	{
-		p.SetState(169)
+		p.SetState(191)
 		p.Match(FaRlParserEQ)
 	}
 	{
-		p.SetState(170)
+		p.SetState(192)
 		p.MetadataValue()
 	}
 
@@ -4290,7 +4730,7 @@ func (s *SetAccountMetaContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) Statement() (localctx IStatementContext) {
 	localctx = NewStatementContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 34, FaRlParserRULE_statement)
+	p.EnterRule(localctx, 38, FaRlParserRULE_statement)
 	var _la int
 
 	defer func() {
@@ -4309,18 +4749,18 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		}
 	}()
 
-	p.SetState(229)
+	p.SetState(251)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 18, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 19, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewPrintContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(172)
+			p.SetState(194)
 			p.Match(FaRlParserPRINT)
 		}
 		{
-			p.SetState(173)
+			p.SetState(195)
 
 			var _x = p.expression(0)
 
@@ -4331,7 +4771,7 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewFailContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(174)
+			p.SetState(196)
 			p.Match(FaRlParserFAIL)
 		}
 
@@ -4339,15 +4779,15 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewTransferContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(175)
+			p.SetState(197)
 			p.Match(FaRlParserTRANSFER)
 		}
-		p.SetState(178)
+		p.SetState(200)
 		p.GetErrorHandler().Sync(p)
-		switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 15, p.GetParserRuleContext()) {
+		switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 16, p.GetParserRuleContext()) {
 		case 1:
 			{
-				p.SetState(176)
+				p.SetState(198)
 
 				var _x = p.expression(0)
 
@@ -4356,7 +4796,7 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 
 		case 2:
 			{
-				p.SetState(177)
+				p.SetState(199)
 
 				var _x = p.MonetaryAll()
 
@@ -4365,39 +4805,39 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 
 		}
 		{
-			p.SetState(180)
+			p.SetState(202)
 			p.Match(FaRlParserLPAREN)
 		}
 		{
-			p.SetState(181)
+			p.SetState(203)
 			p.Match(FaRlParserNEWLINE)
 		}
-		p.SetState(194)
+		p.SetState(216)
 		p.GetErrorHandler().Sync(p)
 
 		switch p.GetTokenStream().LA(1) {
 		case FaRlParserFROM:
 			{
-				p.SetState(182)
+				p.SetState(204)
 				p.Match(FaRlParserFROM)
 			}
 			{
-				p.SetState(183)
+				p.SetState(205)
 
 				var _x = p.ValueAwareSource()
 
 				localctx.(*TransferContext).src = _x
 			}
 			{
-				p.SetState(184)
+				p.SetState(206)
 				p.Match(FaRlParserNEWLINE)
 			}
 			{
-				p.SetState(185)
+				p.SetState(207)
 				p.Match(FaRlParserTO)
 			}
 			{
-				p.SetState(186)
+				p.SetState(208)
 
 				var _x = p.Destination()
 
@@ -4406,26 +4846,26 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 
 		case FaRlParserTO:
 			{
-				p.SetState(188)
+				p.SetState(210)
 				p.Match(FaRlParserTO)
 			}
 			{
-				p.SetState(189)
+				p.SetState(211)
 
 				var _x = p.Destination()
 
 				localctx.(*TransferContext).dest = _x
 			}
 			{
-				p.SetState(190)
+				p.SetState(212)
 				p.Match(FaRlParserNEWLINE)
 			}
 			{
-				p.SetState(191)
+				p.SetState(213)
 				p.Match(FaRlParserFROM)
 			}
 			{
-				p.SetState(192)
+				p.SetState(214)
 
 				var _x = p.ValueAwareSource()
 
@@ -4436,11 +4876,11 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 			panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 		}
 		{
-			p.SetState(196)
+			p.SetState(218)
 			p.Match(FaRlParserNEWLINE)
 		}
 		{
-			p.SetState(197)
+			p.SetState(219)
 			p.Match(FaRlParserRPAREN)
 		}
 
@@ -4448,27 +4888,27 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewSetTxMetaContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(199)
+			p.SetState(221)
 			p.Match(FaRlParserSET)
 		}
 		{
-			p.SetState(200)
+			p.SetState(222)
 			p.Match(FaRlParserTRANSACTION)
 		}
 		{
-			p.SetState(201)
+			p.SetState(223)
 			p.Match(FaRlParserMETADATA)
 		}
 		{
-			p.SetState(202)
+			p.SetState(224)
 			p.Match(FaRlParserSTRING)
 		}
 		{
-			p.SetState(203)
+			p.SetState(225)
 			p.Match(FaRlParserEQ)
 		}
 		{
-			p.SetState(204)
+			p.SetState(226)
 			p.MetadataValue()
 		}
 
@@ -4476,45 +4916,45 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewSetTxMetaBlockContext(p, localctx)
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(205)
+			p.SetState(227)
 			p.Match(FaRlParserSET)
 		}
 		{
-			p.SetState(206)
+			p.SetState(228)
 			p.Match(FaRlParserTRANSACTION)
 		}
 		{
-			p.SetState(207)
+			p.SetState(229)
 			p.Match(FaRlParserMETADATA)
 		}
 		{
-			p.SetState(208)
+			p.SetState(230)
 			p.Match(FaRlParserLBRACE)
 		}
 		{
-			p.SetState(209)
+			p.SetState(231)
 			p.Match(FaRlParserNEWLINE)
 		}
-		p.SetState(213)
+		p.SetState(235)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		for ok := true; ok; ok = _la == FaRlParserSTRING {
 			{
-				p.SetState(210)
+				p.SetState(232)
 				p.MetadataEntry()
 			}
 			{
-				p.SetState(211)
+				p.SetState(233)
 				p.Match(FaRlParserNEWLINE)
 			}
 
-			p.SetState(215)
+			p.SetState(237)
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 		}
 		{
-			p.SetState(217)
+			p.SetState(239)
 			p.Match(FaRlParserRBRACE)
 		}
 
@@ -4522,39 +4962,39 @@ func (p *FaRlParser) Statement() (localctx IStatementContext) {
 		localctx = NewSetAccountMetaContext(p, localctx)
 		p.EnterOuterAlt(localctx, 6)
 		{
-			p.SetState(219)
+			p.SetState(241)
 			p.Match(FaRlParserSET)
 		}
 		{
-			p.SetState(220)
+			p.SetState(242)
 			p.Match(FaRlParserTY_ACCOUNT)
 		}
 		{
-			p.SetState(221)
+			p.SetState(243)
 			p.Match(FaRlParserMETADATA)
 		}
 		{
-			p.SetState(222)
+			p.SetState(244)
 			p.Match(FaRlParserOF)
 		}
 		{
-			p.SetState(223)
+			p.SetState(245)
 			p.expression(0)
 		}
 		{
-			p.SetState(224)
+			p.SetState(246)
 			p.Match(FaRlParserKEY)
 		}
 		{
-			p.SetState(225)
+			p.SetState(247)
 			p.Match(FaRlParserSTRING)
 		}
 		{
-			p.SetState(226)
+			p.SetState(248)
 			p.Match(FaRlParserEQ)
 		}
 		{
-			p.SetState(227)
+			p.SetState(249)
 			p.MetadataValue()
 		}
 
@@ -4703,7 +5143,7 @@ func (s *ScriptContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *FaRlParser) Script() (localctx IScriptContext) {
 	localctx = NewScriptContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 36, FaRlParserRULE_script)
+	p.EnterRule(localctx, 40, FaRlParserRULE_script)
 	var _la int
 
 	defer func() {
@@ -4725,78 +5165,78 @@ func (p *FaRlParser) Script() (localctx IScriptContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(234)
+	p.SetState(256)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == FaRlParserNEWLINE {
 		{
-			p.SetState(231)
+			p.SetState(253)
 			p.Match(FaRlParserNEWLINE)
 		}
 
-		p.SetState(236)
+		p.SetState(258)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
-	p.SetState(245)
+	p.SetState(267)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == FaRlParserVAR {
 		{
-			p.SetState(237)
+			p.SetState(259)
 			p.VarDecl()
 		}
-		p.SetState(239)
+		p.SetState(261)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		for ok := true; ok; ok = _la == FaRlParserNEWLINE {
 			{
-				p.SetState(238)
+				p.SetState(260)
 				p.Match(FaRlParserNEWLINE)
 			}
 
-			p.SetState(241)
+			p.SetState(263)
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 		}
 
-		p.SetState(247)
+		p.SetState(269)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(248)
+		p.SetState(270)
 
 		var _x = p.Statement()
 
 		localctx.(*ScriptContext)._statement = _x
 	}
 	localctx.(*ScriptContext).stmts = append(localctx.(*ScriptContext).stmts, localctx.(*ScriptContext)._statement)
-	p.SetState(257)
+	p.SetState(279)
 	p.GetErrorHandler().Sync(p)
-	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 23, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 24, p.GetParserRuleContext())
 
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
-			p.SetState(250)
+			p.SetState(272)
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 
 			for ok := true; ok; ok = _la == FaRlParserNEWLINE {
 				{
-					p.SetState(249)
+					p.SetState(271)
 					p.Match(FaRlParserNEWLINE)
 				}
 
-				p.SetState(252)
+				p.SetState(274)
 				p.GetErrorHandler().Sync(p)
 				_la = p.GetTokenStream().LA(1)
 			}
 			{
-				p.SetState(254)
+				p.SetState(276)
 
 				var _x = p.Statement()
 
@@ -4805,23 +5245,23 @@ func (p *FaRlParser) Script() (localctx IScriptContext) {
 			localctx.(*ScriptContext).stmts = append(localctx.(*ScriptContext).stmts, localctx.(*ScriptContext)._statement)
 
 		}
-		p.SetState(259)
+		p.SetState(281)
 		p.GetErrorHandler().Sync(p)
-		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 23, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 24, p.GetParserRuleContext())
 	}
-	p.SetState(261)
+	p.SetState(283)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == FaRlParserNEWLINE {
 		{
-			p.SetState(260)
+			p.SetState(282)
 			p.Match(FaRlParserNEWLINE)
 		}
 
 	}
 	{
-		p.SetState(263)
+		p.SetState(285)
 		p.Match(FaRlParserEOF)
 	}
 
