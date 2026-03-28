@@ -1,4 +1,4 @@
-
+module github.com/amezianechayer/corren-vm
 go 1.16
 
 require (
