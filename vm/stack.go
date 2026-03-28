@@ -17,14 +17,6 @@ func (m *Machine) popAccount() core.Account {
 	}
 }
 
-func (m *Machine) popAsset() core.Asset {
-	if a, ok := m.popValue().(core.Asset); ok {
-		return a
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
 func (m *Machine) popNumber() uint64 {
 	if n, ok := m.popValue().(core.Number); ok {
 		return uint64(n)
@@ -41,8 +33,32 @@ func (m *Machine) popMonetary() core.Monetary {
 	}
 }
 
+func (m *Machine) popAsset() core.Asset {
+	if v, ok := m.popValue().(core.Asset); ok {
+		return v
+	} else {
+		panic("unexpected type on stack")
+	}
+}
+
+func (m *Machine) popFunding() core.Funding {
+	if v, ok := m.popValue().(core.Funding); ok {
+		return v
+	} else {
+		panic("unexpected type on stack")
+	}
+}
+
 func (m *Machine) popAllotment() core.Allotment {
 	if m, ok := m.popValue().(core.Allotment); ok {
+		return m
+	} else {
+		panic("unexpected type on stack")
+	}
+}
+
+func (m *Machine) popPortion() core.Portion {
+	if m, ok := m.popValue().(core.Portion); ok {
 		return m
 	} else {
 		panic("unexpected type on stack")
