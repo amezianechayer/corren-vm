@@ -1,6 +1,6 @@
 package vm
 
-import "github.com/amezianechayer/corren-vm/core"
+import "github.com/amezianechayer/aurex-vm/core"
 
 func (m *Machine) popValue() core.Value {
 	l := len(m.Stack)
@@ -11,6 +11,14 @@ func (m *Machine) popValue() core.Value {
 
 func (m *Machine) popAccount() core.Account {
 	if a, ok := m.popValue().(core.Account); ok {
+		return a
+	} else {
+		panic("unexpected type on stack")
+	}
+}
+
+func (m *Machine) popAsset() core.Asset {
+	if a, ok := m.popValue().(core.Asset); ok {
 		return a
 	} else {
 		panic("unexpected type on stack")
@@ -33,32 +41,8 @@ func (m *Machine) popMonetary() core.Monetary {
 	}
 }
 
-func (m *Machine) popAsset() core.Asset {
-	if v, ok := m.popValue().(core.Asset); ok {
-		return v
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) popFunding() core.Funding {
-	if v, ok := m.popValue().(core.Funding); ok {
-		return v
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
 func (m *Machine) popAllotment() core.Allotment {
 	if m, ok := m.popValue().(core.Allotment); ok {
-		return m
-	} else {
-		panic("unexpected type on stack")
-	}
-}
-
-func (m *Machine) popPortion() core.Portion {
-	if m, ok := m.popValue().(core.Portion); ok {
 		return m
 	} else {
 		panic("unexpected type on stack")

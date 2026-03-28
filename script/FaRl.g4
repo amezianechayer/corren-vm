@@ -1,25 +1,35 @@
 grammar FaRl;
 
-NEWLINE           : [\r\n]+ ;
-WHITESPACE        : [ \t]+ -> skip ;
-MULTILINE_COMMENT : '/*' (MULTILINE_COMMENT|.)*? '*/' -> skip ;
-LINE_COMMENT      : '//' .*? NEWLINE -> skip ;
+NEWLINE    : [\r\n]+ ;
+WHITESPACE : [ \t]+ -> skip ;
 
 PRINT       : 'print' ;
 FAIL        : 'fail' ;
 TRANSFER    : 'transfer' ;
 FROM        : 'from' ;
 TO          : 'to' ;
-MAX         : 'max' ;
+THEN        : 'then' ;
+SEND        : 'send' ;
 KEEP        : 'keep' ;
+REMAINING   : 'remaining' ;
 ALL         : 'all' ;
+TAKE        : 'take' ;
+LIMIT       : 'limit' ;
+ALLOW       : 'allow' ;
+OVERDRAFT   : 'overdraft' ;
+UP          : 'up' ;
+RESERVE     : 'reserve' ;
+IN          : 'in' ;
+SPLIT       : 'split' ;
+AS          : 'as' ;
 VAR         : 'var' ;
+BALANCE     : 'balance' ;
+OF          : 'of' ;
+META        : 'meta' ;
+KEY         : 'key' ;
 SET         : 'set' ;
 TRANSACTION : 'transaction' ;
 METADATA    : 'metadata' ;
-OF          : 'of' ;
-KEY         : 'key' ;
-META        : 'meta' ;
 
 TY_ACCOUNT  : 'account' ;
 TY_ASSET    : 'asset' ;
@@ -30,35 +40,29 @@ TY_STRING   : 'string' ;
 
 OP_ADD : '+' ;
 OP_SUB : '-' ;
-PERCENT           : '%' ;
-PORTION_REMAINING : 'remaining' ;
+PERCENT: '%' ;
 
 LBRACK : '[' ;
 RBRACK : ']' ;
 LBRACE : '{' ;
 RBRACE : '}' ;
-LPAREN : '(' ;
-RPAREN : ')' ;
 DOT    : '.' ;
 COLON  : ':' ;
 STAR   : '*' ;
 EQ     : '=' ;
 
-STRING        : '"' [a-zA-Z0-9_/.]* '"' ;
 RATIO         : [0-9]+ '/' [0-9]+ ;
 VARIABLE_NAME : '$' [a-z_] [a-z0-9_]* ;
 ACCOUNT       : '@' [a-z_] [a-z0-9_:]* ;
 ASSET         : [A-Z] [A-Z0-9]* ;
 NUMBER        : [0-9]+ ;
+STRING        : '"' (~["\r\n])* '"' ;
 
 monetary
     : LBRACK asset=ASSET DOT precision=NUMBER amount=NUMBER RBRACK  # MonetaryLit
+    | LBRACK asset=ASSET DOT precision=NUMBER STAR RBRACK           # MonetaryAll
     | LBRACK asset=ASSET amount=NUMBER RBRACK                       # MonetaryNoPrecision
-    ;
-
-monetaryAll
-    : LBRACK asset=ASSET DOT precision=NUMBER STAR RBRACK           # MonetaryAllPrec
-    | LBRACK asset=ASSET STAR RBRACK                                # MonetaryAllNoPrec
+    | LBRACK asset=ASSET RBRACK                                     # MonetaryAssetOnly
     ;
 
 literal
@@ -74,53 +78,21 @@ expression
     | variable=VARIABLE_NAME                               # ExprVariable
     ;
 
-allotmentPortion
-    : RATIO                    # allotmentPortionConst
-    | NUMBER ('.' NUMBER)? PERCENT  # allotmentPortionConstPercent
-    | por=VARIABLE_NAME        # allotmentPortionVar
-    | PORTION_REMAINING        # allotmentPortionRemaining
-    ;
-
-destinationInOrder
-    : LBRACE NEWLINE (dests+=destination NEWLINE)+ RBRACE
-    ;
-
-destinationMaxed
-    : MAX max=expression TO dest=destination
-    ;
-
-destinationAllotment
-    : LBRACE NEWLINE (portions+=allotmentPortion TO dests+=destination NEWLINE)+ RBRACE
-    ;
-
-destination
-    : expression               # DestAccount
-    | destinationMaxed         # DestMaxed
-    | destinationInOrder       # DestInOrder
-    | destinationAllotment     # DestAllotment
-    ;
-
-sourceAllotment
-    : LBRACE NEWLINE (portions+=allotmentPortion FROM sources+=source NEWLINE)+ RBRACE
-    ;
-
-sourceMaxed
-    : MAX max=expression FROM src=source
-    ;
-
-sourceInOrder
-    : LBRACE NEWLINE (sources+=source NEWLINE)+ RBRACE
+portion
+    : p=NUMBER PERCENT    # PortionPercent
+    | r=RATIO             # PortionRatio
+    | REMAINING           # PortionRemaining
     ;
 
 source
-    : expression               # SrcAccount
-    | sourceMaxed              # SrcMaxed
-    | sourceInOrder            # SrcInOrder
-    ;
-
-valueAwareSource
-    : source                   # Src
-    | sourceAllotment          # SrcAllotment
+    : FROM expression                                                # SrcSimple
+    | FROM expression ALLOW OVERDRAFT                               # SrcOverdraft
+    | FROM expression ALLOW OVERDRAFT UP TO monetary                # SrcOverdraftCapped
+    | FROM expression LIMIT monetary THEN source                    # SrcLimit
+    | source THEN expression                                        # SrcCascade
+    | TAKE NUMBER PERCENT FROM expression                           # SrcPercent
+    | TAKE NUMBER PERCENT FROM expression LIMIT monetary            # SrcPercentLimit
+    | TAKE REMAINING FROM expression                                # SrcRemaining
     ;
 
 type_
@@ -132,12 +104,10 @@ type_
     | TY_STRING
     ;
 
-origin
-    : META LPAREN acc=expression ',' key=STRING RPAREN
-    ;
-
 varDecl
-    : VAR name=VARIABLE_NAME COLON ty=type_ (EQ orig=origin)?  # VarTyped
+    : VAR name=VARIABLE_NAME COLON ty=type_                                 # VarTyped
+    | VAR name=VARIABLE_NAME EQ BALANCE OF expression IN ASSET DOT NUMBER  # VarBalance
+    | VAR name=VARIABLE_NAME EQ META OF expression KEY STRING               # VarMeta
     ;
 
 metadataValue
@@ -149,6 +119,13 @@ metadataEntry
     : STRING EQ metadataValue
     ;
 
+sendClause
+    : SEND portion TO expression                         # SendTo
+    | KEEP REMAINING                                     # SendKeep
+    | SPLIT portion AS COLON NEWLINE
+        (sendClause NEWLINE)+                            # SendSplit
+    ;
+
 statement
     : PRINT expr=expression
         # Print
@@ -156,10 +133,18 @@ statement
     | FAIL
         # Fail
 
-    | TRANSFER (mon=expression | monAll=monetaryAll) LPAREN NEWLINE
-        ( FROM src=valueAwareSource NEWLINE TO dest=destination
-        | TO dest=destination NEWLINE FROM src=valueAwareSource) NEWLINE RPAREN
-        # Transfer
+    | TRANSFER amount=expression src=source TO dest=expression
+        # TransferSimple
+
+    | TRANSFER amount=expression src=source NEWLINE
+        (sends+=sendClause NEWLINE)+
+        # TransferWithDest
+
+    | TRANSFER ALL monetary src=source TO dest=expression
+        # TransferAll
+
+    | RESERVE monetary IN expression
+        # Reserve
 
     | SET TRANSACTION METADATA STRING EQ metadataValue
         # SetTxMeta
