@@ -7,9 +7,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/script/compiler"
-	ledger "github.com/amezianechayer/aurex/core"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/script/compiler"
+	ledger "github.com/amezianechayer/corren/core"
 	"github.com/google/go-cmp/cmp"
 )
 

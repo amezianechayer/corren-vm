@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/script/parser"
-	"github.com/amezianechayer/aurex-vm/vm/program"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/script/parser"
+	"github.com/amezianechayer/corren-vm/vm/program"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 

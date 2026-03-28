@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/amezianechayer/aurex-vm/core"
+	"github.com/amezianechayer/corren-vm/core"
 )
 
 type Program struct {

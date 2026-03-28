@@ -1,6 +1,6 @@
 package vm
 
-import "github.com/amezianechayer/aurex-vm/core"
+import "github.com/amezianechayer/corren-vm/core"
 
 func (m *Machine) popValue() core.Value {
 	l := len(m.Stack)
