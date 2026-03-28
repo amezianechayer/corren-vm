@@ -3,7 +3,7 @@ package program
 import (
 	"fmt"
 
-	"github.com/amezianechayer/aurex-vm/core"
+	"github.com/amezianechayer/corren-vm/core"
 )
 
 type Resource interface {

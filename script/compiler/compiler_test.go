@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/vm/program"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/vm/program"
 )
 
 type CaseResult struct {

@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/vm/program"
-	ledger "github.com/amezianechayer/aurex/core"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/vm/program"
+	ledger "github.com/amezianechayer/corren/core"
 	"github.com/logrusorgru/aurora"
 )
 

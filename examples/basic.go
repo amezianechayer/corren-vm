@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/script/compiler"
-	"github.com/amezianechayer/aurex-vm/vm"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/script/compiler"
+	"github.com/amezianechayer/corren-vm/vm"
 )
 
 func main() {

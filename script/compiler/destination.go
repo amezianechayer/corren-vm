@@ -3,9 +3,9 @@ package compiler
 import (
 	"errors"
 
-	"github.com/amezianechayer/aurex-vm/core"
-	"github.com/amezianechayer/aurex-vm/script/parser"
-	"github.com/amezianechayer/aurex-vm/vm/program"
+	"github.com/amezianechayer/corren-vm/core"
+	"github.com/amezianechayer/corren-vm/script/parser"
+	"github.com/amezianechayer/corren-vm/vm/program"
 )
 
 func (p *parseVisitor) VisitDestination(c parser.IDestinationContext) *CompileError {
