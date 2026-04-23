@@ -8,7 +8,6 @@ import (
 
 	"github.com/amezianechayer/corren-vm/core"
 	"github.com/amezianechayer/corren-vm/vm/program"
-	ledger "github.com/amezianechayer/corren/core"
 	"github.com/logrusorgru/aurora"
 )
 
@@ -17,6 +16,7 @@ const (
 	EXIT_FAIL
 	EXIT_FAIL_INVALID
 	EXIT_FAIL_INSUFFICIENT_FUNDS
+	EXIT_FAIL_SHARIA_VIOLATION
 )
 
 func StdOutPrinter(c chan core.Value) {
@@ -47,10 +47,16 @@ type Machine struct {
 	Balances            map[string]map[string]uint64
 	set_balance_called  bool
 	Stack               []core.Value
-	Postings            []ledger.Posting
+	Postings            []core.Posting
 	Printer             func(chan core.Value)
 	print_chan          chan core.Value
 	Debug               bool
+	Constraints         []core.ShariaConstraint
+	ShariaError         error
+}
+
+func (m *Machine) AddConstraint(c core.ShariaConstraint) {
+	m.Constraints = append(m.Constraints, c)
 }
 
 func (m *Machine) getResource(addr core.Address) (*core.Value, bool) {
@@ -270,12 +276,18 @@ func (m *Machine) tick() (bool, byte) {
 	case program.OP_SEND:
 		dest := m.popAccount()
 		funding := m.popFunding()
+		for _, constraint := range m.Constraints {
+			if err := constraint.Validate(funding, dest); err != nil {
+				m.ShariaError = err
+				return true, EXIT_FAIL_SHARIA_VIOLATION
+			}
+		}
 		m.credit(dest, funding)
 		for _, part := range funding.Parts {
 			if part.Amount == 0 {
 				continue
 			}
-			m.Postings = append(m.Postings, ledger.Posting{
+			m.Postings = append(m.Postings, core.Posting{
 				Source:      string(part.Account),
 				Destination: string(dest),
 				Asset:       string(funding.Asset),

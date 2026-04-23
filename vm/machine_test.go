@@ -10,7 +10,6 @@ import (
 
 	"github.com/amezianechayer/corren-vm/core"
 	"github.com/amezianechayer/corren-vm/script/compiler"
-	ledger "github.com/amezianechayer/corren/core"
 )
 
 const (
@@ -19,7 +18,7 @@ const (
 
 type CaseResult struct {
 	Printed  []core.Value
-	Postings []ledger.Posting
+	Postings []core.Posting
 	ExitCode byte
 	Error    string
 }
@@ -192,12 +191,12 @@ func testimpl(t *testing.T, code string, expected CaseResult, exec func(*Machine
 
 func TestFail(t *testing.T) {
 	test(t, "fail", map[string]core.Value{}, map[string]map[string]core.Value{}, map[string]map[string]uint64{},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{}, ExitCode: EXIT_FAIL})
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{}, ExitCode: EXIT_FAIL})
 }
 
 func TestPrint(t *testing.T) {
 	test(t, "print 29 + 15 - 2", map[string]core.Value{}, map[string]map[string]core.Value{}, map[string]map[string]uint64{},
-		CaseResult{Printed: []core.Value{core.Number(42)}, Postings: []ledger.Posting{}, ExitCode: EXIT_OK})
+		CaseResult{Printed: []core.Value{core.Number(42)}, Postings: []core.Posting{}, ExitCode: EXIT_OK})
 }
 
 func TestTransfer(t *testing.T) {
@@ -208,7 +207,7 @@ func TestTransfer(t *testing.T) {
 		)`,
 		map[string]core.Value{}, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@alice": {"DZD.2": 100}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 100, Source: "@alice", Destination: "@bob"},
 		}, ExitCode: EXIT_OK})
 }
@@ -224,7 +223,7 @@ transfer [DZD.2 999] (
 		map[string]core.Value{"rider": core.Account("@users:001"), "driver": core.Account("@users:002")},
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 1000}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 999, Source: "@users:001", Destination: "@users:002"},
 		}, ExitCode: EXIT_OK})
 }
@@ -256,7 +255,7 @@ transfer [DZD.2 999] (
 		`{"rider": "@users:001", "driver": "@users:002"}`,
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 1000}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 999, Source: "@users:001", Destination: "@users:002"},
 		}, ExitCode: EXIT_OK})
 }
@@ -279,7 +278,7 @@ transfer [DZD.2 15] (
 			"@users:001":    {"DZD.2": 3},
 			"@payments:001": {"DZD.2": 12},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 3, Source: "@users:001", Destination: "@users:002"},
 			{Asset: "DZD.2", Amount: 12, Source: "@payments:001", Destination: "@users:002"},
 		}, ExitCode: EXIT_OK})
@@ -300,7 +299,7 @@ transfer [DZD.2 15] (
 		`{"rider": "@users:001", "driver": "@users:002"}`,
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 15}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 13, Source: "@users:001", Destination: "@users:002"},
 			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@a"},
 			{Asset: "DZD.2", Amount: 1, Source: "@users:001", Destination: "@b"},
@@ -321,7 +320,7 @@ transfer [DZD.2 15] (
 		`{"p": "15%"}`,
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@a": {"DZD.2": 15}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 13, Source: "@a", Destination: "@b"},
 			{Asset: "DZD.2", Amount: 2, Source: "@a", Destination: "@c"},
 		}, ExitCode: EXIT_OK})
@@ -335,7 +334,7 @@ func TestSendAll(t *testing.T) {
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 17}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 17, Source: "@users:001", Destination: "@platform"},
 		}, ExitCode: EXIT_OK})
 }
@@ -354,7 +353,7 @@ func TestSendAllMulti(t *testing.T) {
 			"@users:001:wallet": {"DZD.2": 19},
 			"@users:001:credit": {"DZD.2": 22},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 19, Source: "@users:001:wallet", Destination: "@platform"},
 			{Asset: "DZD.2", Amount: 22, Source: "@users:001:credit", Destination: "@platform"},
 		}, ExitCode: EXIT_OK})
@@ -378,7 +377,7 @@ transfer [DZD.2 16] (
 			"@users:001":    {"DZD.2": 3},
 			"@payments:001": {"DZD.2": 12},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{}, ExitCode: EXIT_FAIL_INSUFFICIENT_FUNDS})
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{}, ExitCode: EXIT_FAIL_INSUFFICIENT_FUNDS})
 }
 
 func TestMissingBalance(t *testing.T) {
@@ -389,7 +388,7 @@ func TestMissingBalance(t *testing.T) {
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@users:001": {"DZD.2": 3}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{}, ExitCode: 0, Error: "missing"})
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{}, ExitCode: 0, Error: "missing"})
 }
 
 func TestMissingWorldBalance(t *testing.T) {
@@ -400,7 +399,7 @@ func TestMissingWorldBalance(t *testing.T) {
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 15, Source: "@world", Destination: "@a"},
 		}, ExitCode: EXIT_OK})
 }
@@ -419,7 +418,7 @@ transfer [DZD.2 15] (
 		`{"a": "@a", "b": "@b"}`,
 		map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@a": {"DZD.2": 1}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 1, Source: "@a", Destination: "@b"},
 			{Asset: "DZD.2", Amount: 14, Source: "@world", Destination: "@b"},
 		}, ExitCode: EXIT_OK})
@@ -435,7 +434,7 @@ func TestNoEmptyPostings(t *testing.T) {
 	}
 )`,
 		`{}`, map[string]map[string]core.Value{}, map[string]map[string]uint64{},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 2, Source: "@world", Destination: "@a"},
 		}, ExitCode: EXIT_OK})
 }
@@ -448,7 +447,7 @@ func TestNoEmptyPostings2(t *testing.T) {
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@foo": {"DZD.2": 0}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{}, ExitCode: EXIT_OK})
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{}, ExitCode: EXIT_OK})
 }
 
 func TestAllocateDontTakeTooMuch(t *testing.T) {
@@ -471,7 +470,7 @@ transfer [CREDIT 200] (
 			"@users:001": {"CREDIT": 100},
 			"@users:002": {"CREDIT": 110},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "CREDIT", Amount: 100, Source: "@users:001", Destination: "@foo"},
 			{Asset: "CREDIT", Amount: 100, Source: "@users:002", Destination: "@bar"},
 		}, ExitCode: EXIT_OK})
@@ -499,7 +498,7 @@ transfer [DZD.2 100] (
 			"@sales:042": {"DZD.2": 2500},
 			"@users:053": {"DZD.2": 500},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "DZD.2", Amount: 88, Source: "@sales:042", Destination: "@users:053"},
 			{Asset: "DZD.2", Amount: 12, Source: "@sales:042", Destination: "@platform"},
 		}, ExitCode: EXIT_OK})
@@ -517,7 +516,7 @@ transfer [COIN 100] (
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@a": {"COIN": 50}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "COIN", Amount: 50, Source: "@world", Destination: "@a"},
 			{Asset: "COIN", Amount: 100, Source: "@a", Destination: "@b"},
 		}, ExitCode: EXIT_OK})
@@ -535,7 +534,7 @@ transfer [COIN 50] (
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{"@a": {"COIN": 60}},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{}, ExitCode: EXIT_FAIL_INSUFFICIENT_FUNDS})
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{}, ExitCode: EXIT_FAIL_INSUFFICIENT_FUNDS})
 }
 
 func TestSourceAllotment(t *testing.T) {
@@ -554,7 +553,7 @@ func TestSourceAllotment(t *testing.T) {
 			"@b": {"COIN": 100},
 			"@c": {"COIN": 100},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "COIN", Amount: 61, Source: "@a", Destination: "@d"},
 			{Asset: "COIN", Amount: 35, Source: "@b", Destination: "@d"},
 			{Asset: "COIN", Amount: 4, Source: "@c", Destination: "@d"},
@@ -583,7 +582,7 @@ transfer [COIN 200] (
 			"@c": {"COIN": 1000},
 			"@d": {"COIN": 1000},
 		},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "COIN", Amount: 4, Source: "@a", Destination: "@platform"},
 			{Asset: "COIN", Amount: 40, Source: "@b", Destination: "@platform"},
 			{Asset: "COIN", Amount: 56, Source: "@c", Destination: "@platform"},
@@ -664,7 +663,7 @@ func TestDestinationComplex(t *testing.T) {
 )`,
 		`{}`, map[string]map[string]core.Value{},
 		map[string]map[string]uint64{},
-		CaseResult{Printed: []core.Value{}, Postings: []ledger.Posting{
+		CaseResult{Printed: []core.Value{}, Postings: []core.Posting{
 			{Asset: "COIN", Amount: 40, Source: "@world", Destination: "@a"},
 			{Asset: "COIN", Amount: 10, Source: "@world", Destination: "@b"},
 			{Asset: "COIN", Amount: 50, Source: "@world", Destination: "@c"},
