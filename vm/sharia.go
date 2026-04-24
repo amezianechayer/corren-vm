@@ -6,16 +6,25 @@ import (
 	"github.com/amezianechayer/corren-vm/core"
 )
 
+var ribaAccountPrefixes = []string{
+	"@interest:",
+	"@riba:",
+	"@usury:",
+	"@loan_interest:",
+}
+
 type NoRibaConstraint struct{}
 
 func (c *NoRibaConstraint) Name() string { return "NO_RIBA" }
 
 func (c *NoRibaConstraint) Validate(funding core.Funding, dest core.Account) error {
-	name := strings.ToUpper(string(funding.Asset))
-	if strings.Contains(name, "RIBA") || strings.Contains(name, "INTEREST") {
-		return &core.ShariaViolation{
-			Constraint: c.Name(),
-			Reason:     string(funding.Asset) + " is a riba-bearing asset",
+	d := strings.ToLower(string(dest))
+	for _, prefix := range ribaAccountPrefixes {
+		if strings.HasPrefix(d, prefix) {
+			return &core.ShariaViolation{
+				Constraint: c.Name(),
+				Reason:     string(dest) + " is an interest-bearing account (riba is prohibited)",
+			}
 		}
 	}
 	return nil
@@ -57,10 +66,25 @@ func NewAssetBackedConstraint(assets []string) *AssetBackedConstraint {
 func (c *AssetBackedConstraint) Name() string { return "ASSET_BACKED" }
 
 func (c *AssetBackedConstraint) Validate(funding core.Funding, dest core.Account) error {
-	if !funding.Infinite || len(c.AllowedAssets) == 0 {
+	if len(c.AllowedAssets) == 0 {
+		return nil
+	}
+	fromWorld := funding.Infinite
+	if !fromWorld {
+		for _, part := range funding.Parts {
+			if part.Account == "@world" {
+				fromWorld = true
+				break
+			}
+		}
+	}
+	if !fromWorld {
 		return nil
 	}
 	asset := strings.ToUpper(string(funding.Asset))
+	if dot := strings.Index(asset, "."); dot != -1 {
+		asset = asset[:dot]
+	}
 	if !c.AllowedAssets[asset] {
 		return &core.ShariaViolation{
 			Constraint: c.Name(),
