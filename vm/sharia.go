@@ -45,7 +45,34 @@ func (c *NoGhararConstraint) Validate(funding core.Funding, dest core.Account) e
 	if total == 0 {
 		return &core.ShariaViolation{
 			Constraint: c.Name(),
-			Reason:     "transfer of zero amount represents gharar (prohibited uncertainty)",
+			Reason:     "transfer amount is undefined (zero) — ambiguity in transaction value constitutes gharar",
+		}
+	}
+	return nil
+}
+
+var maysirAccountPrefixes = []string{
+	"@speculation:",
+	"@derivative:",
+	"@gambling:",
+	"@maysir:",
+	"@option:",
+	"@futures:",
+	"@swap:",
+}
+
+type NoMaysirConstraint struct{}
+
+func (c *NoMaysirConstraint) Name() string { return "NO_MAYSIR" }
+
+func (c *NoMaysirConstraint) Validate(funding core.Funding, dest core.Account) error {
+	d := strings.ToLower(string(dest))
+	for _, prefix := range maysirAccountPrefixes {
+		if strings.HasPrefix(d, prefix) {
+			return &core.ShariaViolation{
+				Constraint: c.Name(),
+				Reason:     string(dest) + " is a speculative account (maysir/gambling is prohibited)",
+			}
 		}
 	}
 	return nil
